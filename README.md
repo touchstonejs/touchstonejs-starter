@@ -1,4 +1,4 @@
-touchstone-starter
+Touchstone Starter
 ==================
 
-Base Touchstone App with examples of all UI components
+Reference Touchstone App with examples of all UI components.

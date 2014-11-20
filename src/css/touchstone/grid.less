@@ -1,0 +1,70 @@
+// 
+// Grid
+// ==============================
+
+
+// Base
+// ------------------------------
+
+.g-row {
+	display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+	display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+	display: -ms-flexbox;      /* TWEENER - IE 10 */
+	display: -webkit-flex;     /* NEW - Chrome */
+	display: flex;
+	-webkit-flex-wrap: wrap;
+	flex-wrap: wrap;
+
+	// offset grid spacing
+	margin-left: -(@grid-gutter / 2);
+	margin-right: -(@grid-gutter / 2);
+}
+.g-col {
+	// -webkit-flex-grow: 1;
+	flex-grow: 1;
+
+	// provide spacing
+	padding-left: (@grid-gutter / 2);
+	padding-right: (@grid-gutter / 2);
+}
+
+
+// Fixed Widths (optional)
+// ------------------------------
+
+.g-one-whole,
+.g-one-half,
+.g-one-quarter,
+.g-three-quarters,
+.g-one-third,
+.g-two-thirds,
+.g-one-fifth,
+.g-two-fifths,
+.g-three-fifths,
+.g-four-fifths,
+.g-one-sixth,
+.g-five-sixths {
+	flex-grow: 0;
+}
+
+.g-one-whole      { width: 100%; }
+
+.g-one-half,
+.g-two-quarters,
+.g-three-sixths   { width: 50%; }
+
+.g-one-quarter    { width: 25%; }
+.g-three-quarters { width: 75%; }
+
+.g-one-third,
+.g-two-sixths     { width: 33.333%; }
+.g-two-thirds,
+.g-four-sixths    { width: 66.666%; }
+
+.g-one-fifth      { width: 20%; }
+.g-two-fifths     { width: 40%; }
+.g-three-fifths   { width: 60%; }
+.g-four-fifths    { width: 80%; }
+
+.g-one-sixth      { width: 16.666%; }
+.g-five-sixths    { width: 83.333%; }

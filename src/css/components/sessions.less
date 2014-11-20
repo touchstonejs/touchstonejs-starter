@@ -1,0 +1,107 @@
+// 
+// Transactions
+// ==============================
+
+
+
+
+// item
+
+// v-align with the icon
+.user-item {
+	
+	> .date {
+		color: @gray;
+		font-size: 85%;
+		font-weight: 300;
+	}
+}
+
+
+// amount
+
+.user-amount {
+	.transition( opacity 300ms 400ms );
+	.inline-align();
+	border-radius: .2em;
+	// font-size: @font-size-small;
+
+	> .entry,
+	> .exit {
+		display: inline-block;
+		font-size: @font-size-large;
+		font-weight: bold;
+		margin-right: 3px;
+		text-align: center;
+		width: 10px;
+	}
+	> .entry { color: @green; }
+	> .exit { color: @red; }
+	// > .value { font-size: @font-size-large; }
+	> .unit {
+		// bottom: -0.25em;
+		font-size: 75%;
+		font-weight: 300;
+		line-height: 0;
+		position: relative;
+		vertical-align: baseline;
+	}
+}
+
+
+// key
+
+.user-photo {
+	.inline-align();
+	.square(@list-icon-size);
+	background-color: @body-bg;
+	border-radius: 50%;
+	color: @gray;
+	font-size: @ionicons-font-size-large;
+	line-height: @list-icon-size - 4;
+	margin-right: 10px;
+	overflow: hidden;
+	text-align: center;
+
+	> img {
+		display: block;
+		height: auto;
+		max-width: 100%;
+	}
+}
+.user-icon.entry {
+	background-color: mix(@green, white, 6%);
+	color: @green;
+
+	&:before {
+		.rotate(45deg);
+		font-size: 16px;
+	}
+}
+.user-icon.exit {
+	background-color: mix(@red, white, 6%);
+	color: @red;
+
+	&:before {
+		.rotate(45deg);
+		font-size: 16px;
+	}
+}
+
+
+// info
+
+.user-details {
+	.inline-align();
+	width: ~"calc(100% - 42px)";
+}
+.user-timestamp {
+	font-weight: 500;
+}
+.user-description {
+	.text-overflow();
+	color: @gray;
+	font-size: @font-size-small;
+	// font-weight: 300;
+	padding-bottom: 1px; // stop the characters with descenders (p,g,j,etc.) being cropped
+}

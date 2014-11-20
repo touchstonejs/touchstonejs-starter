@@ -1,0 +1,211 @@
+// 
+// List
+// ==============================
+
+
+// base
+
+.list {
+	padding-bottom: 1px;
+}
+
+// provide the iOS style left-hand gutter
+&.gutter-list {
+	padding-left: @padding-base-horizontal;
+	background-color: white;
+
+	// kill the left-hand margin/padding on item elements
+	> .list-header {
+		margin-left: -@padding-base-horizontal;
+	}
+	> .list-item {
+		padding-left: 0;
+	}
+	.list-icon.left { left: 0; }
+	// .list-icon.right { right: 0; }
+}
+
+&.icon-list {
+	padding-left: (@padding-base-horizontal * 2) + @list-icon-size;
+	background-color: white;
+
+	// kill the left-hand margin/padding on item elements
+	> .list-header {
+		margin-left: -((@padding-base-horizontal * 2) + @list-icon-size);
+	}
+	> .list-item {
+		padding-left: 0;
+	}
+	.list-icon.left {
+		.square(@list-icon-size);
+		left: -(@padding-base-horizontal + @list-icon-size);
+		line-height: @list-icon-size;
+		text-align: center;
+
+		// actual icon
+
+		&:before {
+			.display-flex();
+			.align-items(center);
+			.justify-content(center);
+			font-size: @ionicons-font-size-base;
+			height: 100%;
+		}
+	}
+}
+/*.list-item-icon-wrapper {
+	.display-flex();
+	.align-items(center);
+	height: 100%;
+	left: -(@padding-base-horizontal + @list-icon-size);
+	position: absolute;
+	top: 0;
+}*/
+
+
+// item
+
+.list-item {
+	background-color: white;
+	box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1);
+	color: @text-color;
+	display: block;
+	line-height: 1;
+	padding: @padding-base-vertical @padding-base-horizontal;
+	position: relative;
+
+	&:last-child {
+		box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1), 0 1px 0 rgba(0, 0, 0, 0.1);
+	}
+
+	&:hover,
+	&:active,
+	&:focus {
+		color: @text-color;
+		text-decoration: none;
+	}
+}
+
+// center align elements
+.center-align-left,
+.center-align-right {
+	.display-flex();
+	.align-items(center);
+	height: 100%;
+	position: absolute;
+	top: 0;
+}
+.center-align-left {
+	left: @padding-base-horizontal;
+}
+.center-align-right {
+	right: @padding-base-horizontal;
+}
+
+
+// icons
+
+.list-item-icon-left,
+.list-item-icon-right {
+	min-height: @list-icon-size;
+}
+.list-icon {
+	.inline-align();
+	.translateY(-50%);
+	position: absolute;
+	top: 50%;
+
+	&.left {
+		left: @padding-base-horizontal;
+
+		&.flush {
+			left: 0;			
+		}
+	}
+	&.right {
+		right: @padding-base-horizontal;
+
+		&.flush {
+			right: 0;			
+		}
+	}
+}
+
+
+// arrow
+
+.list-arrow {
+	.inline-align();
+	.translateY(-50%);
+	.ionicon(#ccc, @ionicon-var-chevron-right, @ionicons-font-size-base);
+	position: absolute;
+	top: 50%;
+	right: @grid-gutter;
+}
+
+
+// headers
+
+.list-header {
+	background-color: @body-bg;
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.15), 0 -1px 0 rgba(0, 0, 0, 0.15);
+	color: @gray-light;
+	display: block;
+	font-size: @font-size-tiny;
+	font-weight: 500;
+	line-height: 1.1;
+	padding: (@padding-base-vertical / 2) @padding-base-horizontal;
+	position: relative;
+	text-transform: uppercase;
+	z-index: 2;
+}
+
+
+
+
+// Loading
+// ------------------------------
+
+.list-loading {
+	padding: 40px;
+	position: relative;
+	text-align: center;
+}
+.list-loading-icon {
+	.loader(50px, 500ms, rgba(0,0,0,0.2));
+	margin-bottom: 20px;
+}
+.list-loading-message {
+	color: @gray-light;
+	font-size: @font-size-tiny;
+	font-weight: 500;
+	text-transform: uppercase;
+}
+
+
+
+
+// View Message
+// ------------------------------
+
+.view-message {
+	.translateY(-50%);
+	padding: 40px;
+	position: absolute;
+	text-align: center;
+	top: 50%;
+	width: 100%;
+}
+.view-message-icon {
+	.ionicon(#aaa, @ionicon-var-alert-circled, 60px);
+	margin-bottom: 10px;
+
+	&.transactions:before { content: @ionicon-var-arrow-swap; }
+	&.connectivity:before { content: @ionicon-var-code-working; }
+}
+.view-message-label {
+	color: @gray-light;
+	font-weight: 500;
+}
+
+

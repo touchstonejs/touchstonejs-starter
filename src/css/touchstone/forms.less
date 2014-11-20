@@ -1,0 +1,443 @@
+// 
+// Forms
+// ==============================
+
+
+
+
+// Fields
+// ------------------------------
+
+
+// base
+
+.field {
+	.placeholder( @field-placeholder );
+	background: none transparent;
+	border: 0 none;
+	box-shadow: none;
+	color: @field-color;
+	display: inline-block;
+	outline: none;
+	padding: @field-padding-vertical @field-padding-horizontal;
+	padding: 0;
+	width: 100%;
+	-webkit-appearance: none;
+}
+
+
+// mnemonic field
+
+.mnemonic-field {
+	font-family: @font-family-monospace;
+}
+
+
+// little x that clears forms
+.form-clear {
+	color: @gray;
+	display: inline-block;
+	font-weight: 500;
+	line-height: 1.6;
+	padding: @padding-base-vertical @padding-base-horizontal;
+	position: absolute;
+	right: 0;
+	top: 0;
+	z-index: 2;
+
+	outline: none;
+	-webkit-appearance: none;
+	
+	&:hover,
+	&:focus {
+		color: @app-danger;
+		text-decoration: none;
+	}
+}
+
+
+
+
+
+// Form Items
+// ------------------------------
+
+// regular list
+
+.form-items {
+	padding-left: @padding-base-horizontal;
+}
+.form-item {
+	border-top: 1px solid @gray-lighter;
+	display: block;
+	line-height: 1;
+	position: relative;
+
+	&.is-first {
+		border-top: 0 none;
+	}
+}
+
+@form-icon-size: 29px;
+
+// icon list
+.form-icon-items {
+	padding-left: (@padding-base-horizontal * 2) + @form-icon-size;
+}
+.form-item-icon-wrapper {
+	.display-flex();
+	.align-items(center);
+	height: 100%;
+	left: -(@padding-base-horizontal + @form-icon-size);
+	position: absolute;
+	top: 0;
+}
+.form-item-icon {
+	.square(@form-icon-size);
+	background-color: @gray-light;
+	color: white;
+	border-radius: 8px;
+	line-height: 32px;
+	text-align: center;
+
+	// color variants
+
+	&.green { background-color: @green; }
+	&.blue { background-color: @blue; }
+	&.yellow { background-color: @yellow; }
+	&.red { background-color: @red; }
+	&.purple { background-color: @purple; }
+
+	// actual icon
+
+	&:before {
+		.display-flex();
+		.align-items(center);
+		.justify-content(center);
+		font-size: @ionicons-font-size-base;
+		height: 100%;
+	}
+}
+
+
+// Form tappable
+
+.form-tap {
+	display: block;
+	padding: @padding-base-vertical @padding-base-horizontal @padding-base-vertical 0;
+	position: relative;
+	vertical-align: middle;
+}
+.form-tap-button {
+	.display-flex();
+	.align-items(center);
+	height: 100%;
+	padding: 0 (@grid-gutter / 2);
+	position: absolute;
+	right: 0;
+	top: 0;
+
+	// variants
+	&.is-muted {
+		.form-tap-button-label { color: #999; }
+		.form-tap-button-icon { color: #ccc; }
+	}
+	&.is-primary {
+		color: @app-primary;
+
+		.form-tap-button-label,
+		.form-tap-button-icon { color: @app-primary; }
+	}
+
+	// if just label or just icon
+	&.form-tap-button-icon,
+	&.form-tap-button-label {
+		padding-left: @grid-gutter;
+		padding-right: @grid-gutter;
+	}
+}
+
+.form-tap-button-icon,
+.form-tap-button-label {
+	.inline-align(top);
+	padding: @padding-base-vertical (@grid-gutter / 2);
+}
+.form-tap-button-label { color: #999; }
+.form-tap-button-icon { color: #ccc; }
+
+
+// Labels & Controls
+
+.form-label {
+	.form-col();
+	color: @gray-light;
+	padding: @padding-base-vertical @padding-base-horizontal;
+	vertical-align: middle;
+	width: 33%;
+}
+.form-label-icon {
+	padding-right: 0;
+	text-align: center;
+	width: @ionicons-font-size-base + (@padding-base-horizontal * 2);
+}
+.form-control {
+	.form-col();
+	padding: @padding-base-vertical 0;
+	position: relative;
+
+	> .field {
+		padding-right: @padding-base-horizontal;
+	}
+
+	&:only-child {
+		padding-left: 0;
+	}
+	&.padded {
+		padding-right: @padding-base-horizontal;
+	}
+	.btn.pull-right {
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+}
+
+// toggles
+.form-control-with-toggle {
+	padding: @padding-base-vertical 0;
+	position: relative;
+}
+.form-control-toggle {
+	.btn();
+	.btn-link();
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+
+
+
+// Form Rows
+// ------------------------------
+
+// horizontally aligned the form field with it's label
+
+.form-row {
+	display: table;
+	table-layout: fixed;
+	width: 100%;
+}
+.form-col {
+	display: table-cell;
+	padding-left: @padding-base-horizontal / 2;
+	padding-right: @padding-base-horizontal / 2;
+
+	&:first-child { padding-left: 0; }
+	&:last-child { padding-right: 0; }
+
+	// manually enforce padding
+	&.pad-left { padding-left: @padding-base-horizontal; }
+	&.pad-right { padding-right: @padding-base-horizontal; }
+
+	label& {
+		vertical-align: top;
+	}
+
+	input,
+	button {
+		display: block;
+	}
+}
+
+.form-one-half       { width: 50%; }
+
+.form-one-quarter    { width: 25%; }
+.form-three-quarters { width: 75%; }
+
+.form-one-third      { width: 33.333%; }
+.form-two-thirds     { width: 66.666%; }
+
+.form-one-fifth      { width: 20%; }
+.form-two-fifths     { width: 40%; }
+.form-three-fifths   { width: 60%; }
+.form-four-fifths    { width: 80%; }
+
+.form-one-sixth      { width: 16.666%; }
+.form-five-sixths    { width: 83.333%; }
+
+
+
+
+
+// Checkboxes and radios
+// ------------------------------
+
+// indent the labels to position radios/checkboxes as hanging controls
+
+.radio,
+.checkbox {
+	display: block;
+	min-height: 1em; // clear the floating input if there is no label text
+	
+	> label {
+		cursor: pointer;
+		display: inline;
+		font-weight: normal;
+	}
+	> label > input[type="radio"],
+	> label > input[type="checkbox"] {
+		display: inline-block;
+		margin-right: .5em;
+	}
+}
+
+
+
+
+// Select Field
+// ------------------------------
+
+// ==============================
+// CORRECT IMPLEMENTATION
+// ==============================
+
+// Reintroduce this when there is a React.Select component
+
+/*// style the native select field whilst retaining the default behaviour
+.select-field-container {
+	position: relative;
+}
+// apply default field styles
+.select-field {
+	.field();
+	color: @text-color;
+	font-size: inherit;
+	font-family: @font-family-base;
+	line-height: @line-height-base;
+	outline: none;
+	width: 100%;
+	-webkit-appearance: none;
+	   -moz-appearance: none;
+			appearance: none;
+
+	// Stop FF from showing that dotted outline
+	// this hack makes me feel dirty :(
+	&:-moz-focusring {
+		color: transparent; // hide text
+		text-shadow: 0 0 0 #000; // replace text with a shadow
+	}
+	&:focus + .select-field-indicator {
+		background-color: @link-color;
+		border-left-color: @link-color;
+
+		.select-field-indicator-arrow {
+			border-top-color: white;
+		}
+	}
+}
+// replicate the dropdown arrows
+.select-field-indicator,
+.select-field-indicator-arrow {
+	bottom: 1px;
+	content: '';
+	display: inline-block;
+	right: 1px;
+	top: 1px;
+	position: absolute;
+	pointer-events: none;
+}
+
+// hide the default arrow UI
+.select-field-indicator {
+	.border-right-radius( @border-radius - 2 );
+	background-color: lighten(@field-border, 10%);
+	border-left: 1px solid @field-border;
+	width: 1.5em;
+}
+// add the arrow back
+.select-field-indicator-arrow {
+	.square(0);
+	.translate(-50%,-50%);
+	border: 4px solid transparent;
+	border-top-color: @field-placeholder;
+	border-bottom-width: 0;
+	right: 4px;
+	text-align: center;
+	top: 50%;
+}*/
+
+
+
+// Select Field
+// ------------------------------
+
+// ==============================
+// OLD IMPLEMENTATION
+// ==============================
+
+// Remove this when there is a React.Select component
+
+// style the native select field whilst retaining the default behaviour
+.select-field {
+	position: relative;
+
+	// apply default field styles
+	> select {
+		background: transparent;
+		border: 0 none;
+		color: @text-color;
+		font-size: inherit;
+		font-family: @font-family-base;
+		line-height: @line-height-base;
+		outline: none;
+		width: 100%;
+		-webkit-appearance: none;
+		   -moz-appearance: none;
+				appearance: none;
+
+		// Stop FF from showing that dotted outline
+		// this hack makes me feel dirty :(
+		&:-moz-focusring {
+			color: transparent; // hide text
+			text-shadow: 0 0 0 #000; // replace text with a shadow
+		}
+	}
+	
+	// replicate the dropdown arrows
+	&:before,
+	&:after {
+		bottom: 0;
+		content: '';
+		display: inline-block;
+		right: 0;
+		top: 0;
+		position: absolute;
+		pointer-events: none;
+	}
+
+	// hide the default arrow UI
+	&:before {
+		background-color: white;
+		width: 1.5em;
+	}
+	// add the arrow back
+	&:after {
+		.square(0);
+		.translate(-50%,-50%);
+		border: 4px solid transparent;
+		border-top-color: #ccc;
+		border-bottom-width: 0;
+		right: 4px;
+		text-align: center;
+		top: 50%;
+	}
+}
+
+
+
+
+
+
+
+
+

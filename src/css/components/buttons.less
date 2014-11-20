@@ -1,0 +1,344 @@
+// 
+// Buttons
+// ==============================
+
+
+button {
+	padding: 0;
+}
+
+
+
+// Base
+// ------------------------------
+
+.btn {
+	.box-shadow( inset 0 -1px 0 rgba(0,0,0,0.1) );
+	border-radius: @border-radius; // ensure pills
+	border: 0 none;
+	display: inline-block;
+	font-weight: 500;
+	padding: @padding-base-vertical @padding-base-horizontal;
+	position: relative;
+	outline: none;
+	text-align: center;
+	text-decoration: none;
+	-webkit-appearance: none;
+}
+
+
+// Link buttons
+// ------------------------------
+
+.btn-link {
+	.box-shadow( none );
+	border-color: transparent;
+	border-radius: 0;
+	color: @link-color;
+	cursor: pointer;
+	// font-weight: normal;
+
+	&,
+	&:active,
+	&[disabled],
+	fieldset[disabled] & {
+		background-color: transparent;
+	}
+	&:hover,
+	&:active,
+	&:focus {
+		color: @link-hover-color;
+		background-color: transparent;
+	}
+}
+
+
+
+// Variants
+// ------------------------------
+
+
+// default button
+
+.btn-default {
+	#gradient .vertical(#eee, #ddd);
+
+	&:hover,
+	&:focus {
+		#gradient .vertical(#f6f6f6, #e6e6e6);
+	}
+
+	&:active,
+	&.active {
+		background: #ddd;
+		box-shadow: inset 0 1px 2px rgba(0,0,0,.125);
+	}
+}
+
+
+// colour variants
+
+// .btn-default {
+// 	.button-variant(#333, #e6e6e6, #ccc);
+// }
+.btn-primary {
+	.button-variant(white, @app-primary);
+}
+.btn-paypal {
+	.button-variant(white, #1d6196);
+}
+
+.btn-block {
+	display: block;
+	width: 100%;
+}
+
+
+// size variants
+
+.btn-skinny {
+	line-height: .9;
+}
+.btn-sm {
+	font-size: 12px;
+}
+
+
+// make icons uniform width so text lines up
+
+.btn-icon {
+	min-width: @font-size-base;
+	text-align: center;
+}
+
+
+
+
+// Panel Buttons
+// ------------------------------
+
+.panel-button {
+	border: 0 none;
+	display: block;
+	font-weight: normal;
+	padding: @padding-base-vertical @padding-base-horizontal;
+	position: relative;
+	outline: none;
+	text-align: center;
+	text-decoration: none;
+	-webkit-appearance: none;
+}
+
+
+
+
+// Loading Buttons
+// ------------------------------
+
+
+// setup transistions
+.loading-button-icon,
+.loading-button-text {
+	.transition( opacity 400ms );
+}
+
+// center the loading icon
+.loading-button-icon-wrapper {
+	.display-flex();
+	.align-items(center);
+	margin-left: -(@font-size-huge / 2);
+	left: 50%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+}
+
+// create and hide the loading icon
+.loading-button-icon {
+	.loader(@font-size-huge, 500ms, @app-primary);
+	.transition-delay( 200ms );
+	opacity: 0;
+}
+
+// change state
+.loading-button.is-loading {
+	.loading-button-icon { opacity: 1; }
+	.loading-button-text { opacity: 0; }
+}
+
+
+
+// Strip Buttons
+// ------------------------------
+
+.strip-buttons {
+	.display-flex();
+	.flex-flow();
+
+	& + & {
+		border-top: 1px solid darken(@body-bg, 10%);
+	}
+}
+.strip-button-cell {
+	.flex(1,0,0);
+	border-left: 1px solid darken(@body-bg, 10%);
+
+	&:first-child {
+		border-left: none;
+	}
+}
+.strip-button {
+	.display-flex();
+	.align-items(center);
+	.justify-content(center);
+	background: none transparent;
+	border: 0 none;
+	cursor: pointer; // for piece of mind when developing on the desktop
+	min-height: 70px;
+	padding: 5px;
+	position: relative;
+
+	// vertically center content
+
+	width: 100%;
+	-webkit-appearance: none;
+
+	&.disabled,
+	&[disabled] {
+		pointer-events: none;
+		
+		> * {
+			.transition( opacity 300ms linear );
+			opacity: .5;
+		}
+	}
+	&.inactive > .strip-button-inner {
+		> .strip-button-icon {
+			opacity: .25;
+		}
+	}
+	&.active {
+		background-color: darken(@body-bg, 6%);
+		box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.1);
+	}
+}
+.strip-button-inner {
+	text-align: center;
+}
+.strip-button-icon {
+	color: @app-primary;
+	display: inline-block;
+	font-size: @ionicons-font-size-huge;
+	height: @ionicons-font-size-huge;
+	line-height: 1;
+	// margin-bottom: @grid-gutter / 2;
+}
+.strip-button-label {
+	font-size: @font-size-small;
+	font-weight: 500;
+}
+
+
+// tall buttons
+
+.strip-buttons-lg .strip-button {
+	min-height: 100px;
+}
+
+
+
+
+// Scan Button
+// ------------------------------
+
+@scan-button-height:    60px;
+@scan-button-icon-size: @scan-button-height + 10;
+
+.scan-button {
+	.size(100%,@scan-button-height);
+	background-color: @app-primary;
+	border: 0 none;
+	color: white;
+	display: block;
+	font-weight: 500;
+	position: relative;
+	outline: none;
+	text-align: center;
+	text-decoration: none;
+	-webkit-appearance: none;
+}
+
+// enter/leave variants
+.scan-button.enter-active > .scan-button-icon {
+	box-shadow: 0 0 0 4px @app-success;
+}
+.scan-button.leave-active > .scan-button-icon {
+	box-shadow: 0 0 0 4px @app-danger;
+}
+
+
+.scan-button-icon {
+	.inline-align();
+	.square(@scan-button-icon-size);
+	// #gradient .vertical( lighten(@app-primary, 8%), @app-primary, 0%, 50%);
+	background-color: lighten(@app-primary, 50%);
+	// background-color: black;
+	border-radius: 50%;
+	// box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+	box-shadow: 0 0 0 4px @app-primary;
+	color: @text-color;
+	font-size: @ionicons-font-size-huge;
+	left: 50%;
+	line-height: @scan-button-icon-size;
+	margin-left: -(@scan-button-icon-size / 2);
+	margin-top: -(@scan-button-icon-size / 2);
+	position: absolute;
+	top: 50%;
+
+	> svg {
+		.inline-align();
+		.square(32px);
+
+		// pull up just a wee bit
+		margin-top: -4px;
+	}
+}
+
+
+// Labels
+
+.scan-button-labels {
+	.square( 100% );
+	display: table;
+	table-layout: fixed;
+}
+
+.scan-button-label {
+	background: 0 0;
+	border: none;
+	display: table-cell;
+	padding: 0 @padding-base-horizontal;
+	vertical-align: middle;
+	text-align: center;
+
+	&:active {
+		background-color: darken(@app-primary, 10%);
+	}
+}
+.scan-button-label-icon {
+	width: @scan-button-icon-size - 40;
+}
+.scan-button-label-left.Tappable-active {
+	background-color: @app-success;
+}
+.scan-button-label-right.Tappable-active {
+	background-color: @app-danger;
+}
+
+
+
+
+
+
+
+

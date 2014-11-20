@@ -1,0 +1,193 @@
+//
+// Variables
+// ==============================
+
+
+// Colors
+// ------------------------------
+
+@gray-darker:            lighten(#000, 13.5%); // #222
+@gray-dark:              lighten(#000, 20%);   // #333
+@gray:                   lighten(#000, 40%); // #666
+// @gray-light:             lighten(#000, 60%); // #999
+@gray-light:             #8e8e93; // iOS 7 gray light
+@gray-lighter:           lighten(#000, 93.5%); // #eee
+
+@app-primary:            #348dd9; // blue
+
+@green:                  #44db5e;
+@blue:                   #54c7fc;
+@yellow:                 #ffcd00;
+@red:                    #ff3824;
+@purple:                 #5856d6;
+
+@app-success:            @green;
+@app-info:               @blue;
+@app-warning:            @yellow;
+@app-danger:             #e74c3c;
+
+
+
+
+// Scaffolding
+// ------------------------------
+
+@body-bg:               #efeff4;
+@text-color:            black;
+
+@link-color:            @app-primary;
+@link-hover-color:      darken(@link-color, 10%);
+
+
+// Onboarding
+// ------------------------------
+
+@onboarding-body-bg:               @app-primary;
+@onboarding-text-color:            white;
+
+@onboarding-link-color:            #ffe359;
+@onboarding-link-hover-color:      darken(@onboarding-link-color, 10%);
+
+
+// Typography
+// ------------------------------
+
+@font-family-sans-serif:  "Helvetica Neue", Helvetica, Arial, sans-serif;
+@font-family-serif:       "Times New Roman", Times, Georgia, serif;
+@font-family-monospace:   Courier, monospace;
+@font-family-base:        @font-family-sans-serif;
+
+@font-size-tiny:          13px;
+@font-size-small:         15px;
+@font-size-base:          17px;
+@font-size-large:         20px;
+@font-size-huge:          24px;
+@font-size-massive:       32px;
+
+@line-height-base:        1.4;
+@line-height-computed:    floor((@font-size-base * @line-height-base));
+
+@hr-border:               rgba(0, 0, 0, 0.1);
+
+@headings-font-family:    @font-family-base;
+@headings-font-weight:    400;
+@headings-line-height:    1.1;
+@headings-color:          inherit;
+
+@font-size-h1:             36px;
+@font-size-h2:             24px;
+@font-size-h3:             18px;
+@font-size-h4:             16px;
+@font-size-h5:             14px;
+@font-size-h6:             12px;
+
+@ionicons-font-size-tiny:  8px;
+@ionicons-font-size-small: 12px;
+@ionicons-font-size-base:  16px;
+@ionicons-font-size-large: 24px;
+@ionicons-font-size-huge:  32px;
+@ionicons-font-size-massive:  64px;
+@ionicons-font-size-gargantuan:  128px;
+
+
+// Components
+// ------------------------------
+
+@border-radius:             2px;
+@grid-gutter:              10px;
+@list-icon-size:           40px;
+@dl-horizontal-offset:     60px;
+@panel-gutter:             35px;
+
+
+// views
+
+@view-transition-stack-stable: 5;
+@view-transition-stack-top: 20;
+@view-transition-stack-bottom: 10;
+
+
+// spacing
+
+@padding-base-vertical:    14px;
+@padding-base-horizontal:  16px;
+
+
+// bars
+
+@statusbar-height:         20px;
+
+@headerbar-bg:              #f6f6f7;
+@headerbar-color:           @gray-darker;
+@headerbar-height:          44px;
+@headerbar-button-color:    @app-primary;
+@headerbar-button-color-disabled:    #ccc;
+
+
+
+@navbar-bg:                @body-bg;
+@navbar-height:            50px;
+
+
+// tables
+
+@table-padding-vertical:   10px;
+@table-padding-horizontal: 12px;
+
+
+
+// Forms
+// ------------------------------
+
+@field-color:                 @gray-dark;
+@field-border:                #ddd;
+@field-border-focus:          darken(@field-border, 10%);
+@field-placeholder:           #c7c7cd;
+@field-height-base:           (@line-height-computed + (@padding-base-vertical * 2) + 2);
+
+@field-height:                36px;
+@field-padding-vertical:      @padding-base-vertical;
+@field-padding-horizontal:    @padding-base-horizontal;
+
+
+// Dropdowns
+// -------------------------
+
+@dropdown-bg:                    #fff;
+@dropdown-border:                rgba(0,0,0,.15);
+@dropdown-fallback-border:       #ccc;
+@dropdown-divider-bg:            #e5e5e5;
+
+@dropdown-link-active-color:     #fff;
+@dropdown-link-active-bg:        @link-color;
+
+@dropdown-link-color:            @text-color;
+@dropdown-link-hover-color:      @text-color;
+@dropdown-link-hover-bg:         @gray-lighter;
+
+@dropdown-link-disabled-color:   @gray-light;
+
+@dropdown-header-color:          @gray-light;
+
+@dropdown-caret-color:           #000;
+
+
+
+// Layers
+// ------------------------------
+
+@zindex-dropdown:          1000;
+@zindex-popover:           1010;
+@zindex-tooltip:           1030;
+@zindex-modal-background:  1040;
+@zindex-modal:             1050;
+
+
+
+
+
+
+
+
+
+

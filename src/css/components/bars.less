@@ -1,0 +1,190 @@
+// 
+// Bars
+// ==============================
+
+
+
+
+// Status Bar
+// ------------------------------
+
+.statusbar {
+	.size(100%,@statusbar-height);
+	background-color: @headerbar-bg;
+}
+
+
+
+
+// Offline Bar
+// ------------------------------
+
+.offline-bar {
+	background-color: @app-danger;
+	color: white;
+	font-size: @font-size-small;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+}
+
+
+
+
+// Title Bar
+// ------------------------------
+
+.headerbar {
+	.display-flex();
+	background-color: @headerbar-bg;
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+	color: @headerbar-color;
+	height: @headerbar-height;
+	line-height: @headerbar-height;
+	// overflow: hidden;
+	position: relative;
+	z-index: 3;
+}
+
+// button
+
+.headerbar-button {
+	background: none transparent;
+	border: 0 none;
+	color: @headerbar-button-color;
+	cursor: pointer;
+	left: 0;
+	line-height: @headerbar-height;
+	height: @headerbar-height;
+	position: absolute;
+	text-align: center;
+	text-decoration: none;
+	top: 0;
+	-webkit-appearance: none;
+	z-index: 2;
+
+	// align button right
+	&.right {
+		left: auto;
+		right: 0;
+	}
+
+	// darken button on tap
+	&:hover,
+	&:active,
+	&:focus {
+		color: darken(@headerbar-button-color, 10%);
+	}
+
+	// alert users to disabled state
+	&.disabled,
+	&[disabled] {
+		color: @headerbar-button-color-disabled;
+		pointer-events: none;
+		// opacity: .5;
+	}
+}
+
+
+// common attributes for icons + labels
+
+.headerbar-button-icon,
+.headerbar-button-label {
+	.inline-align(top);
+	padding-left: @grid-gutter;
+	padding-right: @grid-gutter;
+}
+
+
+// button icons
+
+.headerbar-button-icon {
+	font-size: @font-size-large;
+}
+
+
+// button labels
+
+.headerbar-button-label {
+	
+	// primary header action
+	&.is-primary {
+		font-weight: 500;
+	}
+
+	// pull the label closer when next to an icon
+	.headerbar-button-icon + & {
+		margin-left: -(@grid-gutter / 2);
+		padding-left: 0;
+	}
+}
+
+// view label
+
+.headerbar-label {
+	.fill-space();
+	.text-overflow();
+	font-weight: 500;
+	line-height: @headerbar-height;
+	height: @headerbar-height;
+	min-width: @headerbar-height;
+	padding-left: @grid-gutter;
+	padding-right: @grid-gutter;
+	position: absolute;
+	text-align: center;
+	// width: 70%;
+	
+	&:only-child {
+		width: auto;
+	}
+}
+
+
+
+
+// Nav Bar
+// ------------------------------
+
+.navbar {
+	background-color: @navbar-bg;
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1), 0 -1px 0 rgba(0, 0, 0, 0.1);
+	display: table;
+	font-size: @font-size-small;
+	height: @navbar-height;
+	line-height: @navbar-height;
+	position: relative;
+	table-layout: fixed;
+	width: 100%;
+	z-index: 2;
+	
+	// types
+
+	&.light { background-color: white; }
+	&.dark {
+		background-color: #444;
+		color: #ddd;
+	}
+
+	// stick to the bottom
+	&.bottom {
+		bottom: 0;
+		position: fixed;
+	}
+}
+.navbar-item {
+	cursor: pointer;
+	display: table-cell;
+	text-align: center;
+
+	&.active {
+		box-shadow: inset 0 -3px 0 @link-color;
+	}
+}
+
+
+
+
+
+
+
+

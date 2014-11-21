@@ -39,7 +39,7 @@ var Transaction = React.createClass({
 				<span className={'user-amount user-type-' + this.props.user.type}>
 					{this.props.user.name}
 				</span>
-				<div className="date">{this.props.user.timeStamp}</div>
+				<div className="date">{this.props.user.location}</div>
 			</Tappable>
 		);
 	}
@@ -58,7 +58,7 @@ var SessionList = React.createClass({
 		
 		return (
 			<div>
-				<div className="list-header">Staff</div>
+				<div className="list-header">People</div>
 				<div className="list icon-list user-list">
 					{users}
 				</div>
@@ -82,17 +82,16 @@ module.exports = React.createClass({
 		return !(typeof cordova === 'undefined');
 	},
 
-	loadScanner: function(driverAction) {
+	loadScanner: function() {
 
-		console.log('driverAction', driverAction);
+		console.log('clicked', this);
 		
 		if (this.state.scannerIsLoading) {
 			return;
 		}
 		
 		this.setState({
-			scannerIsLoading: true,
-			scanButtonActiveState: driverAction
+			scannerIsLoading: true
 		});
 		
 		// cordova.plugins.barcodeScanner.scan(
@@ -162,32 +161,41 @@ module.exports = React.createClass({
 
 		// Stub users
 		var users = [
-			{ name: 'Boris Bozic',   position: '', img: 'https://avatars1.githubusercontent.com/u/3838716?v=3&s=460' },
-			{ name: 'Jed Watson',    position: '', img: 'https://avatars1.githubusercontent.com/u/872310?v=3&s=460' },
-			{ name: 'Joss Mackison', position: '', img: 'https://avatars2.githubusercontent.com/u/2730833?v=3&s=460' },
-			{ name: 'Rob Morris',    position: '', img: 'https://avatars3.githubusercontent.com/u/2587163?v=3&s=460' },
-			{ name: 'Simon Taylor',  position: '', img: 'https://avatars1.githubusercontent.com/u/5457267?v=3&s=460' },
-			{ name: 'Tom Walker',    position: '', img: 'https://avatars2.githubusercontent.com/u/737821?v=3&s=460' },
-			{ name: 'Tuan Hoang',    position: '', img: 'https://avatars0.githubusercontent.com/u/3906505?v=3&s=460' }
+			{ name: 'Benjamin Lupton',   joinedDate: 'Mar 8, 2009',   location: 'Sydney, AU',          img: 'https://avatars0.githubusercontent.com/u/61148?v=3&s=460' ,    flavour: 'vanilla'},
+			{ name: 'Boris Bozic',       joinedDate: 'Mar 12, 2013',  location: 'Sydney, AU',          img: 'https://avatars1.githubusercontent.com/u/3838716?v=3&s=460' ,  flavour: 'chocolate'},
+			{ name: 'Carlos Colon',      joinedDate: 'Nov 7, 2013',   location: 'New Hampshire, USA',  img: 'https://avatars3.githubusercontent.com/u/5872515?v=3&s=460' ,  flavour: 'caramel'},
+			{ name: 'David Banham',      joinedDate: 'Feb 22, 2011',  location: 'Sydney, AU',          img: 'https://avatars3.githubusercontent.com/u/631832?v=3&s=460' ,   flavour: 'strawberry'},
+			{ name: 'Frederic Beaudet',  joinedDate: 'Mar 12, 2013',  location: 'Montreal',            img: 'https://avatars0.githubusercontent.com/u/3833335?v=3&s=460' ,  flavour: 'strawberry'},
+			{ name: 'James Allen',       joinedDate: 'Feb 14, 2013',  location: 'Manchester',          img: 'https://avatars1.githubusercontent.com/u/3593671?v=3&s=460' ,   flavour: 'banana'},
+			{ name: 'Jed Watson',        joinedDate: 'Jun 24, 2011',  location: 'Sydney, AU',          img: 'https://avatars1.githubusercontent.com/u/872310?v=3&s=460' ,   flavour: 'banana'},
+			{ name: 'Joss Mackison',     joinedDate: 'Nov 6, 2012',   location: 'Sydney, AU',          img: 'https://avatars2.githubusercontent.com/u/2730833?v=3&s=460' ,  flavour: 'lemon'},
+			{ name: 'Johnny Estilles',   joinedDate: 'Sep 23, 2013',  location: 'Philippines',         img: 'https://avatars3.githubusercontent.com/u/5514878?v=3&s=460' ,  flavour: 'lemon'},
+			{ name: 'Markus Padourek',   joinedDate: 'Oct 17, 2012',  location: 'London, UK',          img: 'https://avatars2.githubusercontent.com/u/2580254?v=3&s=460' ,  flavour: 'pastaccio'},
+			{ name: 'Mike Grabowski',    joinedDate: 'Oct 2, 2012',   location: 'London, UK',          img: 'https://avatars3.githubusercontent.com/u/2464966?v=3&s=460' ,  flavour: 'vanilla'},
+			{ name: 'Rob Morris',        joinedDate: 'Oct 18, 2012',  location: 'Sydney, AU',          img: 'https://avatars3.githubusercontent.com/u/2587163?v=3&s=460' ,  flavour: 'chocolate'},
+			{ name: 'Simon Taylor',      joinedDate: 'Sep 14, 2013',  location: 'Sydney, AU',          img: 'https://avatars1.githubusercontent.com/u/5457267?v=3&s=460' ,  flavour: 'caramel'},
+			{ name: 'Steven Steneker',   joinedDate: 'Jun 30, 2008',  location: 'Sydney, AU',          img: 'https://avatars3.githubusercontent.com/u/15554?v=3&s=460' ,    flavour: 'strawberry'},
+			{ name: 'Tom Walker',        joinedDate: 'Apr 19, 2011',  location: 'Sydney, AU',          img: 'https://avatars2.githubusercontent.com/u/737821?v=3&s=460' ,   flavour: 'banana'},
+			{ name: 'Tuan Hoang',        joinedDate: 'Mar 19, 2013',  location: 'Sydney, AU',          img: 'https://avatars0.githubusercontent.com/u/3906505?v=3&s=460',   flavour: 'lemon' }
 		];
 		
 		// Conditional UI
-		var scanButton = !this.scannerIsAvailable() ? (
-				<UI.FlexBlock height="60px" className="scan-button-wrapper">
-					<div className={scanButtonClassName} component="button">
-						<span className="ion-model-s scan-button-icon" />
-						<div className="scan-button-labels">
-							<Tappable onTap={this.loadScanner.bind(this, 'enter')} className="scan-button-label scan-button-label-left" component="span">
-								Primary
-							</Tappable>
-							<span className="scan-button-label scan-button-label-icon" />
-							<Tappable onTap={this.loadScanner.bind(this, 'leave')} className="scan-button-label scan-button-label-right" component="span">
-								Secondary
-							</Tappable>
+		var scanButton = this.scannerIsAvailable() ? (
+			<UI.FlexBlock height="60px" className="scan-button-wrapper">
+				<Tappable onTap={this.loadScanner} className={scanButtonClassName} component="button">
+					<span className="ion-aperture scan-button-icon" />
+					<div className="scan-button-labels">
+						<div className="scan-button-label scan-button-label-left">
+							Scan
+						</div>
+						<span className="scan-button-label scan-button-label-icon" />
+						<div className="scan-button-label scan-button-label-right">
+							Code
 						</div>
 					</div>
-				</UI.FlexBlock>
-			) : null;
+				</Tappable>
+			</UI.FlexBlock>
+		) : null;
 
 		return (
 			<UI.FlexLayout className={viewClassName}>

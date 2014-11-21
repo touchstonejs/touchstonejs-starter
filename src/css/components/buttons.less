@@ -266,14 +266,15 @@ button {
 	text-align: center;
 	text-decoration: none;
 	-webkit-appearance: none;
-}
 
-// enter/leave variants
-.scan-button.enter-active > .scan-button-icon {
-	box-shadow: 0 0 0 4px @app-success;
-}
-.scan-button.leave-active > .scan-button-icon {
-	box-shadow: 0 0 0 4px @app-danger;
+	&.Tappable-active {
+		background-color: darken(@app-primary, 10%);
+
+		.scan-button-icon {
+			background-color: lighten(@app-primary, 40%);
+			box-shadow: 0 0 0 4px darken(@app-primary, 10%);
+		}
+	}
 }
 
 
@@ -320,19 +321,15 @@ button {
 	padding: 0 @padding-base-horizontal;
 	vertical-align: middle;
 	text-align: center;
-
-	&:active {
-		background-color: darken(@app-primary, 10%);
-	}
 }
 .scan-button-label-icon {
-	width: @scan-button-icon-size - 40;
+	width: @scan-button-icon-size;
 }
-.scan-button-label-left.Tappable-active {
-	background-color: @app-success;
+.scan-button-label-left {
+	text-align: right;
 }
-.scan-button-label-right.Tappable-active {
-	background-color: @app-danger;
+.scan-button-label-right {
+	text-align: left;
 }
 
 

@@ -4745,11 +4745,12 @@ fieldset[disabled] .btn-link {
   text-decoration: none;
   -webkit-appearance: none;
 }
-.scan-button.enter-active > .scan-button-icon {
-  box-shadow: 0 0 0 4px #44db5e;
+.scan-button.Tappable-active {
+  background-color: #2273b8;
 }
-.scan-button.leave-active > .scan-button-icon {
-  box-shadow: 0 0 0 4px #e74c3c;
+.scan-button.Tappable-active .scan-button-icon {
+  background-color: #e0edf9;
+  box-shadow: 0 0 0 4px #2273b8;
 }
 .scan-button-icon {
   display: inline-block;
@@ -4789,17 +4790,14 @@ fieldset[disabled] .btn-link {
   vertical-align: middle;
   text-align: center;
 }
-.scan-button-label:active {
-  background-color: #2273b8;
-}
 .scan-button-label-icon {
-  width: 30px;
+  width: 70px;
 }
-.scan-button-label-left.Tappable-active {
-  background-color: #44db5e;
+.scan-button-label-left {
+  text-align: right;
 }
-.scan-button-label-right.Tappable-active {
-  background-color: #e74c3c;
+.scan-button-label-right {
+  text-align: left;
 }
 .list {
   padding-bottom: 1px;

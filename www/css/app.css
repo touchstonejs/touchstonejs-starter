@@ -5313,6 +5313,7 @@ fieldset[disabled] .btn-link {
   text-align: center;
 }
 .user-photo > img {
+  border-radius: 50%;
   display: block;
   height: auto;
   max-width: 100%;
@@ -5372,8 +5373,10 @@ fieldset[disabled] .btn-link {
   display: none;
 }
 .home-hero-logo {
+  height: 60px;
   display: block;
-  margin: 20px auto;
+  margin: 0 auto;
+  padding: 20px 0;
   width: 140px;
 }
 .home-hero-logo svg {

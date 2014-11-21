@@ -94,45 +94,45 @@ module.exports = React.createClass({
 			scannerIsLoading: true
 		});
 		
-		// cordova.plugins.barcodeScanner.scan(
-		// 	// success
-		// 	function (result) {
+		cordova.plugins.barcodeScanner.scan(
+			// success
+			function (result) {
 				
-		// 		var newState = {
-		// 			scannerIsLoading: false
-		// 		};
+				var newState = {
+					scannerIsLoading: false
+				};
 				
-		// 		if (!result.cancelled) {
-		// 			var decode = this.props.api.decodePaymentURI(result.text);
+				if (!result.cancelled) {
+					var decode = this.props.api.decodePaymentURI(result.text);
 				
-		// 			_.extend(newState, {
-		// 				targetAddress: decode.address,
-		// 				targetDescription: decode.description,
-		// 				targetValue: decode.amount
-		// 			});
-		// 		}
+					_.extend(newState, {
+						targetAddress: decode.address,
+						targetDescription: decode.description,
+						targetValue: decode.amount
+					});
+				}
 				
-		// 		this.setState(newState);
+				this.setState(newState);
 				
-		// 	}.bind(this),
-		// 	// error
-		// 	function (error) {
+			}.bind(this),
+			// error
+			function (error) {
 				
-		// 		this.setState({
-		// 			scannerIsLoading: false
-		// 		});
+				this.setState({
+					scannerIsLoading: false
+				});
 				
-		// 		navigator.notification.alert(
-		// 			error,               // message
-		// 			function() {},       // callback
-		// 			'Scanning Failed',   // title
-		// 			'OK'                 // buttonName
-		// 		);
+				navigator.notification.alert(
+					error,               // message
+					function() {},       // callback
+					'Scanning Failed',   // title
+					'OK'                 // buttonName
+				);
 				
-		// 	}.bind(this)
-		// );
+			}.bind(this)
+		);
 		
-		// var scanResult;
+		var scanResult;
 		
 	},
 

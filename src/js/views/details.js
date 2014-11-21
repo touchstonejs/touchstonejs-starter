@@ -18,15 +18,12 @@ module.exports = React.createClass({
 	},
 	
 	icecreamSessionDuration: function() {
-		this.showView('radio-list', 'show-from-right', { session: this.props.session, flavour: this.state.flavour });
+		this.showView('radio-list', 'show-from-right', { user: this.props.user, flavour: this.state.flavour });
 	},
 
 	render: function() {
 
 		// fields
-
-		var dateStr = <div className="date">{moment(this.props.session.date).format('h:mma D MMM YYYY')}</div>
-
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
 				<UI.FlexBlock height="44px" className="headerbar">
@@ -34,40 +31,28 @@ module.exports = React.createClass({
 						<div className="headerbar-button-icon ion-chevron-left" />
 						<div className="headerbar-button-label">Back</div>
 					</Link>
-					<div className="headerbar-label">Details</div>
+					<div className="headerbar-label">{this.props.user.name}</div>
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
 					{/*<div className="page-header text-caps">Basic details</div>*/}
 					<div className="panel gap-top">
 						<div className="form-items">
 							<div className="form-row form-item is-first">
-								<label className="form-label">Customer</label>
+								<label className="form-label">Name</label>
 								<div className="form-control">
-									John Smith
+									{this.props.user.name}
 								</div>
 							</div>
 							<div className="form-row form-item">
-								<label className="form-label">Car</label>
+								<label className="form-label">Location</label>
 								<div className="form-control">
-									{this.props.session.licensePlate}
+									{this.props.user.location}
 								</div>
 							</div>
 							<div className="form-row form-item">
-								<label className="form-label">Entered</label>
+								<label className="form-label">Joined</label>
 								<div className="form-control">
-									{this.props.session.timeStamp}
-								</div>
-							</div>
-							<div className="form-row form-item">
-								<label className="form-label">Exited</label>
-								<div className="form-control">
-									--
-								</div>
-							</div>
-							<div className="form-row form-item">
-								<label className="form-label">Revenue</label>
-								<div className="form-control">
-									$6.00
+									{this.props.user.joinedDate}
 								</div>
 							</div>
 						</div>
@@ -76,9 +61,9 @@ module.exports = React.createClass({
 						<div className="form-items">
 							<Tappable onTap={this.icecreamSessionDuration} className="form-item is-first" component="div">
 								<div className="form-tap">
-									Favourite Icecream
+									Favourite Flavour
 									<div className="form-tap-button is-muted">
-										<div className="form-tap-button-label">{this.state.flavour}</div>
+										<div className="form-tap-button-label">{this.props.user.flavour}</div>
 										<div className="form-tap-button-icon ion-chevron-right" />
 									</div>
 								</div>

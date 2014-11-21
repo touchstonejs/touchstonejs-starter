@@ -39,7 +39,7 @@ var App = React.createClass({
 	},
 	
 	gotoDefaultView: function() {
-		this.showView('home', 'reveal-from-bottom');
+		this.showView('home', 'fade');
 	},
 
 	render: function() {

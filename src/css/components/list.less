@@ -3,75 +3,41 @@
 // ==============================
 
 
-// base
-
-// provide the iOS style left-hand gutter
-&.gutter-list {
-	padding-left: @padding-base-horizontal;
-	background-color: white;
-
-	// kill the left-hand margin/padding on item elements
-	> .list-header {
-		margin-left: -@padding-base-horizontal;
-	}
-	> .list-item {
-		padding-left: 0;
-	}
-	.list-icon.left { left: 0; }
-	// .list-icon.right { right: 0; }
-}
-
-&.icon-list {
-	padding-left: (@padding-base-horizontal * 2) + @list-icon-size;
-	background-color: white;
-
-	// kill the left-hand margin/padding on item elements
-	> .list-header {
-		margin-left: -((@padding-base-horizontal * 2) + @list-icon-size);
-	}
-	> .list-item {
-		padding-left: 0;
-	}
-	.list-icon.left {
-		.square(@list-icon-size);
-		left: -(@padding-base-horizontal + @list-icon-size);
-		line-height: @list-icon-size;
-		text-align: center;
-
-		// actual icon
-
-		&:before {
-			.display-flex();
-			.align-items(center);
-			.justify-content(center);
-			font-size: @ionicons-font-size-base;
-			height: 100%;
-		}
-	}
-}
-/*.list-item-icon-wrapper {
-	.display-flex();
-	.align-items(center);
-	height: 100%;
-	left: -(@padding-base-horizontal + @list-icon-size);
-	position: absolute;
-	top: 0;
-}*/
-
-
 // item
 
 .list-item {
-	background-color: white;
-	box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1);
 	color: @text-color;
 	display: block;
 	line-height: 1;
-	padding: @padding-base-vertical @padding-base-horizontal;
+	padding: @field-padding-vertical @field-padding-horizontal;
 	position: relative;
 
-	&:last-child {
-		box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1), 0 1px 0 rgba(0, 0, 0, 0.1);
+	// separator
+	&:before {
+		.size(100%,1px);
+		background-color: rgba(0, 0, 0, 0.1);
+		content: " ";
+		left: 0;
+		position: absolute;
+		top: 0;
+	}
+
+	// hide the first separator
+	&:first-child:before,
+	&.is-first:before {
+		display: none;
+	}
+
+	// provide context for different separators
+	.gutter-list &:before {
+		left: @padding-base-horizontal;
+	}
+	.icon-list & {
+		padding-left: (@padding-base-horizontal * 2) + @list-icon-size;
+
+		&:before {
+			left: (@padding-base-horizontal * 2) + @list-icon-size;
+		}
 	}
 
 	&:hover,
@@ -81,7 +47,9 @@
 		text-decoration: none;
 	}
 }
-.list-item-has-chevron:before {
+
+// provide the little arrow indicating a view will be shown on tap
+.list-item-has-chevron:after {
 	.pseudo-ionicon(#ccc, @ionicon-var-chevron-right, @ionicons-font-size-base);
 	.display-flex();
 	.align-items(center);
@@ -117,7 +85,10 @@
 }
 
 
-// icons
+
+
+// Icons
+// ------------------------------
 
 .list-item-icon-left,
 .list-item-icon-right {
@@ -125,9 +96,22 @@
 }
 .list-icon {
 	.inline-align();
+	.square(@list-icon-size);
 	.translateY(-50%);
+	line-height: @list-icon-size;
 	position: absolute;
 	top: 50%;
+	text-align: center;
+
+	// actual icon
+
+	&:before {
+		.display-flex();
+		.align-items(center);
+		.justify-content(center);
+		font-size: @ionicons-font-size-base;
+		height: 100%;
+	}
 
 	&.left {
 		left: @padding-base-horizontal;
@@ -151,7 +135,7 @@
 .list-icon-image {
 	.inline-align();
 	.square(@list-icon-size);
-	background-color: @gray-lighter;
+	background-color: mix(black, white, 70%);
 	border-radius: 50%;
 	color: white;
 	font-size: @ionicons-font-size-large;

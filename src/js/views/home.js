@@ -44,7 +44,7 @@ var SimpleList = React.createClass({
 		return (
 			<div>
 				<div className="list-header">Simple List</div>
-				<div className="list gutter-list">
+				<div className="panel panel-flush list gutter-list">
 					{users}
 				</div>
 			</div>
@@ -86,7 +86,7 @@ var ComplexList = React.createClass({
 		return (
 			<div>
 				<div className="list-header">Complex List</div>
-				<div className="list icon-list user-list">
+				<div className="panel panel-flush list icon-list">
 					{users}
 				</div>
 			</div>

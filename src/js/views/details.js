@@ -35,7 +35,7 @@ module.exports = React.createClass({
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
 					{/*<div className="page-header text-caps">Basic details</div>*/}
-					<div className="panel gap-top">
+					<div className="panel is-first">
 						<div className="form-items">
 							<div className="form-row form-item is-first">
 								<label className="form-label">Name</label>

@@ -14,51 +14,78 @@ var Icons = {
 
 var moment = require('moment')
 
-var Transaction = React.createClass({
+var SimpleListItem = React.createClass({
 	mixins: [Navigation],
 
-	viewTransaction: function() {
+	showDetailsView: function() {
 		this.showView('details', 'show-from-right', { user: this.props.user })
 	},
 
 	render: function() {
 
-		// Classes
-		var iconClassName = SetClass({
-			'list-icon user-icon left': true,
-			'entry ion-arrow-down-c': this.props.user.type === 'entry',
-			'exit ion-arrow-up-c': this.props.user.type === 'exit'
-		});
-
 		return (
-			<Tappable onTap={this.viewTransaction} className="list-item user-item list-item-icon-left list-item-icon-right" component="div">
-				<span className="list-icon user-photo left">
-					<img src={this.props.user.img} />
-				</span>
-				<span className="list-arrow" />
-				<span className={'user-amount user-type-' + this.props.user.type}>
-					{this.props.user.name}
-				</span>
-				<div className="date">{this.props.user.location}</div>
+			<Tappable onTap={this.showDetailsView} className="list-item list-item-has-chevron" component="div">
+				<div className="list-title">{this.props.user.name}</div>
 			</Tappable>
 		);
 	}
 });
 
-var SessionList = React.createClass({
+var SimpleList = React.createClass({
 	render: function() {
 
 		var users = [];
 		
 		this.props.users.forEach(function(user, i) {
 			user.key = 'user-' + i;
-			user.timeStamp = moment().subtract(i, 'minutes').format('h:mma MMM DD');
-			users.push(React.createElement(Transaction, { user: user }));
+			users.push(React.createElement(SimpleListItem, { user: user }));
 		});
 		
 		return (
 			<div>
-				<div className="list-header">People</div>
+				<div className="list-header">Simple List</div>
+				<div className="list gutter-list">
+					{users}
+				</div>
+			</div>
+		);
+	}
+});
+
+var ComplexListItem = React.createClass({
+	mixins: [Navigation],
+
+	showDetailsView: function() {
+		this.showView('details', 'show-from-right', { user: this.props.user })
+	},
+
+	render: function() {
+
+		return (
+			<Tappable onTap={this.showDetailsView} className="list-item user-item list-item-icon-left list-item-has-chevron" component="div">
+				<span className="list-icon list-icon-image left">
+					<img src={this.props.user.img} />
+				</span>
+				<div className="list-title">{this.props.user.name}</div>
+				<div className="list-subtitle">{this.props.user.location}</div>
+			</Tappable>
+		);
+	}
+});
+
+var ComplexList = React.createClass({
+	render: function() {
+
+		var users = [];
+		
+		this.props.users.forEach(function(user, i) {
+			user.key = 'user-' + i;
+			users.push(React.createElement(ComplexListItem, { user: user }));
+		});
+		
+		return (
+			<div>
+				<div className="list-header">Complex List</div>
 				<div className="list icon-list user-list">
 					{users}
 				</div>
@@ -202,12 +229,13 @@ module.exports = React.createClass({
 				<UI.FlexBlock height={this.context.app.state.isNativeApp ? '150px' : '130px'} className="home-hero">
 					<Icons.Logo className="home-hero-logo" />
 					<UI.StripButtons className="home-buttons">
-						<UI.StripButton showView="primary"    viewTransition="show-from-right"  label="Primary"    icon="ion-arrow-up-c" />
-						<UI.StripButton showView="secondary" viewTransition="show-from-bottom" label="Secondary" icon="ion-arrow-down-c" />
+						<UI.StripButton showView="components"  viewTransition="show-from-right" label="Components"  icon="ion-ios7-keypad" />
+						<UI.StripButton showView="transitions" viewTransition="show-from-right" label="Transitions" icon="ion-ios7-photos" />
 					</UI.StripButtons>
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
-					<SessionList users={users} />
+					<SimpleList users={users} />
+					<ComplexList users={users} />
 				</UI.FlexBlock>
 				{scanButton}
 			</UI.FlexLayout>

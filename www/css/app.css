@@ -2808,6 +2808,7 @@ hr.dotted {
   padding-left: 10%;
   padding-right: 10%;
   text-align: center;
+  width: 100%;
   margin-top: -22px;
 }
 .feedback-message-icon {
@@ -4799,9 +4800,6 @@ fieldset[disabled] .btn-link {
 .scan-button-label-right {
   text-align: left;
 }
-.list {
-  padding-bottom: 1px;
-}
 .gutter-list {
   padding-left: 16px;
   background-color: white;
@@ -4874,6 +4872,45 @@ fieldset[disabled] .btn-link {
   color: #000000;
   text-decoration: none;
 }
+.list-item-has-chevron:before {
+  display: inline-block;
+  font-family: "Ionicons";
+  speak: none;
+  font-size: inherit;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  text-rendering: auto;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #cccccc;
+  content: "\f125";
+  font-size: 16px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  align-items: center;
+  height: 100%;
+  position: absolute;
+  right: 10px;
+  top: 0;
+}
+.list-title {
+  display: inline-block;
+  vertical-align: middle;
+}
+.list-subtitle {
+  color: #666666;
+  font-size: 85%;
+  font-weight: 300;
+}
 .center-align-left,
 .center-align-right {
   display: -webkit-box;
@@ -4920,6 +4957,24 @@ fieldset[disabled] .btn-link {
 }
 .list-icon.right.flush {
   right: 0;
+}
+.list-icon-image {
+  display: inline-block;
+  vertical-align: middle;
+  width: 40px;
+  height: 40px;
+  background-color: #eeeeee;
+  border-radius: 50%;
+  color: white;
+  font-size: 24px;
+  line-height: 36px;
+  text-align: center;
+}
+.list-icon-image > img {
+  border-radius: 50%;
+  display: block;
+  height: auto;
+  max-width: 100%;
 }
 .list-arrow {
   vertical-align: middle;
@@ -5162,12 +5217,13 @@ fieldset[disabled] .btn-link {
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
   background-color: white;
   margin-bottom: 35px;
+  overflow: hidden;
 }
 .view-inner > .panel {
   border-radius: 2px;
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.06);
 }
-.panel.gap-top {
+.panel.is-first {
   margin-top: 35px;
 }
 .panel-inner {
@@ -5263,100 +5319,6 @@ fieldset[disabled] .btn-link {
 .Passcode-input.has-value:after {
   display: block;
 }
-.user-item > .date {
-  color: #666666;
-  font-size: 85%;
-  font-weight: 300;
-}
-.user-amount {
-  -webkit-transition: opacity 300ms 400ms;
-  -o-transition: opacity 300ms 400ms;
-  transition: opacity 300ms 400ms;
-  display: inline-block;
-  vertical-align: middle;
-  border-radius: .2em;
-}
-.user-amount > .entry,
-.user-amount > .exit {
-  display: inline-block;
-  font-size: 20px;
-  font-weight: bold;
-  margin-right: 3px;
-  text-align: center;
-  width: 10px;
-}
-.user-amount > .entry {
-  color: #44db5e;
-}
-.user-amount > .exit {
-  color: #ff3824;
-}
-.user-amount > .unit {
-  font-size: 75%;
-  font-weight: 300;
-  line-height: 0;
-  position: relative;
-  vertical-align: baseline;
-}
-.user-photo {
-  display: inline-block;
-  vertical-align: middle;
-  width: 40px;
-  height: 40px;
-  background-color: #efeff4;
-  border-radius: 50%;
-  color: #666666;
-  font-size: 24px;
-  line-height: 36px;
-  margin-right: 10px;
-  overflow: hidden;
-  text-align: center;
-}
-.user-photo > img {
-  border-radius: 50%;
-  display: block;
-  height: auto;
-  max-width: 100%;
-}
-.user-icon.entry {
-  background-color: #f4fdf5;
-  color: #44db5e;
-}
-.user-icon.entry:before {
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  -o-transform: rotate(45deg);
-  transform: rotate(45deg);
-  font-size: 16px;
-}
-.user-icon.exit {
-  background-color: #fff3f2;
-  color: #ff3824;
-}
-.user-icon.exit:before {
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  -o-transform: rotate(45deg);
-  transform: rotate(45deg);
-  font-size: 16px;
-}
-.user-details {
-  display: inline-block;
-  vertical-align: middle;
-  width: calc(100% - 42px);
-}
-.user-timestamp {
-  font-weight: 500;
-}
-.user-description {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: #666666;
-  font-size: 15px;
-  padding-bottom: 1px;
-}
 .home-view {
   background-color: white;
 }
@@ -5427,10 +5389,6 @@ fieldset[disabled] .btn-link {
   background-color: rgba(0, 0, 0, 0.08);
 }
 .home-buttons .strip-button-icon {
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  -o-transform: rotate(45deg);
-  transform: rotate(45deg);
   color: #c2ddf4;
 }
 .home-buttons .strip-button-label {

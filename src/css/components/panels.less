@@ -21,28 +21,14 @@
 		margin-top: @panel-gutter;
 	}
 }
+.panel-flush {
+	margin-bottom: 0;
+}
+
 .panel-inner {
 	padding: @padding-base-vertical @padding-base-horizontal;
 
 	& + & {
 		box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1);
-		// border-top: 1px solid rgba(0, 0, 0, 0.1);
-	}
-	&.is-first {
-		.border-top-radius(@border-radius);
-	}
-	&.is-last {
-		.border-bottom-radius(@border-radius);
-	}
-}
-.panel-link {
-	display: block;
-	color: inherit;
-
-	&:hover,
-	&:active,
-	&:focus {
-		color: inherit;
-		text-decoration: none;
 	}
 }

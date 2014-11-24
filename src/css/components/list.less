@@ -5,10 +5,6 @@
 
 // base
 
-.list {
-	padding-bottom: 1px;
-}
-
 // provide the iOS style left-hand gutter
 &.gutter-list {
 	padding-left: @padding-base-horizontal;
@@ -85,6 +81,24 @@
 		text-decoration: none;
 	}
 }
+.list-item-has-chevron:before {
+	.pseudo-ionicon(#ccc, @ionicon-var-chevron-right, @ionicons-font-size-base);
+	.display-flex();
+	.align-items(center);
+	height: 100%;
+	position: absolute;
+	right: @grid-gutter;
+	top: 0;
+}
+
+.list-title {
+	.inline-align();
+}
+.list-subtitle {
+	color: @gray;
+	font-size: 85%;
+	font-weight: 300;
+}
 
 // center align elements
 .center-align-left,
@@ -128,6 +142,27 @@
 		&.flush {
 			right: 0;			
 		}
+	}
+}
+
+
+// image (like a user avatar) as icon
+
+.list-icon-image {
+	.inline-align();
+	.square(@list-icon-size);
+	background-color: @gray-lighter;
+	border-radius: 50%;
+	color: white;
+	font-size: @ionicons-font-size-large;
+	line-height: @list-icon-size - 4;
+	text-align: center;
+
+	> img {
+		border-radius: 50%;
+		display: block;
+		height: auto;
+		max-width: 100%;
 	}
 }
 

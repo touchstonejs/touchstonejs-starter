@@ -36,25 +36,10 @@ module.exports = React.createClass({
 				<UI.FlexBlock scrollable>
 					{/*<div className="page-header text-caps">Basic details</div>*/}
 					<div className="panel is-first">
-						<div className="form-items">
-							<div className="form-row form-item is-first">
-								<label className="form-label">Name</label>
-								<div className="form-control">
-									{this.props.user.name}
-								</div>
-							</div>
-							<div className="form-row form-item">
-								<label className="form-label">Location</label>
-								<div className="form-control">
-									{this.props.user.location}
-								</div>
-							</div>
-							<div className="form-row form-item">
-								<label className="form-label">Joined</label>
-								<div className="form-control">
-									{this.props.user.joinedDate}
-								</div>
-							</div>
+						<div className="">
+							<UI.Input label="Name"     value={this.props.user.name}       placeholder="Full name" first />
+							<UI.Input label="Location" value={this.props.user.location}   placeholder="Suburb, Country" />
+							<UI.Input label="Joined"   value={this.props.user.joinedDate} placeholder="Date" />
 						</div>
 					</div>
 					<div className="panel">

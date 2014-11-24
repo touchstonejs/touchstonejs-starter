@@ -5,5 +5,6 @@ module.exports = {
 	StripButton: require('./StripButton'),
 	FlexLayout: require('./FlexLayout'),
 	FlexBlock: require('./FlexBlock'),
-	RadioList: require('./RadioList')
+	RadioList: require('./RadioList'),
+	Input: require('./Input')
 };

@@ -5,11 +5,43 @@
 
 
 
-// Fields
+// Field
 // ------------------------------
 
 
-// base
+// wrapper
+
+.field-item {
+	.display-flex();
+	line-height: 1;
+	padding-left: @field-padding-horizontal;
+	position: relative;
+
+	&:before {
+		.size(100%,1px);
+		background-color: rgba(0, 0, 0, 0.1);
+		content: " ";
+		left: @field-padding-horizontal;
+		position: absolute;
+		top: 0;
+	}
+	&.is-first:before {
+		display: none;
+	}
+}
+
+
+// faux label
+
+.field-label {
+	color: @gray;
+	display: table;
+	padding: @field-padding-vertical @field-padding-horizontal @field-padding-vertical 0;
+	width: 35%;
+}
+
+
+// input
 
 .field {
 	.placeholder( @field-placeholder );
@@ -24,6 +56,12 @@
 	width: 100%;
 	-webkit-appearance: none;
 }
+
+
+
+
+// Helpers
+// ------------------------------
 
 
 // mnemonic field

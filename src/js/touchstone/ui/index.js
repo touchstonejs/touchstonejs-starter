@@ -6,5 +6,8 @@ module.exports = {
 	FlexLayout: require('./FlexLayout'),
 	FlexBlock: require('./FlexBlock'),
 	RadioList: require('./RadioList'),
-	Input: require('./Input')
+
+	LabelInput: require('./LabelInput'),
+	LabelSelect: require('./LabelSelect'),
+	LabelTextarea: require('./LabelTextarea')
 };

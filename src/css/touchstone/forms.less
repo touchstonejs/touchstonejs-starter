@@ -31,13 +31,20 @@
 }
 
 
-// faux label
+// label + control
 
 .field-label {
 	color: @gray;
-	display: table;
+	line-height: @font-size-base + 3; // allows room for decenders. applied by the browser to inputs
 	padding: @field-padding-vertical @field-padding-horizontal @field-padding-vertical 0;
 	width: 35%;
+}
+
+.field-control {
+	line-height: @font-size-base + 3; // allows room for decenders. applied by the browser to inputs
+	padding: @field-padding-vertical 0;
+	position: relative;
+	width: 65%;
 }
 
 
@@ -50,11 +57,18 @@
 	box-shadow: none;
 	color: @field-color;
 	display: inline-block;
+	line-height: 1;
 	outline: none;
-	padding: @field-padding-vertical @field-padding-horizontal;
+	margin: 0;
 	padding: 0;
 	width: 100%;
 	-webkit-appearance: none;
+
+	// when noedit allow users to select the text
+	div& {
+		-webkit-touch-callout: default;
+		-webkit-user-select: text;
+	}
 }
 
 
@@ -335,17 +349,9 @@
 // Select Field
 // ------------------------------
 
-// ==============================
-// CORRECT IMPLEMENTATION
-// ==============================
-
-// Reintroduce this when there is a React.Select component
-
-/*// style the native select field whilst retaining the default behaviour
-.select-field-container {
-	position: relative;
-}
+// style the native select field whilst retaining the default behaviour
 // apply default field styles
+
 .select-field {
 	.field();
 	color: @text-color;
@@ -365,11 +371,8 @@
 		text-shadow: 0 0 0 #000; // replace text with a shadow
 	}
 	&:focus + .select-field-indicator {
-		background-color: @link-color;
-		border-left-color: @link-color;
-
 		.select-field-indicator-arrow {
-			border-top-color: white;
+			border-top-color: @gray;
 		}
 	}
 }
@@ -388,8 +391,7 @@
 // hide the default arrow UI
 .select-field-indicator {
 	.border-right-radius( @border-radius - 2 );
-	background-color: lighten(@field-border, 10%);
-	border-left: 1px solid @field-border;
+	background-color: white;
 	width: 1.5em;
 }
 // add the arrow back
@@ -402,73 +404,6 @@
 	right: 4px;
 	text-align: center;
 	top: 50%;
-}*/
-
-
-
-// Select Field
-// ------------------------------
-
-// ==============================
-// OLD IMPLEMENTATION
-// ==============================
-
-// Remove this when there is a React.Select component
-
-// style the native select field whilst retaining the default behaviour
-.select-field {
-	position: relative;
-
-	// apply default field styles
-	> select {
-		background: transparent;
-		border: 0 none;
-		color: @text-color;
-		font-size: inherit;
-		font-family: @font-family-base;
-		line-height: @line-height-base;
-		outline: none;
-		width: 100%;
-		-webkit-appearance: none;
-		   -moz-appearance: none;
-				appearance: none;
-
-		// Stop FF from showing that dotted outline
-		// this hack makes me feel dirty :(
-		&:-moz-focusring {
-			color: transparent; // hide text
-			text-shadow: 0 0 0 #000; // replace text with a shadow
-		}
-	}
-	
-	// replicate the dropdown arrows
-	&:before,
-	&:after {
-		bottom: 0;
-		content: '';
-		display: inline-block;
-		right: 0;
-		top: 0;
-		position: absolute;
-		pointer-events: none;
-	}
-
-	// hide the default arrow UI
-	&:before {
-		background-color: white;
-		width: 1.5em;
-	}
-	// add the arrow back
-	&:after {
-		.square(0);
-		.translate(-50%,-50%);
-		border: 4px solid transparent;
-		border-top-color: #ccc;
-		border-bottom-width: 0;
-		right: 4px;
-		text-align: center;
-		top: 50%;
-	}
 }
 
 

@@ -1,13 +1,12 @@
 var React = require('react/addons'),
-	SetClass = require('classnames'),
-	Navigation = require('../../touchstone/navigation');
+	SetClass = require('classnames');
 
 module.exports = React.createClass({
-	mixins: [Navigation],
 	propTypes: {
 		className: React.PropTypes.string,
 		type: React.PropTypes.string,
 		label: React.PropTypes.string,
+		noedit: React.PropTypes.bool,
 		first: React.PropTypes.bool
 	},
 	getDefaultProps: function() {
@@ -32,10 +31,19 @@ module.exports = React.createClass({
 		});
 		className += this.props.className + (this.props.className ? (' ' + this.props.className) : '')
 
+		// output a field, or a div if not editable
+		var value = this.props.noedit ? (
+			<div className="field">{this.state.value}</div>
+		) : (
+			<input type={this.props.type} value={this.state.value} onChange={this.updateInputValue} className="field" placeholder={this.props.placeholder} />
+		);
+
 		return (
 			<label className={className}>
 				<div className="field-label">{this.props.label}</div>
-				<input type={this.props.type} value={this.state.value} onChange={this.updateInputValue} className="field" placeholder={this.props.placeholder} />
+				<div className="field-control">
+					{value}
+				</div>
 			</label>
 		);
 	}

@@ -13,8 +13,7 @@ button {
 // ------------------------------
 
 .btn {
-	.box-shadow( inset 0 -1px 0 rgba(0,0,0,0.1) );
-	border-radius: @border-radius; // ensure pills
+	background: none;
 	border: 0 none;
 	display: inline-block;
 	font-weight: 500;
@@ -54,79 +53,36 @@ button {
 
 
 
-// Variants
-// ------------------------------
-
-
-// default button
-
-.btn-default {
-	#gradient .vertical(#eee, #ddd);
-
-	&:hover,
-	&:focus {
-		#gradient .vertical(#f6f6f6, #e6e6e6);
-	}
-
-	&:active,
-	&.active {
-		background: #ddd;
-		box-shadow: inset 0 1px 2px rgba(0,0,0,.125);
-	}
-}
-
-
-// colour variants
-
-// .btn-default {
-// 	.button-variant(#333, #e6e6e6, #ccc);
-// }
-.btn-primary {
-	.button-variant(white, @app-primary);
-}
-.btn-paypal {
-	.button-variant(white, #1d6196);
-}
-
-.btn-block {
-	display: block;
-	width: 100%;
-}
-
-
-// size variants
-
-.btn-skinny {
-	line-height: .9;
-}
-.btn-sm {
-	font-size: 12px;
-}
-
-
-// make icons uniform width so text lines up
-
-.btn-icon {
-	min-width: @font-size-base;
-	text-align: center;
-}
-
-
-
 
 // Panel Buttons
 // ------------------------------
 
 .panel-button {
+	background-color: white;
 	border: 0 none;
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+	color: @text-color;
 	display: block;
 	font-weight: normal;
+	line-height: 1;
+	margin-bottom: @panel-margin;
 	padding: @padding-base-vertical @padding-base-horizontal;
 	position: relative;
 	outline: none;
 	text-align: center;
 	text-decoration: none;
+	width: 100%;
 	-webkit-appearance: none;
+
+	&.primary { color: @app-primary; }
+	&.success { color: @app-success; }
+	&.warning { color: @app-warning; }
+	&.danger { color: @app-danger; }
+
+	// when in a row
+	& + & {
+		margin-top: -(@panel-margin / 2);
+	}
 }
 
 
@@ -165,6 +121,7 @@ button {
 	.loading-button-icon { opacity: 1; }
 	.loading-button-text { opacity: 0; }
 }
+
 
 
 
@@ -236,13 +193,6 @@ button {
 .strip-button-label {
 	font-size: @font-size-small;
 	font-weight: 500;
-}
-
-
-// tall buttons
-
-.strip-buttons-lg .strip-button {
-	min-height: 100px;
 }
 
 

@@ -87,6 +87,49 @@
 
 
 
+// Item Notes
+// ------------------------------
+
+.list-item-note {
+	.display-flex();
+	.align-items(center);
+	height: 100%;
+	padding: 0 (@grid-gutter / 2);
+	position: absolute;
+	right: 0;
+	top: 0;
+
+	// variants
+	&.is-muted {
+		.list-item-note-label { color: #999; }
+		.list-item-note-icon { color: #ccc; }
+	}
+	&.is-primary {
+		color: @app-primary;
+
+		.list-item-note-label,
+		.list-item-note-icon { color: @app-primary; }
+	}
+
+	// if just label or just icon
+	&.list-item-note-icon,
+	&.list-item-note-label {
+		padding-left: @grid-gutter;
+		padding-right: @grid-gutter;
+	}
+}
+
+.list-item-note-icon,
+.list-item-note-label {
+	.inline-align(top);
+	padding: @padding-base-vertical (@grid-gutter / 2);
+}
+.list-item-note-label { color: #999; }
+.list-item-note-icon { color: #ccc; }
+
+
+
+
 // Icons
 // ------------------------------
 
@@ -151,18 +194,6 @@
 }
 
 
-// arrow
-
-.list-arrow {
-	.inline-align();
-	.translateY(-50%);
-	.ionicon(#ccc, @ionicon-var-chevron-right, @ionicons-font-size-base);
-	position: absolute;
-	top: 50%;
-	right: @grid-gutter;
-}
-
-
 // headers
 
 .list-header {
@@ -177,54 +208,6 @@
 	position: relative;
 	text-transform: uppercase;
 	z-index: 2;
-}
-
-
-
-
-// Loading
-// ------------------------------
-
-.list-loading {
-	padding: 40px;
-	position: relative;
-	text-align: center;
-}
-.list-loading-icon {
-	.loader(50px, 500ms, rgba(0,0,0,0.2));
-	margin-bottom: 20px;
-}
-.list-loading-message {
-	color: @gray-light;
-	font-size: @font-size-tiny;
-	font-weight: 500;
-	text-transform: uppercase;
-}
-
-
-
-
-// View Message
-// ------------------------------
-
-.view-message {
-	.translateY(-50%);
-	padding: 40px;
-	position: absolute;
-	text-align: center;
-	top: 50%;
-	width: 100%;
-}
-.view-message-icon {
-	.ionicon(#aaa, @ionicon-var-alert-circled, 60px);
-	margin-bottom: 10px;
-
-	&.transactions:before { content: @ionicon-var-arrow-swap; }
-	&.connectivity:before { content: @ionicon-var-code-working; }
-}
-.view-message-label {
-	color: @gray-light;
-	font-weight: 500;
 }
 
 

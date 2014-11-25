@@ -4,6 +4,7 @@ var React = require('react/addons'),
 module.exports = React.createClass({
 	propTypes: {
 		className: React.PropTypes.string,
+		onChange: React.PropTypes.func,
 		type: React.PropTypes.string,
 		label: React.PropTypes.string,
 		noedit: React.PropTypes.bool,
@@ -19,23 +20,27 @@ module.exports = React.createClass({
 			value: this.props.value
 		};
 	},
-	updateInputValue: function(event) {
-		this.setState({
-			value: event.target.value
-		});
+	onChange: function(value) {
+		if (this.props.onChange) {
+			this.props.onChange(value);
+		} else {
+			this.setState({
+				value: event.target.value
+			});
+		}
 	},
 	render: function() {
 		var className = SetClass({
 			'field-item': true,
 			'is-first': this.props.first
 		});
-		className += this.props.className + (this.props.className ? (' ' + this.props.className) : '')
+		className += this.props.className ? (' ' + this.props.className) : ''
 
 		// output a field, or a div if not editable
 		var value = this.props.noedit ? (
 			<div className="field">{this.state.value}</div>
 		) : (
-			<textarea type={this.props.type} value={this.state.value} onChange={this.updateInputValue} className="field" placeholder={this.props.placeholder} rows="3" />
+			<textarea type={this.props.type} value={this.state.value} onChange={this.onChange.bind(this, value)} className="field" placeholder={this.props.placeholder} rows="3" />
 		);
 
 		return (

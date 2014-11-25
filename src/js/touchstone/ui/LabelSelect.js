@@ -29,15 +29,13 @@ module.exports = React.createClass({
 			'field-item': true,
 			'is-first': this.props.first
 		});
-		className += this.props.className + (this.props.className ? (' ' + this.props.className) : '')
+		className += this.props.className ? (' ' + this.props.className) : ''
 
 		// Map Options
 		var options = this.props.options.map(function(op) {
 			return (
 				<option key={'option-' + op.value} value={op.value}>
-					<div className="form-tap">
-						{op.label}
-					</div>
+					{op.label}
 				</option>
 			);
 		}.bind(this));

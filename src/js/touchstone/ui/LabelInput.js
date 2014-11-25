@@ -29,7 +29,7 @@ module.exports = React.createClass({
 			'field-item': true,
 			'is-first': this.props.first
 		});
-		className += this.props.className + (this.props.className ? (' ' + this.props.className) : '')
+		className += this.props.className ? (' ' + this.props.className) : ''
 
 		// output a field, or a div if not editable
 		var value = this.props.noedit ? (

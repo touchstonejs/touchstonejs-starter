@@ -12,6 +12,7 @@ module.exports = React.createClass({
 		viewProps: React.PropTypes.object,
 		component: React.PropTypes.string,
 		onTap: React.PropTypes.func,
+		disabled: React.PropTypes.bool,
 		loading: React.PropTypes.bool,
 		label: React.PropTypes.string
 	},
@@ -35,7 +36,7 @@ module.exports = React.createClass({
 
 		// Output Component
 		return (
-			<Tappable className={className} component={this.props.component} onTap={onTap}>
+			<Tappable disabled={this.props.disabled} className={className} component={this.props.component} onTap={onTap}>
 				<span className="loading-button-icon-wrapper">
 					<span className="loading-button-icon" />
 				</span>

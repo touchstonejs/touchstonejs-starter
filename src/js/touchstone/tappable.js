@@ -25,6 +25,7 @@ module.exports = React.createClass({
 	propTypes: {
 		
 		component: React.PropTypes.any,              // component to create
+		disabled: React.PropTypes.bool,              // optional but common element attribute
 		className: React.PropTypes.string,           // optional className
 		classBase: React.PropTypes.string,           // base for generated classNames
 		
@@ -241,6 +242,7 @@ module.exports = React.createClass({
 			cursor: 'pointer'
 		};
 		return React.createElement(this.props.component, {
+			disabled: this.props.disabled,
 			style: style,
 			className: className,
 			onTouchStart: this.onTouchStart,

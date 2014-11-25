@@ -145,7 +145,7 @@
 // ------------------------------
 
 
-// fade out
+// fade in
 
 @-webkit-keyframes fadeIn {
 	from { opacity: 0; }
@@ -159,13 +159,31 @@
 
 // fade out
 
-@-webkit-keyframes fadeOut {
-	from { opacity: 1; }
+@-webkit-keyframes fade {
 	to { opacity: 0; }
 }
-@keyframes fadeOut {
-	from { opacity: 1; }
+@keyframes fade {
 	to { opacity: 0; }
+}
+
+
+// fade out-expand
+
+@-webkit-keyframes fadeExpand {
+	to { opacity: 0; -webkit-transform: scale(1.5); }
+}
+@keyframes fadeExpand {
+	to { opacity: 0; transform: scale(1.5); }
+}
+
+
+// fade out-contract
+
+@-webkit-keyframes fadeContract {
+	to { opacity: 0; -webkit-transform: scale(.35); }
+}
+@keyframes fadeContract {
+	to { opacity: 0; transform: scale(.35); }
 }
 
 

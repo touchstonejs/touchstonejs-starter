@@ -22,10 +22,18 @@ module.exports = React.createClass({
 					<div className="headerbar-label">Transitions</div>
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
-					<div className="panel is-first">
+					<div className="page-header text-caps">Default</div>
+					<div className="panel">
 						<div className="list gutter-list">
 							<Link to="transitions-target" className="list-item list-item-has-chevron">None</Link>
+						</div>
+					</div>
+					<div className="page-header text-caps">Fade</div>
+					<div className="panel">
+						<div className="list gutter-list">
 							<Link to="transitions-target" viewTransition="fade" className="list-item list-item-has-chevron">Fade</Link>
+							<Link to="transitions-target" viewTransition="fade-expand" className="list-item list-item-has-chevron">Fade Expand</Link>
+							<Link to="transitions-target" viewTransition="fade-contract" className="list-item list-item-has-chevron">Fade Contract</Link>
 						</div>
 					</div>
 					<div className="page-header text-caps">Show</div>

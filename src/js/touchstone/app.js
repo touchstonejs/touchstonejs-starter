@@ -7,6 +7,8 @@ var DEFAULT_TRANSITION = 'none';
 var TRANSITION_KEYS = [
 	'none',
 	'fade',
+	'fade-contract',
+	'fade-expand',
 	'show-from-left',
 	'show-from-right',
 	'show-from-top',
@@ -118,7 +120,7 @@ module.exports = function(views) {
 			} else if (_.contains(['show-from-left', 'show-from-right', 'reveal-from-left', 'reveal-from-right'], key)) {
 				transition.in = true;
 				transition.out = true;
-			} else if (_.contains(['fade', 'show-from-top', 'show-from-bottom'], key)) {
+			} else if (_.contains(['fade', 'fade-contract', 'fade-expand', 'show-from-top', 'show-from-bottom'], key)) {
 				transition.in = true;
 				transition.out = true;
 			}

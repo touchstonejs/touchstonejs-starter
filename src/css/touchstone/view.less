@@ -84,24 +84,25 @@
 
 
 // transition: none (default)
-
-.view-transition-none-enter,
-.view-transition-none-leave {
-	.animation-duration( 10ms );
-}
-
-.view-transition-none-enter { .animation-name( viewStill ); }
-.view-transition-none-leave { .animation-name( fadeOut ); }
+.view-transition-none-enter { .animation( viewStill 10ms ); }
+.view-transition-none-leave { .animation( fade 10ms ); }
 
 
 // transition: fade
+.view-transition-fade-enter { .animation( viewStill 380ms ); }
+.view-transition-fade-leave { .animation( fade 380ms ); }
 
-.view-transition-fade-enter,
-.view-transition-fade-leave {
-	.animation-duration( 400ms );
-}
-.view-transition-fade-enter { .animation-name( viewStill ); }
-.view-transition-fade-leave { .animation-name( fadeOut ); }
+
+// transition: fade expand 
+
+.view-transition-fade-expand-enter { .animation( viewStill 320ms ); }
+.view-transition-fade-expand-leave { .animation( fadeExpand 320ms ); }
+
+
+// transition: fade contract 
+
+.view-transition-fade-contract-enter { .animation( viewStill 320ms ); }
+.view-transition-fade-contract-leave { .animation( fadeContract 320ms ); }
 
 
 

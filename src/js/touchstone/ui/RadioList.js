@@ -19,23 +19,21 @@ module.exports = React.createClass({
 	render: function() {
 
 		var options = this.props.options.map(function(op, i) {
-			var className = 'form-item' + (i === 0 ? ' is-first' : '');
+			var className = 'list-item' + (i === 0 ? ' is-first' : '');
 			var checkMark = op.value === this.props.value ? (
-					<div className="form-tap-button is-primary">
-						<div className="form-tap-button-icon ion-checkmark" />
+					<div className="list-item-note is-primary">
+						<div className="list-item-note-icon ion-checkmark" />
 					</div>
 				) : null;
 			return (
 				<Tappable key={'option-' + op.value} onTap={this.onChange.bind(this, op.value)} className={className}>
-					<div className="form-tap">
-						{op.label}
-						{checkMark}
-					</div>
+					{op.label}
+					{checkMark}
 				</Tappable>
 			);
 		}.bind(this));
 
-		return <div className="form-items">{options}</div>;
+		return <div>{options}</div>;
 
 	}
 

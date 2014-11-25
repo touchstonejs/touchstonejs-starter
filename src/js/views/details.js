@@ -13,12 +13,40 @@ module.exports = React.createClass({
 
 	getInitialState: function() {
 		return {
-            flavour: 'Chocolate'
+			processing: false,
+			formIsValid: false,
+			bioValue: this.props.user.bio
 		}
 	},
 	
-	icecreamSessionDuration: function() {
+	showFlavourList: function() {
 		this.showView('radio-list', 'show-from-right', { user: this.props.user, flavour: this.state.flavour });
+	},
+	
+	handleBioInput: function(event) {
+		console.log('bio length', this.state.bioValue);
+		this.setState({
+			bioValue: event.target.value
+		});
+		if (this.state.bioValue && this.state.bioValue.length > 0) {
+			this.setState({
+				formIsValid: true
+			});
+		}
+	},
+	
+	processForm: function() {
+		this.setState({
+			processing: true
+		});
+
+		setTimeout(function() {
+			this.showView('home', 'fade', {});
+		}.bind(this), 750);
+	},
+
+	flashAlert: function(alertContent) {
+		alert(alertContent);
 	},
 
 	render: function() {
@@ -32,29 +60,34 @@ module.exports = React.createClass({
 						<div className="headerbar-button-label">Back</div>
 					</Link>
 					<div className="headerbar-label">{this.props.user.name}</div>
+					<UI.LoadingButton loading={this.state.processing} disabled={!this.state.formIsValid} onTap={this.processForm} label="Save" className="headerbar-button headerbar-button-label right is-primary" />
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
 					{/*<div className="page-header text-caps">Basic details</div>*/}
 					<div className="panel is-first">
-						<div className="">
-							<UI.Input label="Name"     value={this.props.user.name}       placeholder="Full name" first />
-							<UI.Input label="Location" value={this.props.user.location}   placeholder="Suburb, Country" />
-							<UI.Input label="Joined"   value={this.props.user.joinedDate} placeholder="Date" />
-						</div>
+						<UI.LabelInput label="Name"     value={this.props.user.name}       placeholder="Full name" first />
+						<UI.LabelInput label="Location" value={this.props.user.location}   placeholder="Suburb, Country" />
+						<UI.LabelInput label="Joined"   value={this.props.user.joinedDate} noedit />
+						<UI.LabelTextarea label="Bio"   value={this.state.bioValue}        placeholder="Bio" onChange={this.handleBioInput} />
 					</div>
-					<div className="panel">
-						<div className="form-items">
-							<Tappable onTap={this.icecreamSessionDuration} className="form-item is-first" component="div">
-								<div className="form-tap">
-									Favourite Flavour
-									<div className="form-tap-button is-muted">
-										<div className="form-tap-button-label">{this.props.user.flavour}</div>
-										<div className="form-tap-button-icon ion-chevron-right" />
-									</div>
-								</div>
-							</Tappable>
-						</div>
+					<div className="panel list gutter-list">
+						<Tappable onTap={this.showFlavourList} className="list-item is-first" component="div">
+							Favourite Icecream
+							<div className="list-item-note is-muted">
+								<div className="list-item-note-label">{this.props.user.flavour}</div>
+								<div className="list-item-note-icon ion-chevron-right" />
+							</div>
+						</Tappable>
 					</div>
+					<Tappable onTap={this.flashAlert.bind(this, 'You clicked the Primary Button.')} className="panel-button primary" component="button">
+						Primary Button
+					</Tappable>
+					<Tappable onTap={this.flashAlert.bind(this, 'You clicked the Default Button.')} className="panel-button" component="button">
+						Default Button
+					</Tappable>
+					<Tappable onTap={this.flashAlert.bind(this, 'You clicked the Danger Button.')} className="panel-button danger" component="button">
+						Danger Button
+					</Tappable>
 				</UI.FlexBlock>
 			</UI.FlexLayout>
 		);

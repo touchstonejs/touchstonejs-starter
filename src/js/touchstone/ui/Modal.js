@@ -9,8 +9,10 @@ module.exports = React.createClass({
 		iconType: React.PropTypes.string,
 		header: React.PropTypes.string,
 		text: React.PropTypes.string,
-		actionText: React.PropTypes.string,
-		actionFn: React.PropTypes.func
+		primaryActionText: React.PropTypes.string,
+		primaryActionFn: React.PropTypes.func,
+		secondaryActionText: React.PropTypes.string,
+		secondaryActionFn: React.PropTypes.func
 	},
 	getDefaultProps: function() {
 		return {
@@ -20,14 +22,24 @@ module.exports = React.createClass({
 	render: function() {
 		var className = this.props.className ? ('Modal-dialog ' + this.props.className) : 'Modal-dialog';
 
-		var actionFn = function() {
-			return this.props.actionFn(this.props.value)
-		}.bind(this)
+		var primaryActionFn = function() {
+			return this.props.primaryActionFn(this.props.value)
+		}.bind(this);
+
+		var secondaryActionFn = function() {
+			return this.props.secondaryActionFn(this.props.value)
+		}.bind(this);
 
 		var icon = this.props.iconKey ? <div className={'Modal-icon ' + this.props.iconKey + ' ' + this.props.iconType} /> : null;
 		var header = this.props.header ? <div className="Modal-header">{this.props.header}</div> : null;
 		var text = this.props.text ? <div className="Modal-text" dangerouslySetInnerHTML={{__html: this.props.text}} /> : null;
-		var action = this.props.actionText ? <Tappable onTap={this.props.actionFn} className="Modal-action">{this.props.actionText}</Tappable> : null;
+		var primaryAction = this.props.primaryActionText ? <Tappable onTap={this.props.primaryActionFn} className="Modal-action Modal-action-primary">{this.props.primaryActionText}</Tappable> : null;
+		var secondaryAction = this.props.secondaryActionText ? <Tappable onTap={this.props.secondaryActionFn} className="Modal-action Modal-action-secondary">{this.props.secondaryActionText}</Tappable> : null;
+
+		var actions = primaryAction ? ( <div className="Modal-actions">
+			{secondaryAction}
+			{primaryAction}
+		</div> ) : null;
 
 		return (
 			<div className={this.props.visible ? 'Modal visible' : 'Modal'}>
@@ -35,7 +47,7 @@ module.exports = React.createClass({
 					{icon}
 					{header}
 					{text}
-					{action}
+					{actions}
 				</div>
 				<div className="Modal-backdrop" />
 			</div>

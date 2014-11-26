@@ -22,12 +22,12 @@
 
 .Modal-dialog {
 	.translate(-50%,-50%);
-	background-color: white;
-	border-radius: @border-radius;
+	background-color: fade(white, 95%);
+	border-radius: @border-radius-base;
 	box-shadow: 0 1px 6px -1px rgba(0, 0, 0, 0.2);
 	left: 50%;
 	max-width: 90%;
-	padding: @gutter-large;
+	padding: 20px;
 	position: fixed;
 	top: 50%;
 	width: 300px;
@@ -40,7 +40,7 @@
 .Modal-backdrop {
 	.fill-space();
 	background-color: black;
-	opacity: .5;
+	opacity: .33;
 	position: fixed;
 	z-index: 1100;
 }
@@ -53,13 +53,24 @@
 }
 
 
+// text
+
+.Modal-text {
+	font-size: @font-size-small;
+}
+
+
 // icon
 
 .Modal-icon {
-	.square( @ionicons-size-massive );
+	.square( 46px );
 	display: inline-block;
-	font-size: @ionicons-size-massive;
-	line-height: @ionicons-size-massive;
+	line-height: 46px;
+	margin-bottom: 5px;
+
+	&:before {
+		font-size: 46px;
+	}
 
 	&.muted { color: @gray-light; }
 	&.primary { color: @app-primary; }
@@ -76,13 +87,45 @@
 
 	&.Modal-dialog {
 		.transform( none );
+		border-radius: @border-radius-large;
 		left: 50%;
 		margin: -60px 0 0 -60px;
-		padding: @gutter-base;
+		padding: 15px;
 		top: 50%;
 		width: 120px;
 	}
 	.Modal-icon {
-		.animation( spin 2s linear infinite );
+		.animation( spin 1.25s linear infinite );
 	}
 }
+
+
+// actions
+
+.Modal-actions {
+	.display-flex();
+	border-top: 1px solid #ccc;
+	margin: 20px -20px -20px;
+}
+.Modal-action {
+	.flex-grow(1);
+	color: @link-color;
+	padding: 10px;
+	text-align: center;
+
+	& + & {
+		border-left: 1px solid #ccc;
+	}
+}
+.Modal-action-primary {
+	font-weight: 500;
+}
+
+
+
+
+
+
+
+
+

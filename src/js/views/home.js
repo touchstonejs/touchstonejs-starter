@@ -23,35 +23,19 @@ module.exports = React.createClass({
 	},
 
 	showMessageModal: function() {
-		console.log('modal should open');
 		this.setState({
 			modalMessageVisible: true,
 			modalMessageText: 'It will close in 5 seconds...'
 		});
+	},
 
-		setTimeout(function() {
-			this.setState({ modalMessageText: 'It will close in 4 seconds...' });
-		}.bind(this), 1000);
-
-		setTimeout(function() {
-			this.setState({ modalMessageText: 'It will close in 3 seconds...' });
-		}.bind(this), 2000);
-
-		setTimeout(function() {
-			this.setState({ modalMessageText: 'It will close in 2 seconds...' });
-		}.bind(this), 3000);
-
-		setTimeout(function() {
-			this.setState({ modalMessageText: 'It will close in 1 second...' });
-		}.bind(this), 4000);
-
-		setTimeout(function() {
-			this.setState({ modalMessageVisible: false });
-		}.bind(this), 5000);
+	hideMessageModal: function() {
+		this.setState({
+			modalMessageVisible: false
+		});
 	},
 
 	showLoadingModal: function() {
-		console.log('modal should open');
 		this.setState({
 			modalLoadingVisible: true
 		});
@@ -97,8 +81,8 @@ module.exports = React.createClass({
 						<Tappable component="div" onTap={this.showLoadingModal} className="list-item is-tappable">Modal Loading</Tappable>
 					</div>
 				</UI.FlexBlock>
-				<UI.Modal header="This is a modal" text={this.state.modalMessageText} visible={this.state.modalMessageVisible} className="text-center" />
-				<UI.Modal text="Loading..." iconKey="ion-load-d" iconType="default" visible={this.state.modalLoadingVisible} className="Modal-loading" />
+				<UI.Modal header="This is a modal" text="This is the body. Modals can have up to two actions." visible={this.state.modalMessageVisible} className="text-center" primaryActionText="Okay" primaryActionFn={this.hideMessageModal} secondaryActionText="Cancel" secondaryActionFn={this.hideMessageModal} />
+				<UI.Modal header="Loading" iconKey="ion-load-c" iconType="default" visible={this.state.modalLoadingVisible} className="Modal-loading" />
 			</UI.FlexLayout>
 		);
 	}

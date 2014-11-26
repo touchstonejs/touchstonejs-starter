@@ -1,0 +1,98 @@
+// 
+// Bars
+// ==============================
+
+
+
+
+// Status Bar
+// ------------------------------
+
+.statusbar {
+	.size(100%,@statusbar-height);
+	background-color: @headerbar-bg;
+}
+
+
+
+
+// Alert Bar
+// ------------------------------
+
+.alertbar {
+	.animation( pulse 1.25s linear infinite );
+	background-color: @gray-light;
+	color: white;
+	font-size: @font-size-small;
+	font-weight: 500;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+
+	// variants
+
+	&.primary  { background-color: @app-primary; }
+	&.success  { background-color: @app-success; }
+	&.warning  { background-color: @app-warning; color: @text-color; }
+	&.danger   { background-color: @app-danger; }
+	&.inverted { background-color: @text-color; }
+}
+
+
+
+
+// Footer Bar
+// ------------------------------
+
+.footerbar {
+	background-color: @headerbar-bg;
+	box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+
+	.action-button-cell {
+		border: none;
+	}
+
+	// variants
+
+	&.primary,
+	&.success,
+	&.warning,
+	&.danger,
+	&.inverted {
+		box-shadow: none;
+		color: white;
+
+		.action-button-icon {
+			color: white;
+		}
+	}
+
+	&.primary  { background-color: @app-primary; }
+	&.success  { background-color: @app-success; }
+	&.warning  { background-color: @app-warning; color: @text-color; }
+	&.danger   { background-color: @app-danger; }
+	&.inverted { background-color: @text-color; }
+}
+.footerbar > .action-buttons {
+	.action-button {
+		line-height: 1.1;
+		min-height: 44px;
+		padding: 0 0 2px;
+	}
+	.action-button-icon {
+		font-size: @ionicons-size-large;
+		height: @ionicons-size-large;
+	}
+	.action-button-label {
+		font-size: @font-size-tiny;
+		font-weight: 400;
+	}
+}
+
+
+
+
+
+
+
+

@@ -22,7 +22,9 @@ module.exports = React.createClass({
 					<div className="headerbar-label">Action Bar</div>
 				</UI.FlexBlock>
 				<UI.FlexBlock>
-					Action bar goes here
+					<div className="view-header">Labelled</div>
+					<div className="panel">
+					</div>
 				</UI.FlexBlock>
 			</UI.FlexLayout>
 		);

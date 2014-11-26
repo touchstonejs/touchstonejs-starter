@@ -22,13 +22,13 @@ module.exports = React.createClass({
 					<div className="headerbar-label">Transitions</div>
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
-					<div className="page-header text-caps">Default</div>
+					<div className="view-header text-caps">Default</div>
 					<div className="panel">
 						<div className="ios-list">
 							<Link to="transitions-target" className="list-item is-tappable">None</Link>
 						</div>
 					</div>
-					<div className="page-header text-caps">Fade</div>
+					<div className="view-header text-caps">Fade</div>
 					<div className="panel">
 						<div className="ios-list">
 							<Link to="transitions-target" viewTransition="fade" className="list-item is-tappable">Fade</Link>
@@ -36,7 +36,7 @@ module.exports = React.createClass({
 							<Link to="transitions-target" viewTransition="fade-contract" className="list-item is-tappable">Fade Contract</Link>
 						</div>
 					</div>
-					<div className="page-header text-caps">Show</div>
+					<div className="view-header text-caps">Show</div>
 					<div className="panel">
 						<div className="ios-list">
 							<Link to="transitions-target" viewTransition="show-from-left" className="list-item is-tappable">Show from Left</Link>
@@ -45,7 +45,7 @@ module.exports = React.createClass({
 							<Link to="transitions-target" viewTransition="show-from-bottom" className="list-item is-tappable">Show from Bottom</Link>
 						</div>
 					</div>
-					<div className="page-header text-caps">Reveal</div>
+					<div className="view-header text-caps">Reveal</div>
 					<div className="panel">
 						<div className="ios-list">
 							<Link to="transitions-target" viewTransition="reveal-from-left" className="list-item is-tappable">Reveal from Left</Link>

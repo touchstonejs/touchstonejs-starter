@@ -63,7 +63,7 @@ module.exports = React.createClass({
 					<UI.LoadingButton loading={this.state.processing} disabled={!this.state.formIsValid} onTap={this.processForm} label="Save" className="headerbar-button headerbar-button-label right is-primary" />
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
-					{/*<div className="page-header text-caps">Basic details</div>*/}
+					{/*<div className="view-header text-caps">Basic details</div>*/}
 					<div className="panel panel--first ios-list">
 						<UI.LabelInput label="Name"     value={this.props.user.name}       placeholder="Full name" first />
 						<UI.LabelInput label="Location" value={this.props.user.location}   placeholder="Suburb, Country" />

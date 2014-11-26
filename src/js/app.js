@@ -15,16 +15,18 @@ var views = {
 	'home': require('./views/home'),
 
 	// components
-	'components-feedback': require('./views/components/feedback'),
+	'component-feedback': require('./views/component/feedback'),
 	
-	'components-headerbar': require('./views/components/bar-header'),
-	'components-alertbar':  require('./views/components/bar-alert'),
-	'components-actionbar': require('./views/components/bar-action'),
-	'components-footerbar': require('./views/components/bar-footer'),
+	'component-headerbar': require('./views/component/bar-header'),
+	'component-alertbar':  require('./views/component/bar-alert'),
+	'component-actionbar': require('./views/component/bar-action'),
+	'component-footerbar': require('./views/component/bar-footer'),
 
-	'components-simple-list': require('./views/components/list-simple'),
-	'components-complex-list': require('./views/components/list-complex'),
-	'components-header-list': require('./views/components/list-header'),
+	'component-passcode': require('./views/component/passcode'),
+
+	'component-simple-list': require('./views/component/list-simple'),
+	'component-complex-list': require('./views/component/list-complex'),
+	'component-header-list': require('./views/component/list-header'),
 	
 	// transitions
 	'transitions': require('./views/transitions'),

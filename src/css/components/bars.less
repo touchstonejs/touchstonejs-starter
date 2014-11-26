@@ -16,16 +16,25 @@
 
 
 
-// Offline Bar
+// Alert Bar
 // ------------------------------
 
-.offline-bar {
-	background-color: @app-danger;
+.alertbar {
+	background-color: @gray-light;
 	color: white;
 	font-size: @font-size-small;
+	font-weight: 500;
 	height: 30px;
 	line-height: 30px;
 	text-align: center;
+
+	// variants
+
+	&.primary  { background-color: @app-primary; }
+	&.success  { background-color: @app-success; }
+	&.warning  { background-color: @app-warning; color: @text-color; }
+	&.danger   { background-color: @app-danger; }
+	&.inverted { background-color: @text-color; }
 }
 
 
@@ -93,8 +102,8 @@
 .headerbar-button-icon,
 .headerbar-button-label {
 	.inline-align(top);
-	padding-left: @grid-gutter;
-	padding-right: @grid-gutter;
+	padding-left: @gutter-base;
+	padding-right: @gutter-base;
 }
 
 
@@ -116,7 +125,7 @@
 
 	// pull the label closer when next to an icon
 	.headerbar-button-icon + & {
-		margin-left: -(@grid-gutter / 2);
+		margin-left: -(@gutter-base / 2);
 		padding-left: 0;
 	}
 }
@@ -131,8 +140,8 @@
 	line-height: @headerbar-height;
 	height: @headerbar-height;
 	min-width: @headerbar-height;
-	padding-left: @grid-gutter;
-	padding-right: @grid-gutter;
+	padding-left: @gutter-base;
+	padding-right: @gutter-base;
 	position: absolute;
 	text-align: center;
 	// width: 70%;
@@ -145,8 +154,22 @@
 
 // variants
 
-.headerbar--primary,
-.headerbar--primary {
+.headerbar.warning {
+	box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+	
+	.headerbar-button {
+		color: fade(@text-color, 80%);
+
+		&.disabled,
+		&[disabled] {
+			color: fade(@text-color, 40%);
+		}
+	}
+}
+.headerbar.primary,
+.headerbar.success,
+.headerbar.danger,
+.headerbar.inverted {
 	box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2);
 	color: @headerbar-inverted-color;
 	
@@ -159,11 +182,11 @@
 		}
 	}
 }
-.headerbar--primary { background-color: @app-primary; }
-.headerbar--success { background-color: @app-success; }
-.headerbar--warning { background-color: @app-warning; }
-.headerbar--danger { background-color: @app-danger; }
-.headerbar--inverted { background-color: @text-color; }
+.headerbar.primary { background-color: @app-primary; }
+.headerbar.success { background-color: @app-success; }
+.headerbar.warning { background-color: @app-warning; }
+.headerbar.danger { background-color: @app-danger; }
+.headerbar.inverted { background-color: @text-color; }
 
 
 

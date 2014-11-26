@@ -25,9 +25,9 @@ module.exports = React.createClass({
 					<div className="page-header text-caps">Bars</div>
 					<div className="panel ios-list">
 						<Link to="components-headerbar" viewTransition="show-from-right" className="list-item is-tappable">Header Bar</Link>
-						<Link to="components-statusbar" viewTransition="show-from-right" className="list-item is-tappable">Status Bar</Link>
-						<Link to="components-footerbar" viewTransition="show-from-right" className="list-item is-tappable">Footer Bar</Link>
+						<Link to="components-alertbar" viewTransition="show-from-right" className="list-item is-tappable">Alert Bar</Link>
 						<Link to="components-actionbar" viewTransition="show-from-right" className="list-item is-tappable">Action Bar</Link>
+						<Link to="components-footerbar" viewTransition="show-from-right" className="list-item is-tappable">Footer Bar</Link>
 					</div>
 					<div className="page-header text-caps">Lists</div>
 					<div className="panel ios-list">

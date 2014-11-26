@@ -65,7 +65,7 @@ button {
 	display: block;
 	font-weight: normal;
 	line-height: 1;
-	margin-bottom: @panel-margin;
+	margin-bottom: @gutter-large;
 	padding: @padding-base-vertical @padding-base-horizontal;
 	position: relative;
 	outline: none;
@@ -81,7 +81,7 @@ button {
 
 	// when in a row
 	& + & {
-		margin-top: -(@panel-margin / 2);
+		margin-top: -(@gutter-large / 2);
 	}
 }
 
@@ -185,10 +185,10 @@ button {
 .strip-button-icon {
 	color: @app-primary;
 	display: inline-block;
-	font-size: @ionicons-font-size-huge;
-	height: @ionicons-font-size-huge;
+	font-size: @ionicons-size-huge;
+	height: @ionicons-size-huge;
 	line-height: 1;
-	// margin-bottom: @grid-gutter / 2;
+	// margin-bottom: @gutter-base / 2;
 }
 .strip-button-label {
 	font-size: @font-size-small;
@@ -238,7 +238,7 @@ button {
 	// box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.2);
 	box-shadow: 0 0 0 4px @app-primary;
 	color: @text-color;
-	font-size: @ionicons-font-size-huge;
+	font-size: @ionicons-size-huge;
 	left: 50%;
 	line-height: @scan-button-icon-size;
 	margin-left: -(@scan-button-icon-size / 2);

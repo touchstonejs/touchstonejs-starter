@@ -34,10 +34,10 @@
 		left: @padding-base-horizontal;
 	}
 	.icon-list & {
-		padding-left: (@padding-base-horizontal * 2) + @list-icon-size;
+		padding-left: (@padding-base-horizontal * 2) + @list-avatar-size;
 
 		&:before {
-			left: (@padding-base-horizontal * 2) + @list-icon-size;
+			left: (@padding-base-horizontal * 2) + @list-avatar-size;
 		}
 	}
 
@@ -51,12 +51,12 @@
 
 // provide the little arrow indicating a view will be shown on tap
 .list-item.is-tappable:after {
-	.pseudo-ionicon(#ccc, @ionicon-var-chevron-right, @ionicons-font-size-base);
+	.pseudo-ionicon(#ccc, @ionicon-var-chevron-right, @ionicons-size-base);
 	.align-items(center);
 	.display-flex();
 	height: 100%;
 	position: absolute;
-	right: @grid-gutter;
+	right: @gutter-base;
 	top: 0;
 }
 
@@ -95,7 +95,7 @@
 	.display-flex();
 	.align-items(center);
 	height: 100%;
-	padding: 0 (@grid-gutter / 2);
+	padding: 0 (@gutter-base / 2);
 	position: absolute;
 	right: 0;
 	top: 0;
@@ -115,15 +115,15 @@
 	// if just label or just icon
 	&.item-note-icon,
 	&.item-note-label {
-		padding-left: @grid-gutter;
-		padding-right: @grid-gutter;
+		padding-left: @gutter-base;
+		padding-right: @gutter-base;
 	}
 }
 
 .item-note-icon,
 .item-note-label {
 	.inline-align(top);
-	padding: @padding-base-vertical (@grid-gutter / 2);
+	padding: @padding-base-vertical (@gutter-base / 2);
 }
 .item-note-label { color: #999; }
 .item-note-icon { color: #ccc; }
@@ -136,13 +136,13 @@
 
 .list-item-icon-left,
 .list-item-icon-right {
-	min-height: @list-icon-size;
+	min-height: @list-avatar-size;
 }
 .list-icon {
 	.inline-align();
-	.square(@list-icon-size);
+	.square(@list-avatar-size);
 	.translateY(-50%);
-	line-height: @list-icon-size;
+	line-height: @list-avatar-size;
 	position: absolute;
 	top: 50%;
 	text-align: center;
@@ -153,7 +153,7 @@
 		.display-flex();
 		.align-items(center);
 		.justify-content(center);
-		font-size: @ionicons-font-size-base;
+		font-size: @ionicons-size-base;
 		height: 100%;
 	}
 
@@ -178,12 +178,12 @@
 
 .list-avatar {
 	.inline-align();
-	.square(@list-icon-size);
+	.square(@list-avatar-size);
 	background-color: mix(white, black, 70%);
 	border-radius: 50%;
 	color: white;
-	font-size: @ionicons-font-size-large;
-	line-height: @list-icon-size - 4;
+	font-size: @ionicons-size-large;
+	line-height: @list-avatar-size - 4;
 	text-align: center;
 
 	> img {

@@ -8,15 +8,15 @@
 // Icons
 // ------------------------------
 
-.ion:before { font-size: @ionicons-font-size-base; }
+.ion:before { font-size: @ionicons-size-base; }
 
-.ion-xs   { font-size: @ionicons-font-size-tiny !important; }
-.ion-sm   { font-size: @ionicons-font-size-small !important; }
-.ion-md   { font-size: @ionicons-font-size-base !important; }
-.ion-lg   { font-size: @ionicons-font-size-large !important; }
-.ion-xl   { font-size: @ionicons-font-size-huge !important; }
-.ion-xxl  { font-size: @ionicons-font-size-massive !important; }
-.ion-xxxl { font-size: @ionicons-font-size-gargantuan !important; }
+.ion-xs   { font-size: @ionicons-size-tiny !important; }
+.ion-sm   { font-size: @ionicons-size-small !important; }
+.ion-md   { font-size: @ionicons-size-base !important; }
+.ion-lg   { font-size: @ionicons-size-large !important; }
+.ion-xl   { font-size: @ionicons-size-huge !important; }
+.ion-xxl  { font-size: @ionicons-size-massive !important; }
+.ion-xxxl { font-size: @ionicons-size-gargantuan !important; }
 
 
 
@@ -61,8 +61,8 @@ hr.dotted { border-top-style: dotted; }
 	line-height: 1;
 	
 	// use margin for vertical spacing to take advantage of collapsing
-	margin-bottom: @grid-gutter;
-	margin-top: @panel-margin;
+	margin-bottom: @gutter-base;
+	margin-top: @gutter-large;
 	padding-left: @padding-base-horizontal;
 	padding-right: @padding-base-horizontal;
 	// text-transform: uppercase; // OTT
@@ -84,7 +84,7 @@ hr.dotted { border-top-style: dotted; }
 	margin-top: -(@headerbar-height / 2);
 }
 .view-feedback-icon {
-	font-size: @ionicons-font-size-massive;
+	font-size: @ionicons-size-massive;
 
 	&.muted { color: @gray-light; }
 	&.primary { color: @app-primary; }

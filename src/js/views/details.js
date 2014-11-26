@@ -15,7 +15,7 @@ module.exports = React.createClass({
 		return {
 			processing: false,
 			formIsValid: false,
-			bioValue: this.props.user.bio
+			bioValue: this.props.user.bio || ''
 		}
 	},
 	
@@ -24,15 +24,10 @@ module.exports = React.createClass({
 	},
 	
 	handleBioInput: function(event) {
-		console.log('bio length', this.state.bioValue);
 		this.setState({
-			bioValue: event.target.value
+			bioValue: event.target.value,
+			formIsValid: event.target.value.length ? true : false
 		});
-		if (this.state.bioValue && this.state.bioValue.length > 0) {
-			this.setState({
-				formIsValid: true
-			});
-		}
 	},
 	
 	processForm: function() {

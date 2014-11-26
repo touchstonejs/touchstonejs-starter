@@ -17,9 +17,14 @@ var views = {
 	// components
 	'components-feedback': require('./views/components/feedback'),
 	
-	'components-simple-list': require('./views/components/simple-list'),
-	'components-complex-list': require('./views/components/complex-list'),
-	'components-header-list': require('./views/components/header-list'),
+	'components-headerbar': require('./views/components/bar-header'),
+	'components-statusbar': require('./views/components/bar-status'),
+	'components-actionbar': require('./views/components/bar-action'),
+	'components-footerbar': require('./views/components/bar-footer'),
+
+	'components-simple-list': require('./views/components/list-simple'),
+	'components-complex-list': require('./views/components/list-complex'),
+	'components-header-list': require('./views/components/list-header'),
 	
 	// transitions
 	'transitions': require('./views/transitions'),

@@ -15,8 +15,11 @@ var views = {
 	'home': require('./views/home'),
 
 	// components
-	'components': require('./views/components/index'),
 	'components-feedback': require('./views/components/feedback'),
+	
+	'components-simple-list': require('./views/components/simple-list'),
+	'components-complex-list': require('./views/components/complex-list'),
+	'components-header-list': require('./views/components/header-list'),
 	
 	// transitions
 	'transitions': require('./views/transitions'),

@@ -4,97 +4,6 @@
 
 
 
-// Handle DOM changes
-// ------------------------------
-
-// Be careful when applying this class. ReactCSSTransitionGroup, which we use for
-// view transitions, becomes janky when a transition/animation is fired whilst 
-// a view transition is running.
-
-.node-inserted {
-	// .animation( fadeIn 150ms );
-}
-
-
-
-
-// Feedback
-// ------------------------------
-
-@feedback-button-size: 48px;
-
-// blockout the current view
-.feedback-blockout {
-	.fill-space();
-}
-
-// big, round, aqua button bottom right of each view
-.feedback-button {
-	.square(@feedback-button-size);
-	background-color: rgba(0, 0, 0, 0.8);
-	border-radius: 50%;
-	box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.12), inset 0 -1px 0 rgba(0, 0, 0, 0.12);
-	color: white;
-	font-size: @feedback-button-size / 2;
-	line-height: @feedback-button-size;
-	display: block;
-	text-align: center;
-
-	position: fixed;
-	bottom: @gutter-base;
-	right: @gutter-base;
-	z-index: @zindex-dropdown;
-
-	&:hover {
-		background-color: rgba(0, 0, 0, 0.7);
-		color: white;
-	}
-	&:active,
-	&:focus {
-		background-color: rgba(0, 0, 0, 0.9);
-		color: white;
-		text-decoration: none;
-	}
-}
-
-// main button
-.feedback-button--main {
-	.transition( all 300ms cubic-bezier(0.680, -0.550, 0.265, 1.550) );
-
-	&.is-hidden {
-		.scale(.25);
-		opacity: 0;
-		visibility: hidden;
-	}
-}
-
-// secondary buttons
-.feedback-button--secondary {
-	.square(@feedback-button-size);
-	.transition( all 400ms cubic-bezier(0.680, -0.550, 0.265, 1.550) 100ms );
-	font-size: @feedback-button-size / 2;
-	line-height: @feedback-button-size;
-
-	// begin hidden
-	opacity: 0;
-
-	&.is-visible {
-		.translate3d(0,0,0);
-		opacity: 1;
-	}
-}
-
-.feedback-button--comment {
-	.translate3d(80px, 140px, 0);
-	bottom: @feedback-button-size + 5;
-}
-.feedback-button--bug {
-	.translate3d(140px, 80px, 0);
-	right: @feedback-button-size + 5;
-}
-
-
-
 
 // Setup
 // ------------------------------
@@ -125,31 +34,6 @@ body {
 		.translate(-50%,-50%);
 		box-shadow: 0 0 12px -1px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.06);
 		left: 50%;
-		top: 50%;
-	}
-}
-
-
-
-// QR code with logo overlay
-
-.qr-code-wrapper {
-	line-height: 1;
-	margin-bottom: @gutter-base * 4;
-	position: relative;
-	text-align: center;
-	top: 20px;
-
-	> .svg-icon {
-		.square(64px);
-		background-color: white;
-		// border: 5px solid black;
-		border-radius: 50%;
-		left: 50%;
-		margin-left: -32px;
-		margin-top: -33px;
-		padding: 5px;
-		position: absolute;
 		top: 50%;
 	}
 }

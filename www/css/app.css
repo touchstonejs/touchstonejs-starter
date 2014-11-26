@@ -4280,6 +4280,9 @@ fieldset[disabled] .btn-link {
   background-color: #dddde8;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.1);
 }
+.action-button.Tappable-active {
+  background-color: #eeeeee;
+}
 .action-button-inner {
   text-align: center;
 }
@@ -4379,8 +4382,13 @@ fieldset[disabled] .btn-link {
   text-align: left;
 }
 .list-item {
-  color: #111111;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -moz-flex;
+  display: -ms-flexbox;
   display: flex;
+  color: #111111;
   line-height: 1;
   padding: 14px 16px;
   position: relative;

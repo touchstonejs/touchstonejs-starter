@@ -1,50 +1,12 @@
-// 
-// Bars
-// ==============================
 
 
 
 
-// Status Bar
+
+// Header Bar
 // ------------------------------
 
-.statusbar {
-	.size(100%,@statusbar-height);
-	background-color: @headerbar-bg;
-}
-
-
-
-
-// Alert Bar
-// ------------------------------
-
-.alertbar {
-	.animation( pulse 1.25s linear infinite );
-	background-color: @gray-light;
-	color: white;
-	font-size: @font-size-small;
-	font-weight: 500;
-	height: 30px;
-	line-height: 30px;
-	text-align: center;
-
-	// variants
-
-	&.primary  { background-color: @app-primary; }
-	&.success  { background-color: @app-success; }
-	&.warning  { background-color: @app-warning; color: @text-color; }
-	&.danger   { background-color: @app-danger; }
-	&.inverted { background-color: @text-color; }
-}
-
-
-
-
-// Title Bar
-// ------------------------------
-
-.headerbar {
+.Headerbar {
 	.display-flex();
 	background-color: @headerbar-bg;
 	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
@@ -59,7 +21,7 @@
 
 // button
 
-.headerbar-button {
+.Headerbar-button {
 	background: none transparent;
 	border: 0 none;
 	color: @headerbar-button-color;
@@ -100,8 +62,8 @@
 
 // common attributes for icons + labels
 
-.headerbar-button-icon,
-.headerbar-button-label {
+.Headerbar-button-icon,
+.Headerbar-button-label {
 	.inline-align(top);
 	padding-left: @gutter-base;
 	padding-right: @gutter-base;
@@ -110,14 +72,14 @@
 
 // button icons
 
-.headerbar-button-icon {
+.Headerbar-button-icon {
 	font-size: @font-size-large;
 }
 
 
 // button labels
 
-.headerbar-button-label {
+.Headerbar-button-label {
 	
 	// primary header action
 	&.is-primary {
@@ -125,7 +87,7 @@
 	}
 
 	// pull the label closer when next to an icon
-	.headerbar-button-icon + & {
+	.Headerbar-button-icon + & {
 		margin-left: -(@gutter-base / 2);
 		padding-left: 0;
 	}
@@ -134,7 +96,7 @@
 
 // view label
 
-.headerbar-label {
+.Headerbar-label {
 	.fill-space();
 	.text-overflow();
 	font-weight: 500;
@@ -155,10 +117,10 @@
 
 // variants
 
-.headerbar.warning {
+.Headerbar.warning {
 	box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2);
 	
-	.headerbar-button {
+	.Headerbar-button {
 		color: fade(@text-color, 80%);
 
 		&.disabled,
@@ -167,14 +129,14 @@
 		}
 	}
 }
-.headerbar.primary,
-.headerbar.success,
-.headerbar.danger,
-.headerbar.inverted {
+.Headerbar.primary,
+.Headerbar.success,
+.Headerbar.danger,
+.Headerbar.inverted {
 	box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2);
 	color: @headerbar-inverted-color;
 	
-	.headerbar-button {
+	.Headerbar-button {
 		color: @headerbar-inverted-button-color;
 
 		&.disabled,
@@ -183,58 +145,8 @@
 		}
 	}
 }
-.headerbar.primary { background-color: @app-primary; }
-.headerbar.success { background-color: @app-success; }
-.headerbar.warning { background-color: @app-warning; }
-.headerbar.danger { background-color: @app-danger; }
-.headerbar.inverted { background-color: @text-color; }
-
-
-
-
-// Nav Bar
-// ------------------------------
-
-.navbar {
-	background-color: @navbar-bg;
-	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1), 0 -1px 0 rgba(0, 0, 0, 0.1);
-	display: table;
-	font-size: @font-size-small;
-	height: @navbar-height;
-	line-height: @navbar-height;
-	position: relative;
-	table-layout: fixed;
-	width: 100%;
-	z-index: 2;
-	
-	// types
-
-	&.light { background-color: white; }
-	&.dark {
-		background-color: #444;
-		color: #ddd;
-	}
-
-	// stick to the bottom
-	&.bottom {
-		bottom: 0;
-		position: fixed;
-	}
-}
-.navbar-item {
-	cursor: pointer;
-	display: table-cell;
-	text-align: center;
-
-	&.active {
-		box-shadow: inset 0 -3px 0 @link-color;
-	}
-}
-
-
-
-
-
-
-
-
+.Headerbar.primary { background-color: @app-primary; }
+.Headerbar.success { background-color: @app-success; }
+.Headerbar.warning { background-color: @app-warning; }
+.Headerbar.danger { background-color: @app-danger; }
+.Headerbar.inverted { background-color: @text-color; }

@@ -1,7 +1,7 @@
 var React = require('react/addons');
 
 module.exports = React.createClass({
-	displayName: 'StripButtons',
+	displayName: 'ActionButtons',
 	propTypes: {
 		className: React.PropTypes.string
 	},
@@ -11,7 +11,7 @@ module.exports = React.createClass({
 		};
 	},
 	render: function() {
-		var className = this.props.className ? (this.props.className + ' strip-buttons') : 'strip-buttons';
+		var className = this.props.className ? (this.props.className + ' action-buttons') : 'action-buttons';
 		return <div className={className}>{this.props.children}</div>;
 	}
 });

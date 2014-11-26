@@ -4,8 +4,8 @@ module.exports = {
 
 	Feedback: require('./Feedback'),
 	
-	StripButtons: require('./StripButtons'),
-	StripButton: require('./StripButton'),
+	ActionButtons: require('./ActionButtons'),
+	ActionButton: require('./ActionButton'),
 	
 	FlexLayout: require('./FlexLayout'),
 	FlexBlock: require('./FlexBlock'),

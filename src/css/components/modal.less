@@ -24,7 +24,7 @@
 	.translate(-50%,-50%);
 	background-color: fade(white, 95%);
 	border-radius: @border-radius-base;
-	box-shadow: 0 1px 6px -1px rgba(0, 0, 0, 0.2);
+	// box-shadow: 0 1px 6px -1px rgba(0, 0, 0, 0.2);
 	left: 50%;
 	max-width: 90%;
 	padding: 20px;
@@ -104,7 +104,7 @@
 
 .Modal-actions {
 	.display-flex();
-	border-top: 1px solid #ccc;
+	border-top: 1px solid darken(@body-bg, 10%);
 	margin: 20px -20px -20px;
 }
 .Modal-action {
@@ -114,7 +114,16 @@
 	text-align: center;
 
 	& + & {
-		border-left: 1px solid #ccc;
+		border-left: 1px solid darken(@body-bg, 10%);
+	}
+
+	// round corners
+	&:first-child { border-bottom-left-radius: @border-radius-base; }
+	&:last-child { border-bottom-right-radius: @border-radius-base; }
+
+	// simulate tapped state
+	&.Tappable-active {
+		background-color: @body-bg;
 	}
 }
 .Modal-action-primary {

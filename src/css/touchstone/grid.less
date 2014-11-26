@@ -7,21 +7,15 @@
 // ------------------------------
 
 .g-row {
-	display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
-	display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
-	display: -ms-flexbox;      /* TWEENER - IE 10 */
-	display: -webkit-flex;     /* NEW - Chrome */
-	display: flex;
-	-webkit-flex-wrap: wrap;
-	flex-wrap: wrap;
+	.display-flex();
+	.flex-wrap(wrap);
 
-	// offset grid spacing
+	// offset spacing
 	margin-left: -(@grid-gutter / 2);
 	margin-right: -(@grid-gutter / 2);
 }
 .g-col {
-	// -webkit-flex-grow: 1;
-	flex-grow: 1;
+	.flex-grow(1);
 
 	// provide spacing
 	padding-left: (@grid-gutter / 2);
@@ -44,7 +38,7 @@
 .g-four-fifths,
 .g-one-sixth,
 .g-five-sixths {
-	flex-grow: 0;
+	.flex-grow(0);
 }
 
 .g-one-whole      { width: 100%; }

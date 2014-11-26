@@ -26,23 +26,23 @@ module.exports = React.createClass({
 		console.log('modal should open');
 		this.setState({
 			modalMessageVisible: true,
-			modalMessageText: 'It will close in 5 seconds'
+			modalMessageText: 'It will close in 5 seconds...'
 		});
 
 		setTimeout(function() {
-			this.setState({ modalMessageText: 'It will close in 4 seconds' });
+			this.setState({ modalMessageText: 'It will close in 4 seconds...' });
 		}.bind(this), 1000);
 
 		setTimeout(function() {
-			this.setState({ modalMessageText: 'It will close in 3 seconds' });
+			this.setState({ modalMessageText: 'It will close in 3 seconds...' });
 		}.bind(this), 2000);
 
 		setTimeout(function() {
-			this.setState({ modalMessageText: 'It will close in 2 seconds' });
+			this.setState({ modalMessageText: 'It will close in 2 seconds...' });
 		}.bind(this), 3000);
 
 		setTimeout(function() {
-			this.setState({ modalMessageText: 'It will close in 1 second' });
+			this.setState({ modalMessageText: 'It will close in 1 second...' });
 		}.bind(this), 4000);
 
 		setTimeout(function() {
@@ -58,7 +58,7 @@ module.exports = React.createClass({
 
 		setTimeout(function() {
 			this.setState({ modalLoadingVisible: false });
-		}.bind(this), 5000);
+		}.bind(this), 2000);
 	},
 
 	render: function() {

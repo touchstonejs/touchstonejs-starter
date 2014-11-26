@@ -68,7 +68,7 @@ module.exports = React.createClass({
 						<div className="Headerbar-button-icon ion-chevron-left" />
 						<div className="Headerbar-button-label">Back</div>
 					</Link>
-					<div className="Headerbar-label">Header List</div>
+					<div className="Headerbar-label">Categorised List</div>
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
 					<HeaderList months={Months} />

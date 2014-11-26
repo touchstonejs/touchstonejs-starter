@@ -3068,15 +3068,15 @@ button.btn-link.text-warning:focus {
   border-radius: 0 !important;
 }
 .u-round {
-  border-radius: 3px;
+  border-radius: 8px;
 }
 .u-round-bottom {
-  border-bottom-right-radius: 3px;
-  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
 }
 .u-round-top {
-  border-top-right-radius: 3px;
-  border-top-left-radius: 3px;
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
 }
 .u-crop {
   overflow: hidden;
@@ -3655,8 +3655,8 @@ div.select-field {
   pointer-events: none;
 }
 .select-field-indicator {
-  border-bottom-right-radius: 1px;
-  border-top-right-radius: 1px;
+  border-bottom-right-radius: 6px;
+  border-top-right-radius: 6px;
   background-color: white;
   width: 1.5em;
 }
@@ -4883,12 +4883,12 @@ fieldset[disabled] .btn-link {
   -ms-transform: translate(-50%, -50%);
   -o-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-  background-color: white;
-  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
   box-shadow: 0 1px 6px -1px rgba(0, 0, 0, 0.2);
   left: 50%;
   max-width: 90%;
-  padding: 34px;
+  padding: 20px;
   position: fixed;
   top: 50%;
   width: 300px;
@@ -4901,19 +4901,25 @@ fieldset[disabled] .btn-link {
   bottom: 0;
   left: 0;
   background-color: black;
-  opacity: .5;
+  opacity: .33;
   position: fixed;
   z-index: 1100;
 }
 .Modal-header {
   font-weight: 500;
 }
+.Modal-text {
+  font-size: 15px;
+}
 .Modal-icon {
-  width: 64px;
-  height: 64px;
+  width: 46px;
+  height: 46px;
   display: inline-block;
-  font-size: 64px;
-  line-height: 64px;
+  line-height: 46px;
+  margin-bottom: 5px;
+}
+.Modal-icon:before {
+  font-size: 46px;
 }
 .Modal-icon.muted {
   color: #8e8e93;
@@ -4938,16 +4944,44 @@ fieldset[disabled] .btn-link {
   -ms-transform: none;
   -o-transform: none;
   transform: none;
+  border-radius: 16px;
   left: 50%;
   margin: -60px 0 0 -60px;
-  padding: 10px;
+  padding: 15px;
   top: 50%;
   width: 120px;
 }
 .Modal-loading .Modal-icon {
-  -webkit-animation: spin 2s linear infinite;
-  -o-animation: spin 2s linear infinite;
-  animation: spin 2s linear infinite;
+  -webkit-animation: spin 1.25s linear infinite;
+  -o-animation: spin 1.25s linear infinite;
+  animation: spin 1.25s linear infinite;
+}
+.Modal-actions {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
+  border-top: 1px solid #ccc;
+  margin: 20px -20px -20px;
+}
+.Modal-action {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -moz-box-flex: 1;
+  -moz-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  color: #348dd9;
+  padding: 10px;
+  text-align: center;
+}
+.Modal-action + .Modal-action {
+  border-left: 1px solid #ccc;
+}
+.Modal-action-primary {
+  font-weight: 500;
 }
 .panel {
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
@@ -4956,7 +4990,7 @@ fieldset[disabled] .btn-link {
   overflow: hidden;
 }
 .view-inner > .panel {
-  border-radius: 3px;
+  border-radius: 8px;
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.06);
 }
 .panel--first {

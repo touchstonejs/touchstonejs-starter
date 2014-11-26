@@ -114,6 +114,11 @@
 	// disable user interaction (and visual feedback) with disabled buttons
 	&[disabled] {
 		pointer-events: none;
+		
+		.Keypad-button-primary-label,
+		.Keypad-button-secondary-label {
+			opacity: .3;
+		}
 	}
 }
 

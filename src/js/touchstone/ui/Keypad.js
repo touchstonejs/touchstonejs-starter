@@ -6,6 +6,7 @@ module.exports = React.createClass({
 		action: React.PropTypes.func,
 		className: React.PropTypes.string,
 		stowed: React.PropTypes.bool,
+		enableDel: React.PropTypes.bool,
 		style: React.PropTypes.string,
 		wildkey: React.PropTypes.string
 	},
@@ -41,7 +42,7 @@ module.exports = React.createClass({
 				<KeypadButton action={action} value="9" primaryLabel="9" secondaryLabel="WXYZ" />
 				{wildkey}
 				<KeypadButton action={action} value="0" primaryLabel="0" />
-				<KeypadButton action={action} value="delete" primaryLabel="del" aux={true} />
+				<KeypadButton action={action} value="delete" secondaryLabel="DEL" aux={true} disabled={!this.props.enableDel} />
 			</div>
 		);
 	}

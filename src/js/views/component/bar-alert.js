@@ -31,8 +31,7 @@ module.exports = React.createClass({
 			'primary': this.state.alertKey === 'primary',
 			'success': this.state.alertKey === 'success',
 			'warning': this.state.alertKey === 'warning',
-			'danger': this.state.alertKey === 'danger',
-			'inverted': this.state.alertKey === 'inverted'
+			'danger': this.state.alertKey === 'danger'
 		});
 
 		return (
@@ -42,15 +41,16 @@ module.exports = React.createClass({
 					<div className="Headerbar-label">Alert Bar</div>
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
-					<div className={alertbarClass}>When the state is "{this.state.alertKey}"</div>
+					<div className={alertbarClass}>
+						<div className="alertbar-text">When the state is "{this.state.alertKey}"</div>
+					</div>
 					<div className="panel ios-list">
 						<UI.RadioList value={this.state.alertKey} onChange={this.handleAlertChange} options={[
 							{ label: 'Muted',  value: 'muted' },
 							{ label: 'Primary',  value: 'primary' },
 							{ label: 'Success',  value: 'success' },
 							{ label: 'Warning',  value: 'warning' },
-							{ label: 'Danger',   value: 'danger' },
-							{ label: 'Inverted', value: 'inverted' }
+							{ label: 'Danger',   value: 'danger' }
 						]} />
 					</div>
 				</UI.FlexBlock>

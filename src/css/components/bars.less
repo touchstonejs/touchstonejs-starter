@@ -20,13 +20,13 @@
 // ------------------------------
 
 .alertbar {
-	.animation( pulse 1.25s linear infinite );
 	background-color: @gray-light;
 	color: white;
 	font-size: @font-size-small;
 	font-weight: 500;
 	height: 30px;
 	line-height: 30px;
+	position: relative;
 	text-align: center;
 
 	// variants
@@ -35,7 +35,21 @@
 	&.success  { background-color: @app-success; }
 	&.warning  { background-color: @app-warning; color: @text-color; }
 	&.danger   { background-color: @app-danger; }
-	&.inverted { background-color: @text-color; }
+
+	// overlay translucent for pulse
+	&:after {
+		.animation( pulse 2s linear infinite );
+		.fill-space();
+		background-color: black;
+		content: "";
+		opacity: 0;
+		z-index: 1;
+	}
+}
+// sit the text above the pulsing background
+.alertbar-text {
+	position: relative;
+	z-index: 2;
 }
 
 
@@ -51,28 +65,61 @@
 	.action-button-cell {
 		border: none;
 	}
-
-	// variants
-
-	&.primary,
-	&.success,
-	&.warning,
-	&.danger,
-	&.inverted {
-		box-shadow: none;
-		color: white;
-
-		.action-button-icon {
-			color: white;
-		}
-	}
-
-	&.primary  { background-color: @app-primary; }
-	&.success  { background-color: @app-success; }
-	&.warning  { background-color: @app-warning; color: @text-color; }
-	&.danger   { background-color: @app-danger; }
-	&.inverted { background-color: @text-color; }
 }
+
+
+// variants
+
+.footerbar.primary,
+.footerbar.success,
+.footerbar.danger,
+.footerbar.inverted {
+	box-shadow: none;
+	color: white;
+
+	.action-button-icon {
+		color: white;
+	}
+}
+.footerbar.primary  {
+	background-color: @app-primary;
+	
+	.action-button.Tappable-active {
+		background-color: darken(@app-primary, 6%);
+	}
+}
+.footerbar.success  {
+	background-color: @app-success;
+	
+	.action-button.Tappable-active {
+		background-color: darken(@app-success, 6%);
+	}
+}
+.footerbar.warning  {
+	background-color: @app-warning;
+	
+	.action-button.Tappable-active {
+		background-color: darken(@app-warning, 6%);
+	}
+}
+.footerbar.danger   {
+	background-color: @app-danger;
+	
+	.action-button.Tappable-active {
+		background-color: darken(@app-danger, 6%);
+	}
+}
+.footerbar.inverted {
+	background-color: @text-color;
+	
+	.action-button.Tappable-active {
+		background-color: darken(@text-color, 6%);
+	}
+}
+
+
+// buttons
+
 .footerbar > .action-buttons {
 	.action-button {
 		line-height: 1.1;

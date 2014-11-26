@@ -3521,12 +3521,12 @@ button.btn-link.text-warning:focus {
 }
 @-webkit-keyframes pulse {
   50% {
-    opacity: .66;
+    opacity: .25;
   }
 }
 @keyframes pulse {
   50% {
-    opacity: .66;
+    opacity: .25;
   }
 }
 .field-label {
@@ -4007,15 +4007,13 @@ body {
   background-color: #f6f6f7;
 }
 .alertbar {
-  -webkit-animation: pulse 1.25s linear infinite;
-  -o-animation: pulse 1.25s linear infinite;
-  animation: pulse 1.25s linear infinite;
   background-color: #8e8e93;
   color: white;
   font-size: 15px;
   font-weight: 500;
   height: 30px;
   line-height: 30px;
+  position: relative;
   text-align: center;
 }
 .alertbar.primary {
@@ -4031,8 +4029,23 @@ body {
 .alertbar.danger {
   background-color: #e74c3c;
 }
-.alertbar.inverted {
-  background-color: #111111;
+.alertbar:after {
+  -webkit-animation: pulse 2s linear infinite;
+  -o-animation: pulse 2s linear infinite;
+  animation: pulse 2s linear infinite;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: black;
+  content: "";
+  opacity: 0;
+  z-index: 1;
+}
+.alertbar-text {
+  position: relative;
+  z-index: 2;
 }
 .footerbar {
   background-color: #f6f6f7;
@@ -4043,7 +4056,6 @@ body {
 }
 .footerbar.primary,
 .footerbar.success,
-.footerbar.warning,
 .footerbar.danger,
 .footerbar.inverted {
   box-shadow: none;
@@ -4051,7 +4063,6 @@ body {
 }
 .footerbar.primary .action-button-icon,
 .footerbar.success .action-button-icon,
-.footerbar.warning .action-button-icon,
 .footerbar.danger .action-button-icon,
 .footerbar.inverted .action-button-icon {
   color: white;
@@ -4059,18 +4070,32 @@ body {
 .footerbar.primary {
   background-color: #348dd9;
 }
+.footerbar.primary .action-button.Tappable-active {
+  background-color: #267ec9;
+}
 .footerbar.success {
   background-color: #44db5e;
 }
+.footerbar.success .action-button.Tappable-active {
+  background-color: #2ad648;
+}
 .footerbar.warning {
   background-color: #ffcd00;
-  color: #111111;
+}
+.footerbar.warning .action-button.Tappable-active {
+  background-color: #e0b400;
 }
 .footerbar.danger {
   background-color: #e74c3c;
 }
+.footerbar.danger .action-button.Tappable-active {
+  background-color: #e43321;
+}
 .footerbar.inverted {
   background-color: #111111;
+}
+.footerbar.inverted .action-button.Tappable-active {
+  background-color: #020202;
 }
 .footerbar > .action-buttons .action-button {
   line-height: 1.1;
@@ -4637,12 +4662,6 @@ fieldset[disabled] .btn-link {
   border-top-color: white;
 }
 .Headerbar {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -moz-box;
-  display: -moz-flex;
-  display: -ms-flexbox;
-  display: flex;
   background-color: #f6f6f7;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
   color: #222222;
@@ -4650,85 +4669,6 @@ fieldset[disabled] .btn-link {
   line-height: 44px;
   position: relative;
   z-index: 3;
-}
-.Headerbar-button {
-  background: none transparent;
-  border: 0 none;
-  color: #348dd9;
-  cursor: pointer;
-  left: 0;
-  line-height: 44px;
-  height: 44px;
-  position: absolute;
-  text-align: center;
-  text-decoration: none;
-  top: 0;
-  -webkit-appearance: none;
-  z-index: 2;
-}
-.Headerbar-button.right {
-  left: auto;
-  right: 0;
-}
-.Headerbar-button:hover,
-.Headerbar-button:active,
-.Headerbar-button:focus {
-  color: #2273b8;
-  outline: none;
-  -webkit-appearance: none;
-}
-.Headerbar-button.disabled,
-.Headerbar-button[disabled] {
-  color: #cccccc;
-  pointer-events: none;
-}
-.Headerbar-button-icon,
-.Headerbar-button-label {
-  display: inline-block;
-  vertical-align: top;
-  padding-left: 10px;
-  padding-right: 10px;
-}
-.Headerbar-button-icon {
-  font-size: 20px;
-}
-.Headerbar-button-label.is-primary {
-  font-weight: 500;
-}
-.Headerbar-button-icon + .Headerbar-button-label {
-  margin-left: -5px;
-  padding-left: 0;
-}
-.Headerbar-label {
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-weight: 500;
-  line-height: 44px;
-  height: 44px;
-  min-width: 44px;
-  padding-left: 10px;
-  padding-right: 10px;
-  position: absolute;
-  text-align: center;
-}
-.Headerbar-label:only-child {
-  width: auto;
-}
-.Headerbar.warning {
-  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2);
-}
-.Headerbar.warning .Headerbar-button {
-  color: rgba(17, 17, 17, 0.8);
-}
-.Headerbar.warning .Headerbar-button.disabled,
-.Headerbar.warning .Headerbar-button[disabled] {
-  color: rgba(17, 17, 17, 0.4);
 }
 .Headerbar.primary,
 .Headerbar.success,
@@ -4759,14 +4699,82 @@ fieldset[disabled] .btn-link {
 .Headerbar.success {
   background-color: #44db5e;
 }
-.Headerbar.warning {
-  background-color: #ffcd00;
-}
 .Headerbar.danger {
   background-color: #e74c3c;
 }
 .Headerbar.inverted {
   background-color: #111111;
+}
+.Headerbar.warning {
+  background-color: #ffcd00;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+.Headerbar.warning .Headerbar-button {
+  color: rgba(17, 17, 17, 0.8);
+}
+.Headerbar.warning .Headerbar-button.disabled,
+.Headerbar.warning .Headerbar-button[disabled] {
+  color: rgba(17, 17, 17, 0.4);
+}
+.Headerbar-button {
+  background: none transparent;
+  border: 0 none;
+  color: #348dd9;
+  cursor: pointer;
+  left: 0;
+  line-height: 44px;
+  height: 44px;
+  padding-left: 10px;
+  padding-right: 10px;
+  position: absolute;
+  text-align: center;
+  text-decoration: none;
+  top: 0;
+  -webkit-appearance: none;
+  z-index: 2;
+}
+.Headerbar-button.is-primary {
+  font-weight: 500;
+}
+.Headerbar-button.right {
+  left: auto;
+  right: 0;
+}
+.Headerbar-button:hover {
+  color: #4999dd;
+}
+.Headerbar-button:active,
+.Headerbar-button:focus,
+.Headerbar-button.Tappable-active {
+  color: #2273b8;
+  outline: none;
+  -webkit-appearance: none;
+}
+.Headerbar-button.disabled,
+.Headerbar-button[disabled] {
+  color: #cccccc;
+  pointer-events: none;
+}
+.Headerbar-button:before {
+  font-size: 24px;
+  margin-right: 5px;
+  position: relative;
+  top: 3px;
+}
+.Headerbar-label {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  line-height: 44px;
+  height: 44px;
+  min-width: 44px;
+  padding-left: 10px;
+  padding-right: 10px;
+  position: absolute;
+  text-align: center;
+  width: 100%;
 }
 .Keypad {
   width: 100%;
@@ -4885,7 +4893,6 @@ fieldset[disabled] .btn-link {
   transform: translate(-50%, -50%);
   background-color: rgba(255, 255, 255, 0.95);
   border-radius: 8px;
-  box-shadow: 0 1px 6px -1px rgba(0, 0, 0, 0.2);
   left: 50%;
   max-width: 90%;
   padding: 20px;
@@ -4963,7 +4970,7 @@ fieldset[disabled] .btn-link {
   display: -moz-flex;
   display: -ms-flexbox;
   display: flex;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #d1d1df;
   margin: 20px -20px -20px;
 }
 .Modal-action {
@@ -4978,7 +4985,16 @@ fieldset[disabled] .btn-link {
   text-align: center;
 }
 .Modal-action + .Modal-action {
-  border-left: 1px solid #ccc;
+  border-left: 1px solid #d1d1df;
+}
+.Modal-action:first-child {
+  border-bottom-left-radius: 8px;
+}
+.Modal-action:last-child {
+  border-bottom-right-radius: 8px;
+}
+.Modal-action.Tappable-active {
+  background-color: #efeff4;
 }
 .Modal-action-primary {
   font-weight: 500;

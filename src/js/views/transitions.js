@@ -24,34 +24,34 @@ module.exports = React.createClass({
 				<UI.FlexBlock scrollable>
 					<div className="page-header text-caps">Default</div>
 					<div className="panel">
-						<div className="gutter-list">
-							<Link to="transitions-target" className="list-item list-item-has-chevron">None</Link>
+						<div className="ios-list">
+							<Link to="transitions-target" className="list-item is-tappable">None</Link>
 						</div>
 					</div>
 					<div className="page-header text-caps">Fade</div>
 					<div className="panel">
-						<div className="gutter-list">
-							<Link to="transitions-target" viewTransition="fade" className="list-item list-item-has-chevron">Fade</Link>
-							<Link to="transitions-target" viewTransition="fade-expand" className="list-item list-item-has-chevron">Fade Expand</Link>
-							<Link to="transitions-target" viewTransition="fade-contract" className="list-item list-item-has-chevron">Fade Contract</Link>
+						<div className="ios-list">
+							<Link to="transitions-target" viewTransition="fade" className="list-item is-tappable">Fade</Link>
+							<Link to="transitions-target" viewTransition="fade-expand" className="list-item is-tappable">Fade Expand</Link>
+							<Link to="transitions-target" viewTransition="fade-contract" className="list-item is-tappable">Fade Contract</Link>
 						</div>
 					</div>
 					<div className="page-header text-caps">Show</div>
 					<div className="panel">
-						<div className="gutter-list">
-							<Link to="transitions-target" viewTransition="show-from-left" className="list-item list-item-has-chevron">Show from Left</Link>
-							<Link to="transitions-target" viewTransition="show-from-right" className="list-item list-item-has-chevron">Show from Right</Link>
-							<Link to="transitions-target" viewTransition="show-from-top" className="list-item list-item-has-chevron">Show from Top</Link>
-							<Link to="transitions-target" viewTransition="show-from-bottom" className="list-item list-item-has-chevron">Show from Bottom</Link>
+						<div className="ios-list">
+							<Link to="transitions-target" viewTransition="show-from-left" className="list-item is-tappable">Show from Left</Link>
+							<Link to="transitions-target" viewTransition="show-from-right" className="list-item is-tappable">Show from Right</Link>
+							<Link to="transitions-target" viewTransition="show-from-top" className="list-item is-tappable">Show from Top</Link>
+							<Link to="transitions-target" viewTransition="show-from-bottom" className="list-item is-tappable">Show from Bottom</Link>
 						</div>
 					</div>
 					<div className="page-header text-caps">Reveal</div>
 					<div className="panel">
-						<div className="gutter-list">
-							<Link to="transitions-target" viewTransition="reveal-from-left" className="list-item list-item-has-chevron">Reveal from Left</Link>
-							<Link to="transitions-target" viewTransition="reveal-from-right" className="list-item list-item-has-chevron">Reveal from Right</Link>
-							<Link to="transitions-target" viewTransition="reveal-from-top" className="list-item list-item-has-chevron">Reveal from Top</Link>
-							<Link to="transitions-target" viewTransition="reveal-from-bottom" className="list-item list-item-has-chevron">Reveal from Bottom</Link>
+						<div className="ios-list">
+							<Link to="transitions-target" viewTransition="reveal-from-left" className="list-item is-tappable">Reveal from Left</Link>
+							<Link to="transitions-target" viewTransition="reveal-from-right" className="list-item is-tappable">Reveal from Right</Link>
+							<Link to="transitions-target" viewTransition="reveal-from-top" className="list-item is-tappable">Reveal from Top</Link>
+							<Link to="transitions-target" viewTransition="reveal-from-bottom" className="list-item is-tappable">Reveal from Bottom</Link>
 						</div>
 					</div>
 				</UI.FlexBlock>

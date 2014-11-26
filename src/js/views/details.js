@@ -64,13 +64,13 @@ module.exports = React.createClass({
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
 					{/*<div className="page-header text-caps">Basic details</div>*/}
-					<div className="panel is-first gutter-list">
+					<div className="panel panel--first ios-list">
 						<UI.LabelInput label="Name"     value={this.props.user.name}       placeholder="Full name" first />
 						<UI.LabelInput label="Location" value={this.props.user.location}   placeholder="Suburb, Country" />
 						<UI.LabelInput label="Joined"   value={this.props.user.joinedDate} noedit />
 						<UI.LabelTextarea label="Bio"   value={this.state.bioValue}        placeholder="Bio" onChange={this.handleBioInput} />
 					</div>
-					<div className="panel gutter-list">
+					<div className="panel ios-list">
 						<Tappable onTap={this.showFlavourList} className="list-item is-first" component="div">
 							Favourite Icecream
 							<div className="item-note is-muted">

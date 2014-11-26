@@ -36,7 +36,7 @@ module.exports = React.createClass({
 					<div className="headerbar-label">Favourite Icecream</div>
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
-					<div className="panel is-first gutter-list">
+					<div className="panel panel--first ios-list">
 						<UI.RadioList value={this.state.flavour} onChange={this.handleFlavourChange} options={[
 							{ label: 'Vanilla',    value: 'vanilla' },
 							{ label: 'Chocolate',  value: 'chocolate' },

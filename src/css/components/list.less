@@ -30,7 +30,7 @@
 	}
 
 	// provide context for different separators
-	.gutter-list &:before {
+	.ios-list &:before {
 		left: @padding-base-horizontal;
 	}
 	.icon-list & {
@@ -50,7 +50,7 @@
 }
 
 // provide the little arrow indicating a view will be shown on tap
-.list-item-has-chevron:after {
+.list-item.is-tappable:after {
 	.pseudo-ionicon(#ccc, @ionicon-var-chevron-right, @ionicons-font-size-base);
 	.align-items(center);
 	.display-flex();
@@ -199,7 +199,7 @@
 
 .list-header {
 	background-color: @body-bg;
-	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.15), 0 -1px 0 rgba(0, 0, 0, 0.15);
+	box-shadow: 0 1px 0 mix(black, white, 15%), 0 -1px 0 mix(black, white, 15%);
 	color: @gray-light;
 	display: block;
 	font-size: @font-size-tiny;

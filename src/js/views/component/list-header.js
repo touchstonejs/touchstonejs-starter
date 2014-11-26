@@ -64,10 +64,7 @@ module.exports = React.createClass({
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
 				<UI.FlexBlock height="44px" className="Headerbar">
-					<Link to="home" viewTransition="reveal-from-right" className="Headerbar-button">
-						<div className="Headerbar-button-icon ion-chevron-left" />
-						<div className="Headerbar-button-label">Back</div>
-					</Link>
+					<Link to="home" viewTransition="reveal-from-right" className="Headerbar-button ion-chevron-left" component="button">Back</Link>
 					<div className="Headerbar-label">Categorised List</div>
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>

@@ -1,13 +1,14 @@
-
-
-
-
-
+// 
 // Header Bar
+// ==============================
+
+
+
+
+// BASE
 // ------------------------------
 
 .Headerbar {
-	.display-flex();
 	background-color: @headerbar-bg;
 	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
 	color: @headerbar-color;
@@ -19,116 +20,8 @@
 }
 
 
-// button
-
-.Headerbar-button {
-	background: none transparent;
-	border: 0 none;
-	color: @headerbar-button-color;
-	cursor: pointer;
-	left: 0;
-	line-height: @headerbar-height;
-	height: @headerbar-height;
-	position: absolute;
-	text-align: center;
-	text-decoration: none;
-	top: 0;
-	-webkit-appearance: none;
-	z-index: 2;
-
-	// align button right
-	&.right {
-		left: auto;
-		right: 0;
-	}
-
-	// darken button on tap
-	&:hover,
-	&:active,
-	&:focus {
-		color: darken(@headerbar-button-color, 10%);
-		outline: none;
-		-webkit-appearance: none;
-	}
-
-	// alert users to disabled state
-	&.disabled,
-	&[disabled] {
-		color: @headerbar-button-color-disabled;
-		pointer-events: none;
-	}
-}
-
-
-// common attributes for icons + labels
-
-.Headerbar-button-icon,
-.Headerbar-button-label {
-	.inline-align(top);
-	padding-left: @gutter-base;
-	padding-right: @gutter-base;
-}
-
-
-// button icons
-
-.Headerbar-button-icon {
-	font-size: @font-size-large;
-}
-
-
-// button labels
-
-.Headerbar-button-label {
-	
-	// primary header action
-	&.is-primary {
-		font-weight: 500;
-	}
-
-	// pull the label closer when next to an icon
-	.Headerbar-button-icon + & {
-		margin-left: -(@gutter-base / 2);
-		padding-left: 0;
-	}
-}
-
-
-// view label
-
-.Headerbar-label {
-	.fill-space();
-	.text-overflow();
-	font-weight: 500;
-	line-height: @headerbar-height;
-	height: @headerbar-height;
-	min-width: @headerbar-height;
-	padding-left: @gutter-base;
-	padding-right: @gutter-base;
-	position: absolute;
-	text-align: center;
-	// width: 70%;
-	
-	&:only-child {
-		width: auto;
-	}
-}
-
-
 // variants
 
-.Headerbar.warning {
-	box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2);
-	
-	.Headerbar-button {
-		color: fade(@text-color, 80%);
-
-		&.disabled,
-		&[disabled] {
-			color: fade(@text-color, 40%);
-		}
-	}
-}
 .Headerbar.primary,
 .Headerbar.success,
 .Headerbar.danger,
@@ -147,6 +40,114 @@
 }
 .Headerbar.primary { background-color: @app-primary; }
 .Headerbar.success { background-color: @app-success; }
-.Headerbar.warning { background-color: @app-warning; }
 .Headerbar.danger { background-color: @app-danger; }
 .Headerbar.inverted { background-color: @text-color; }
+
+
+// warning is a special case - it has dark text
+
+.Headerbar.warning {
+	background-color: @app-warning;
+	box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+	
+	.Headerbar-button {
+		color: fade(@text-color, 80%);
+
+		&.disabled,
+		&[disabled] {
+			color: fade(@text-color, 40%);
+		}
+	}
+}
+
+
+
+
+// BUTTONS
+// ------------------------------
+
+.Headerbar-button {
+	background: none transparent;
+	border: 0 none;
+	color: @headerbar-button-color;
+	cursor: pointer;
+	left: 0;
+	line-height: @headerbar-height;
+	height: @headerbar-height;
+	padding-left: @gutter-base;
+	padding-right: @gutter-base;
+	position: absolute;
+	text-align: center;
+	text-decoration: none;
+	top: 0;
+	-webkit-appearance: none;
+	z-index: 2;
+
+	// highlight primary buttons
+	&.is-primary {
+		font-weight: 500;
+	}
+
+	// align button right
+	&.right {
+		left: auto;
+		right: 0;
+	}
+
+	// just for dev
+	&:hover {
+		color: lighten(@headerbar-button-color, 5%);
+	}
+	
+	// darken button on tap
+	&:active,
+	&:focus,
+	&.Tappable-active {
+		color: darken(@headerbar-button-color, 10%);
+		outline: none;
+		-webkit-appearance: none;
+	}
+
+	// alert users to disabled state
+	&.disabled,
+	&[disabled] {
+		color: @headerbar-button-color-disabled;
+		pointer-events: none;
+	}
+
+	// position the icon
+	&:before {
+		font-size: @ionicons-size-large;
+		margin-right: @gutter-base / 2;
+		position: relative;
+		top: 3px; // FIXME: magic numbers are bad, but I can't figure this one out...
+	}
+}
+
+
+
+
+// LABEL
+// ------------------------------
+
+.Headerbar-label {
+	.text-overflow();
+	font-weight: 500;
+	line-height: @headerbar-height;
+	height: @headerbar-height;
+	min-width: @headerbar-height;
+	padding-left: @gutter-base;
+	padding-right: @gutter-base;
+	position: absolute;
+	text-align: center;
+	width: 100%;
+}
+
+
+
+
+
+
+
+
+

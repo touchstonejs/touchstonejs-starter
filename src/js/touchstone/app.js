@@ -65,7 +65,7 @@ module.exports = function(views) {
 			
 			if (!view) {
 				var defaultViewLink = this.gotoDefaultView ? (
-						<Tappable onTap={this.gotoDefaultView} className="Headerbar-button Headerbar-button-label right">
+						<Tappable onTap={this.gotoDefaultView} className="Headerbar-button right">
 							Okay
 						</Tappable>
 					) : null;

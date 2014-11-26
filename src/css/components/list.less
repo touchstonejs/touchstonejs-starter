@@ -7,7 +7,8 @@
 
 .list-item {
 	color: @text-color;
-	display: block;
+	display: flex;
+	// line-height: @font-size-base + 3;
 	line-height: 1;
 	padding: @field-padding-vertical @field-padding-horizontal;
 	position: relative;
@@ -51,8 +52,8 @@
 // provide the little arrow indicating a view will be shown on tap
 .list-item-has-chevron:after {
 	.pseudo-ionicon(#ccc, @ionicon-var-chevron-right, @ionicons-font-size-base);
-	.display-flex();
 	.align-items(center);
+	.display-flex();
 	height: 100%;
 	position: absolute;
 	right: @grid-gutter;
@@ -90,7 +91,7 @@
 // Item Notes
 // ------------------------------
 
-.list-item-note {
+.item-note {
 	.display-flex();
 	.align-items(center);
 	height: 100%;
@@ -101,31 +102,31 @@
 
 	// variants
 	&.is-muted {
-		.list-item-note-label { color: #999; }
-		.list-item-note-icon { color: #ccc; }
+		.item-note-label { color: #999; }
+		.item-note-icon { color: #ccc; }
 	}
 	&.is-primary {
 		color: @app-primary;
 
-		.list-item-note-label,
-		.list-item-note-icon { color: @app-primary; }
+		.item-note-label,
+		.item-note-icon { color: @app-primary; }
 	}
 
 	// if just label or just icon
-	&.list-item-note-icon,
-	&.list-item-note-label {
+	&.item-note-icon,
+	&.item-note-label {
 		padding-left: @grid-gutter;
 		padding-right: @grid-gutter;
 	}
 }
 
-.list-item-note-icon,
-.list-item-note-label {
+.item-note-icon,
+.item-note-label {
 	.inline-align(top);
 	padding: @padding-base-vertical (@grid-gutter / 2);
 }
-.list-item-note-label { color: #999; }
-.list-item-note-icon { color: #ccc; }
+.item-note-label { color: #999; }
+.item-note-icon { color: #ccc; }
 
 
 
@@ -175,10 +176,10 @@
 
 // image (like a user avatar) as icon
 
-.list-icon-image {
+.list-avatar {
 	.inline-align();
 	.square(@list-icon-size);
-	background-color: mix(black, white, 70%);
+	background-color: mix(white, black, 70%);
 	border-radius: 50%;
 	color: white;
 	font-size: @ionicons-font-size-large;

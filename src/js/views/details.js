@@ -64,18 +64,27 @@ module.exports = React.createClass({
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
 					{/*<div className="page-header text-caps">Basic details</div>*/}
-					<div className="panel is-first">
+					<div className="panel is-first gutter-list">
 						<UI.LabelInput label="Name"     value={this.props.user.name}       placeholder="Full name" first />
 						<UI.LabelInput label="Location" value={this.props.user.location}   placeholder="Suburb, Country" />
 						<UI.LabelInput label="Joined"   value={this.props.user.joinedDate} noedit />
 						<UI.LabelTextarea label="Bio"   value={this.state.bioValue}        placeholder="Bio" onChange={this.handleBioInput} />
+						<UI.LabelSelect value={this.state.flavour} onChange={this.handleFlavourChange} options={[
+							{ label: 'Vanilla',    value: 'vanilla' },
+							{ label: 'Chocolate',  value: 'chocolate' },
+							{ label: 'Caramel',    value: 'caramel' },
+							{ label: 'Strawberry', value: 'strawberry' },
+							{ label: 'Banana',     value: 'banana' },
+							{ label: 'Lemon',      value: 'lemon' },
+							{ label: 'Pastaccio',  value: 'pastaccio' }
+						]} />
 					</div>
-					<div className="panel list gutter-list">
+					<div className="panel gutter-list">
 						<Tappable onTap={this.showFlavourList} className="list-item is-first" component="div">
 							Favourite Icecream
-							<div className="list-item-note is-muted">
-								<div className="list-item-note-label">{this.props.user.flavour}</div>
-								<div className="list-item-note-icon ion-chevron-right" />
+							<div className="item-note is-muted">
+								<div className="item-note-label">{this.props.user.flavour}</div>
+								<div className="item-note-icon ion-chevron-right" />
 							</div>
 						</Tappable>
 					</div>

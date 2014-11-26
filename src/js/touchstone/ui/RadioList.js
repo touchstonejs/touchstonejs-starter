@@ -21,8 +21,8 @@ module.exports = React.createClass({
 		var options = this.props.options.map(function(op, i) {
 			var className = 'list-item' + (i === 0 ? ' is-first' : '');
 			var checkMark = op.value === this.props.value ? (
-					<div className="list-item-note is-primary">
-						<div className="list-item-note-icon ion-checkmark" />
+					<div className="item-note is-primary">
+						<div className="item-note-icon ion-checkmark" />
 					</div>
 				) : null;
 			return (

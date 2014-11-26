@@ -24,13 +24,13 @@ module.exports = React.createClass({
 				<UI.FlexBlock scrollable>
 					<div className="page-header text-caps">Default</div>
 					<div className="panel">
-						<div className="list gutter-list">
+						<div className="gutter-list">
 							<Link to="transitions-target" className="list-item list-item-has-chevron">None</Link>
 						</div>
 					</div>
 					<div className="page-header text-caps">Fade</div>
 					<div className="panel">
-						<div className="list gutter-list">
+						<div className="gutter-list">
 							<Link to="transitions-target" viewTransition="fade" className="list-item list-item-has-chevron">Fade</Link>
 							<Link to="transitions-target" viewTransition="fade-expand" className="list-item list-item-has-chevron">Fade Expand</Link>
 							<Link to="transitions-target" viewTransition="fade-contract" className="list-item list-item-has-chevron">Fade Contract</Link>
@@ -38,7 +38,7 @@ module.exports = React.createClass({
 					</div>
 					<div className="page-header text-caps">Show</div>
 					<div className="panel">
-						<div className="list gutter-list">
+						<div className="gutter-list">
 							<Link to="transitions-target" viewTransition="show-from-left" className="list-item list-item-has-chevron">Show from Left</Link>
 							<Link to="transitions-target" viewTransition="show-from-right" className="list-item list-item-has-chevron">Show from Right</Link>
 							<Link to="transitions-target" viewTransition="show-from-top" className="list-item list-item-has-chevron">Show from Top</Link>
@@ -47,7 +47,7 @@ module.exports = React.createClass({
 					</div>
 					<div className="page-header text-caps">Reveal</div>
 					<div className="panel">
-						<div className="list gutter-list">
+						<div className="gutter-list">
 							<Link to="transitions-target" viewTransition="reveal-from-left" className="list-item list-item-has-chevron">Reveal from Left</Link>
 							<Link to="transitions-target" viewTransition="reveal-from-right" className="list-item list-item-has-chevron">Reveal from Right</Link>
 							<Link to="transitions-target" viewTransition="reveal-from-top" className="list-item list-item-has-chevron">Reveal from Top</Link>

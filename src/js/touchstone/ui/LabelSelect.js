@@ -26,7 +26,7 @@ module.exports = React.createClass({
 	render: function() {
 		// Set Classes
 		var className = SetClass({
-			'field-item': true,
+			'list-item': true,
 			'is-first': this.props.first
 		});
 		className += this.props.className ? (' ' + this.props.className) : ''

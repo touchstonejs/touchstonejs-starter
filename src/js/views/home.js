@@ -44,7 +44,7 @@ var SimpleList = React.createClass({
 		return (
 			<div>
 				<div className="list-header">Simple List</div>
-				<div className="panel panel-flush list gutter-list">
+				<div className="panel panel-flush gutter-list">
 					{users}
 				</div>
 			</div>
@@ -63,11 +63,13 @@ var ComplexListItem = React.createClass({
 
 		return (
 			<Tappable onTap={this.showDetailsView} className="list-item user-item list-item-icon-left list-item-has-chevron" component="div">
-				<span className="list-icon list-icon-image left">
+				<span className="list-icon list-avatar left">
 					<img src={this.props.user.img} />
 				</span>
-				<div className="list-title">{this.props.user.name}</div>
-				<div className="list-subtitle">{this.props.user.location}</div>
+				<div className="list-inner">
+					<div className="list-title">{this.props.user.name}</div>
+					<div className="list-subtitle">{this.props.user.location}</div>
+				</div>
 			</Tappable>
 		);
 	}

@@ -232,13 +232,13 @@ module.exports = React.createClass({
 		}
 		
 		var style = {
-			WebkitTapHighlightColor: 'rgba(0,0,0,0)',
-			WebkitTouchCallout: 'none',
-			WebkitUserSelect: 'none',
-			KhtmlUserSelect: 'none',
-			MozUserSelect: 'none',
-			msUserSelect: 'none',
-			userSelect: 'none',
+			// WebkitTapHighlightColor: 'rgba(0,0,0,0)',
+			// WebkitTouchCallout: 'none',
+			// WebkitUserSelect: 'none',
+			// KhtmlUserSelect: 'none',
+			// MozUserSelect: 'none',
+			// msUserSelect: 'none',
+			// userSelect: 'none',
 			cursor: 'pointer'
 		};
 		return React.createElement(this.props.component, {

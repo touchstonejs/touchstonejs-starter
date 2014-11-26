@@ -72,15 +72,8 @@ module.exports = function(views) {
 				
 				return (
 					<UI.FlexLayout className="view">
-						<UI.FlexBlock height="44px" className="headerbar">
-							<div className="headerbar-label">Error</div>
-							{defaultViewLink}
-						</UI.FlexBlock>
 						<UI.FlexBlock>
-							<div className="feedback-message">
-								<span className="feedback-message-icon ion-alert-circled text-error" />
-								<div className="feedback-message-text">Sorry, the view <strong>"{this.state.currentView}"</strong> is not available.</div>
-							</div>
+							<UI.Feedback iconKey="ion-alert-circled" iconType="danger" text={'Sorry, the view <strong>"' + this.state.currentView + '"</strong> is not available.'} actionText="Okay, take me home" actionFn={this.gotoDefaultView} />
 						</UI.FlexBlock>
 					</UI.FlexLayout>
 				);

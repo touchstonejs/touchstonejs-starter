@@ -13,11 +13,16 @@ var views = {
 
 	// app
 	'home': require('./views/home'),
-	'components': require('./views/components'),
+
+	// components
+	'components': require('./views/components/index'),
+	'components-feedback': require('./views/components/feedback'),
 	
+	// transitions
 	'transitions': require('./views/transitions'),
 	'transitions-target': require('./views/transitions-target'),
 	
+	// details view
 	'details': require('./views/details'),
 	'radio-list': require('./views/radio-list')
 };

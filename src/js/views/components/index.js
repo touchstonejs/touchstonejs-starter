@@ -2,10 +2,10 @@
 
 var React = require('react'),
 	SetClass = require('classnames'),
-	Tappable = require('../touchstone/tappable'),
-	Navigation = require('../touchstone/navigation'),
-	Link = require('../touchstone/link'),
-	UI = require('../touchstone/ui');
+	Tappable = require('../../touchstone/tappable'),
+	Navigation = require('../../touchstone/navigation'),
+	Link = require('../../touchstone/link'),
+	UI = require('../../touchstone/ui');
 
 module.exports = React.createClass({
 	mixins: [Navigation],
@@ -23,13 +23,14 @@ module.exports = React.createClass({
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
 					<div className="panel is-first">	
-						<div className="list gutter-list">
-							<div className="list-item list-item-has-chevron">Alerts</div>
-							<div className="list-item list-item-has-chevron">Bars</div>
-							<div className="list-item list-item-has-chevron">Buttons</div>
-							<div className="list-item list-item-has-chevron">Keypad</div>
-							<div className="list-item list-item-has-chevron">Passcode</div>
-							<div className="list-item list-item-has-chevron">Lists</div>
+						<div className="gutter-list">
+							<div className="list-item">Alerts</div>
+							<div className="list-item">Bars</div>
+							<div className="list-item">Buttons</div>
+							<div className="list-item">Keypad</div>
+							<div className="list-item">Passcode</div>
+							<div className="list-item">Lists</div>
+							<Link to="components-feedback" viewTransition="show-from-right" className="list-item list-item-has-chevron">View Feedback</Link>
 						</div>
 					</div>
 				</UI.FlexBlock>

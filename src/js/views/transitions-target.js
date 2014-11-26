@@ -23,11 +23,8 @@ module.exports = React.createClass({
 				<UI.FlexBlock height="44px" className="headerbar">
 					<div className="headerbar-label">Target View</div>
 				</UI.FlexBlock>
-				<UI.FlexBlock scrollable>
-					<div className="feedback-message">
-						<div className="feedback-message-icon ion-ios7-photos text-muted" />
-						<div className="feedback-message-text">Hold on a sec...</div>
-					</div>
+				<UI.FlexBlock>
+					<UI.Feedback iconKey="ion-ios7-photos" iconType="muted" text="Hold on a sec..." />
 				</UI.FlexBlock>
 			</UI.FlexLayout>
 		);

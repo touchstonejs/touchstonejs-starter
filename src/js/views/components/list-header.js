@@ -66,7 +66,7 @@ module.exports = React.createClass({
 				<UI.FlexBlock height="44px" className="headerbar">
 					<Link to="home" viewTransition="reveal-from-right" className="headerbar-button">
 						<div className="headerbar-button-icon ion-chevron-left" />
-						<div className="headerbar-button-label">Components</div>
+						<div className="headerbar-button-label">Back</div>
 					</Link>
 					<div className="headerbar-label">Header List</div>
 				</UI.FlexBlock>

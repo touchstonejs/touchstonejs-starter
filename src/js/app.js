@@ -18,7 +18,7 @@ var views = {
 	'components-feedback': require('./views/components/feedback'),
 	
 	'components-headerbar': require('./views/components/bar-header'),
-	'components-statusbar': require('./views/components/bar-status'),
+	'components-alertbar':  require('./views/components/bar-alert'),
 	'components-actionbar': require('./views/components/bar-action'),
 	'components-footerbar': require('./views/components/bar-footer'),
 

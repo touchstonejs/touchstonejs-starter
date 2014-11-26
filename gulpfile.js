@@ -123,12 +123,14 @@ gulp.task('watch-scripts', function() {
 
 gulp.task('build', ['html', 'images', 'fonts', 'less', 'scripts']);
 
-gulp.task('watch', ['html', 'images', 'fonts', 'less', 'watch-scripts', 'serve'], function() {
+gulp.task('watch', ['html', 'images', 'fonts', 'less', 'watch-scripts'], function() {
 	gulp.watch(['src/index.html'], ['html']);
 	gulp.watch(['src/css/**/*.less'], ['less']);
 	gulp.watch(['src/img/**/*.*'], ['images']);
 	gulp.watch(['src/fonts/**/*.*'], ['fonts']);
 });
+
+gulp.task('dev', ['watch', 'serve']);
 
 /**
 * Cordova

@@ -1,5 +1,6 @@
 module.exports = {
 	Keypad: require('./Keypad'),
+	Passcode: require('./Passcode'),
 	LoadingButton: require('./LoadingButton'),
 
 	Feedback: require('./Feedback'),

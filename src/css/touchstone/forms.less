@@ -9,40 +9,18 @@
 // ------------------------------
 
 
-// wrapper
-
-.field-item {
-	.display-flex();
-	line-height: 1;
-	padding-left: @field-padding-horizontal;
-	position: relative;
-
-	&:before {
-		.size(100%,1px);
-		background-color: rgba(0, 0, 0, 0.1);
-		content: " ";
-		left: @field-padding-horizontal;
-		position: absolute;
-		top: 0;
-	}
-	&.is-first:before {
-		display: none;
-	}
-}
-
-
 // label + control
 
 .field-label {
 	color: @gray;
 	line-height: @font-size-base + 3; // allows room for decenders. applied by the browser to inputs
-	padding: @field-padding-vertical @field-padding-horizontal @field-padding-vertical 0;
+	// padding: @field-padding-vertical @field-padding-horizontal @field-padding-vertical 0;
 	width: 35%;
 }
 
 .field-control {
 	line-height: @font-size-base + 3; // allows room for decenders. applied by the browser to inputs
-	padding: @field-padding-vertical 0;
+	// padding: @field-padding-vertical 0;
 	position: relative;
 	width: 65%;
 }
@@ -59,6 +37,7 @@
 	display: inline-block;
 	line-height: 1;
 	outline: none;
+	min-height: @font-size-base + 3;
 	margin: 0;
 	padding: 0;
 	width: 100%;

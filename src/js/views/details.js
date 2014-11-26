@@ -69,15 +69,6 @@ module.exports = React.createClass({
 						<UI.LabelInput label="Location" value={this.props.user.location}   placeholder="Suburb, Country" />
 						<UI.LabelInput label="Joined"   value={this.props.user.joinedDate} noedit />
 						<UI.LabelTextarea label="Bio"   value={this.state.bioValue}        placeholder="Bio" onChange={this.handleBioInput} />
-						<UI.LabelSelect value={this.state.flavour} onChange={this.handleFlavourChange} options={[
-							{ label: 'Vanilla',    value: 'vanilla' },
-							{ label: 'Chocolate',  value: 'chocolate' },
-							{ label: 'Caramel',    value: 'caramel' },
-							{ label: 'Strawberry', value: 'strawberry' },
-							{ label: 'Banana',     value: 'banana' },
-							{ label: 'Lemon',      value: 'lemon' },
-							{ label: 'Pastaccio',  value: 'pastaccio' }
-						]} />
 					</div>
 					<div className="panel gutter-list">
 						<Tappable onTap={this.showFlavourList} className="list-item is-first" component="div">

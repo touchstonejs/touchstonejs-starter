@@ -45,7 +45,7 @@ module.exports = React.createClass({
 	},
 
 	render: function() {
-
+		
 		// fields
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>

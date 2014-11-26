@@ -55,12 +55,12 @@ module.exports = React.createClass({
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.FlexBlock height="44px" className="headerbar">
-					<Link to="home" viewTransition="reveal-from-right" className="headerbar-button">
-						<div className="headerbar-button-icon ion-chevron-left" />
-						<div className="headerbar-button-label">Back</div>
+				<UI.FlexBlock height="44px" className="Headerbar">
+					<Link to="home" viewTransition="reveal-from-right" className="Headerbar-button">
+						<div className="Headerbar-button-icon ion-chevron-left" />
+						<div className="Headerbar-button-label">Back</div>
 					</Link>
-					<div className="headerbar-label">Simple List</div>
+					<div className="Headerbar-label">Simple List</div>
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
 					<SimpleList users={People} />

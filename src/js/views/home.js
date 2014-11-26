@@ -18,8 +18,8 @@ module.exports = React.createClass({
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.FlexBlock height="44px" className="headerbar">
-					<div className="headerbar-label">TouchstoneJS</div>
+				<UI.FlexBlock height="44px" className="Headerbar">
+					<div className="Headerbar-label">TouchstoneJS</div>
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
 					<div className="view-header text-caps">Bars</div>

@@ -28,12 +28,12 @@ module.exports = React.createClass({
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.FlexBlock height="44px" className="headerbar">
-					<Link to="details" viewTransition="reveal-from-right" params={{ user: this.props.user, flavour: this.state.flavour }} className="headerbar-button">
-						<div className="headerbar-button-icon ion-chevron-left" />
-						<div className="headerbar-button-label">Details</div>
+				<UI.FlexBlock height="44px" className="Headerbar">
+					<Link to="details" viewTransition="reveal-from-right" params={{ user: this.props.user, flavour: this.state.flavour }} className="Headerbar-button">
+						<div className="Headerbar-button-icon ion-chevron-left" />
+						<div className="Headerbar-button-label">Details</div>
 					</Link>
-					<div className="headerbar-label">Favourite Icecream</div>
+					<div className="Headerbar-label">Favourite Icecream</div>
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
 					<div className="panel panel--first ios-list">

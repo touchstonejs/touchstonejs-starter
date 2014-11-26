@@ -27,7 +27,7 @@ module.exports = React.createClass({
 	render: function() {
 
 		var headerbarClass = SetClass({
-			'headerbar': true,
+			'Headerbar': true,
 			'primary': this.state.typeKey === 'blue',
 			'success': this.state.typeKey === 'green',
 			'warning': this.state.typeKey === 'yellow',
@@ -38,11 +38,11 @@ module.exports = React.createClass({
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
 				<UI.FlexBlock height="44px" className={headerbarClass}>
-					<Link to="home" viewTransition="reveal-from-right" className="headerbar-button">
-						<div className="headerbar-button-icon ion-chevron-left" />
-						<div className="headerbar-button-label">Back</div>
+					<Link to="home" viewTransition="reveal-from-right" className="Headerbar-button">
+						<div className="Headerbar-button-icon ion-chevron-left" />
+						<div className="Headerbar-button-label">Back</div>
 					</Link>
-					<div className="headerbar-label">{this.state.typeKey.substr(0,1).toUpperCase()}{this.state.typeKey.substr(1)} Header</div>
+					<div className="Headerbar-label">{this.state.typeKey.substr(0,1).toUpperCase()}{this.state.typeKey.substr(1)} Header</div>
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
 					<div className="panel panel--first ios-list">

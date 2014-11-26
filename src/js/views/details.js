@@ -54,21 +54,21 @@ module.exports = React.createClass({
 		// fields
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.FlexBlock height="44px" className="headerbar">
-					<Link to="home" viewTransition="reveal-from-right" className="headerbar-button">
-						<div className="headerbar-button-icon ion-chevron-left" />
-						<div className="headerbar-button-label">Back</div>
+				<UI.FlexBlock height="44px" className="Headerbar">
+					<Link to="home" viewTransition="reveal-from-right" className="Headerbar-button">
+						<div className="Headerbar-button-icon ion-chevron-left" />
+						<div className="Headerbar-button-label">Back</div>
 					</Link>
-					<div className="headerbar-label">{this.props.user.name}</div>
-					<UI.LoadingButton loading={this.state.processing} disabled={!this.state.formIsValid} onTap={this.processForm} label="Save" className="headerbar-button headerbar-button-label right is-primary" />
+					<div className="Headerbar-label">{this.props.user.name}</div>
+					<UI.LoadingButton loading={this.state.processing} disabled={!this.state.formIsValid} onTap={this.processForm} label="Save" className="Headerbar-button Headerbar-button-label right is-primary" />
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
 					{/*<div className="view-header text-caps">Basic details</div>*/}
 					<div className="panel panel--first ios-list">
 						<UI.LabelInput label="Name"     value={this.props.user.name}       placeholder="Full name" first />
 						<UI.LabelInput label="Location" value={this.props.user.location}   placeholder="Suburb, Country" />
-						<UI.LabelInput label="Joined"   value={this.props.user.joinedDate} noedit />
-						<UI.LabelTextarea label="Bio"   value={this.state.bioValue}        placeholder="Bio" onChange={this.handleBioInput} />
+						<UI.LabelInput label="Joined"   value={this.props.user.joinedDate} placeholder="Date" />
+						<UI.LabelTextarea label="Bio"   value={this.state.bioValue}        placeholder="(required)" onChange={this.handleBioInput} />
 					</div>
 					<div className="panel ios-list">
 						<Tappable onTap={this.showFlavourList} className="list-item is-first" component="div">

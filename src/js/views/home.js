@@ -14,7 +14,42 @@ var Icons = {
 module.exports = React.createClass({
 	mixins: [Navigation],
 
+	getInitialState: function() {
+		return {
+			modalMessageVisible: false,
+			modalLoadingVisible: false
+		};
+	},
+
+	showMessageModal: function() {
+		console.log('modal should open');
+		this.setState({
+			modalMessageVisible: true
+		});
+
+		setTimeout(function() {
+			this.setState({
+				modalMessageVisible: false
+			});
+		}.bind(this), 5000);
+	},
+
+	showLoadingModal: function() {
+		console.log('modal should open');
+		this.setState({
+			modalLoadingVisible: true
+		});
+
+		setTimeout(function() {
+			this.setState({
+				modalLoadingVisible: false
+			});
+		}.bind(this), 5000);
+	},
+
 	render: function() {
+
+		var modalMessageClass = !this.state.modalMessageVisible ? 'hidden' : '';
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
@@ -48,10 +83,12 @@ module.exports = React.createClass({
 					</div>
 					<div className="view-header text-caps">Modals</div>
 					<div className="panel ios-list">
-						<Link to="components-modal-message" viewTransition="show-from-right" className="list-item is-tappable">Modal Message</Link>
-						<Link to="components-modal-loading" viewTransition="show-from-right" className="list-item is-tappable">Modal Loading</Link>
+						<Tappable onTap={this.showMessageModal} className="list-item is-tappable">Modal Message</Tappable>
+						<Tappable onTap={this.showLoadingModal} className="list-item is-tappable">Modal Loading</Tappable>
 					</div>
 				</UI.FlexBlock>
+				<UI.Modal header="This is a modal" text="It will close in 5 seconds" visible={this.state.modalMessageVisible} className="text-center" />
+				<UI.Modal text="Loading..." iconKey="ion-load-d" iconType="default" visible={this.state.modalLoadingVisible} className="Modal-loading" />
 			</UI.FlexLayout>
 		);
 	}

@@ -1,0 +1,88 @@
+// 
+// Modal
+// ------------------------------
+
+.Modal {
+	.transition( all 300ms );
+	.fill-space();
+	position: fixed;
+	opacity: 0;
+	visibility: hidden;
+	z-index: 1000;
+
+	// show
+	&.visible {
+		visibility: visible;
+		opacity: 1;
+	}
+}
+
+
+// dialog
+
+.Modal-dialog {
+	.translate(-50%,-50%);
+	background-color: white;
+	border-radius: @border-radius;
+	box-shadow: 0 1px 6px -1px rgba(0, 0, 0, 0.2);
+	left: 50%;
+	max-width: 90%;
+	padding: @gutter-large;
+	position: fixed;
+	top: 50%;
+	width: 300px;
+	z-index: 1200;
+}
+
+
+// backdrop
+
+.Modal-backdrop {
+	.fill-space();
+	background-color: black;
+	opacity: .5;
+	position: fixed;
+	z-index: 1100;
+}
+
+
+// header
+
+.Modal-header {
+	font-weight: 500;
+}
+
+
+// icon
+
+.Modal-icon {
+	.square( @ionicons-size-massive );
+	display: inline-block;
+	font-size: @ionicons-size-massive;
+	line-height: @ionicons-size-massive;
+
+	&.muted { color: @gray-light; }
+	&.primary { color: @app-primary; }
+	&.success { color: @app-success; }
+	&.warning { color: @app-warning; }
+	&.danger  { color: @app-danger; }
+}
+
+
+// loading
+
+.Modal-loading {
+	text-align: center;
+
+	&.Modal-dialog {
+		.transform( none );
+		left: 50%;
+		margin: -60px 0 0 -60px;
+		padding: @gutter-base;
+		top: 50%;
+		width: 120px;
+	}
+	.Modal-icon {
+		.animation( spin 2s linear infinite );
+	}
+}

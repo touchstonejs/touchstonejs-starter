@@ -3,6 +3,7 @@ module.exports = {
 	LoadingButton: require('./LoadingButton'),
 
 	Feedback: require('./Feedback'),
+	Modal: require('./Modal'),
 	
 	ActionButtons: require('./ActionButtons'),
 	ActionButton: require('./ActionButton'),

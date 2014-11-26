@@ -12,21 +12,13 @@ module.exports = React.createClass({
 	},
 	getDefaultProps: function() {
 		return {
-			className: ''
-		};
-	},
-	getInitialState: function() {
-		return {
-			value: this.props.value
+			className: '',
+			rows: 3
 		};
 	},
 	onChange: function(value) {
 		if (this.props.onChange) {
 			this.props.onChange(value);
-		} else {
-			this.setState({
-				value: event.target.value
-			});
 		}
 	},
 	render: function() {
@@ -40,7 +32,7 @@ module.exports = React.createClass({
 		var value = this.props.noedit ? (
 			<div className="field">{this.state.value}</div>
 		) : (
-			<textarea type={this.props.type} value={this.state.value} onChange={this.onChange.bind(this, value)} className="field" placeholder={this.props.placeholder} rows="3" />
+			<textarea type={this.props.type} value={this.props.value} onChange={this.onChange} className="field" placeholder={this.props.placeholder} rows={this.props.rows} />
 		);
 
 		return (

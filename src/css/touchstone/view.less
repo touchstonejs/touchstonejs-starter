@@ -76,32 +76,28 @@
 // ------------------------------
 
 
-// disable user interaction on views whilst they transition
-
-[class="view-transition"] {
-	pointer-events: none;
-}
+// React's CSSTransitionGroup requires an animation so we transition from .99 opacity to 1 with "artificial"
 
 
 // transition: none (default)
-.view-transition-none-enter { .animation( viewStill 10ms ); }
+.view-transition-none-enter { .animation( artificial 10ms ); }
 .view-transition-none-leave { .animation( fade 10ms ); }
 
 
 // transition: fade
-.view-transition-fade-enter { .animation( viewStill 380ms ); }
+.view-transition-fade-enter { .animation( artificial 10ms ); }
 .view-transition-fade-leave { .animation( fade 380ms ); }
 
 
 // transition: fade expand 
 
-.view-transition-fade-expand-enter { .animation( viewStill 320ms ); }
+.view-transition-fade-expand-enter { .animation( artificial 10ms ); }
 .view-transition-fade-expand-leave { .animation( fadeExpand 320ms ); }
 
 
 // transition: fade contract 
 
-.view-transition-fade-contract-enter { .animation( viewStill 320ms ); }
+.view-transition-fade-contract-enter { .animation( artificial 10ms ); }
 .view-transition-fade-contract-leave { .animation( fadeContract 320ms ); }
 
 
@@ -146,7 +142,7 @@
 // blank state
 
 .view-transition-show-from-top-leave,
-.view-transition-show-from-bottom-leave { .animation-name( viewStill ); }
+.view-transition-show-from-bottom-leave { .animation-name( artificial ); }
 
 // variants
 
@@ -200,7 +196,7 @@
 // blank state
 
 .view-transition-reveal-from-top-enter,
-.view-transition-reveal-from-bottom-enter { .animation-name( viewStill ); }
+.view-transition-reveal-from-bottom-enter { .animation-name( artificial ); }
 
 // variants
 

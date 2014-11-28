@@ -1,4 +1,5 @@
-var React = require('react/addons');
+var React = require('react/addons'),
+	classnames = require('classnames');
 
 module.exports = React.createClass({
 	displayName: 'FlexBlock',
@@ -15,7 +16,7 @@ module.exports = React.createClass({
 	},
 	render: function() {
 
-		var className = this.props.className ? this.props.className : '';
+		var className = classnames((this.props.scrollable ? 'springy-scrolling' : ''), this.props.className);
 		var inlineStyle = {};
 
 		// set height on blocks if provided

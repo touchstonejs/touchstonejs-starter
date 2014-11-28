@@ -9,14 +9,19 @@
 // ------------------------------
 
 .Headerbar {
+	.panel-base();
 	background-color: @headerbar-bg;
-	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
 	color: @headerbar-color;
 	height: @headerbar-height;
 	line-height: @headerbar-height;
-	// overflow: hidden;
+	margin: 0;
 	position: relative;
 	z-index: 3;
+
+	// hide the top border added by the 'panel-base' mixin
+	&:before {
+		display: none;
+	}
 }
 
 
@@ -142,6 +147,93 @@
 	text-align: center;
 	width: 100%;
 }
+
+
+
+
+// FORM
+// ------------------------------
+
+.Headerbar-form {
+	.display-flex();
+	line-height: 1;
+	padding: @headerbar-field-gutter 0;
+	
+	// bring closer to labelled headerbar
+	.Headerbar + & {
+		padding-top: 0;
+	}
+}
+.Headerbar-form-field {
+	padding: 0 @headerbar-field-gutter;
+	position: relative;
+
+	// if there's only one component it will fill all available space,
+	// otherwise pick one component to stretch with "is-primary"
+	&:only-child,
+	&.is-primary {
+		.flex-grow(1);
+	}
+
+	// flex ignores margin collapse so this is the best solution
+	& + & {
+		padding-left: 0;
+	}
+}
+.Headerbar-form-input {
+	.placeholder( @field-placeholder );
+	background: white;
+	border: 0;
+	border-radius: @border-radius-small;
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+	color: @field-color;
+	height: @headerbar-field-height;
+	line-height: @headerbar-field-height;
+	margin: 0;
+	outline: none;
+	padding: @headerbar-field-gutter (@headerbar-field-gutter * 2);
+	width: 100%;
+	-webkit-appearance: none;
+}
+
+
+// icon
+
+/* helper mixin */
+.align-headerbar-form-icon(@color, @left, @right) {
+	.display-flex();
+	.align-items(center);
+	color: @color;
+	font-size: @ionicons-size-base;
+	height: 100%;
+	padding: 0 @headerbar-field-gutter;
+	position: absolute;
+	left: @left;
+	right: @right;
+	top: 0;
+}
+
+/* actual styles */
+.Headerbar-form-icon {
+
+	.Headerbar-form-input {
+		padding-left: @ionicons-size-base + @headerbar-field-gutter;
+	}
+	
+	&:before {
+		.align-headerbar-form-icon(@field-placeholder, @headerbar-field-gutter, auto);
+	}
+}
+
+.Headerbar-form-clear {
+	.align-headerbar-form-icon(@field-placeholder, auto, @headerbar-field-gutter);
+
+	&.Tappable-active {
+		color: @gray-light;
+	}
+}
+
+
 
 
 

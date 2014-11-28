@@ -10,13 +10,15 @@
 	color: @text-color;
 	// line-height: @font-size-base + 3;
 	line-height: 1;
+	overflow: hidden;
 	padding: @field-padding-vertical @field-padding-horizontal;
 	position: relative;
+	z-index: 1;
 
 	// separator
 	&:before {
-		.size(100%,1px);
-		background-color: rgba(0, 0, 0, 0.1);
+		.size(100%,.5px);
+		background-color: @list-divider-color;
 		content: " ";
 		left: 0;
 		position: absolute;
@@ -56,7 +58,9 @@
 	}
 }
 
+
 // provide the little arrow indicating a view will be shown on tap
+
 .list-item.is-tappable:after {
 	.pseudo-ionicon(#ccc, @ionicon-var-chevron-right, @ionicons-size-base);
 	.align-items(center);
@@ -67,16 +71,26 @@
 	top: 0;
 }
 
-.list-title {
+
+// text
+
+.list-item-title {
 	.inline-align();
+	.text-overflow();
+
+	// stop descenders being cropped due to text-overflow
+	margin-bottom: -2px;
+	padding-bottom: 2px;
 }
-.list-subtitle {
+.list-item-subtitle {
 	color: @gray;
 	font-size: 85%;
 	font-weight: 300;
 }
 
+
 // center align elements
+
 .center-align-left,
 .center-align-right {
 	.display-flex();
@@ -205,17 +219,17 @@
 // headers
 
 .list-header {
+	.panel-base();
 	background-color: @body-bg;
-	box-shadow: 0 1px 0 mix(black, white, 15%), 0 -1px 0 mix(black, white, 15%);
-	color: @gray-light;
+	color: @panel-header-color;
 	display: block;
 	font-size: @font-size-tiny;
 	font-weight: 500;
 	line-height: 1.1;
+	margin: 0;
 	padding: (@padding-base-vertical / 2) @padding-base-horizontal;
 	position: relative;
 	text-transform: uppercase;
-	z-index: 2;
 }
 
 

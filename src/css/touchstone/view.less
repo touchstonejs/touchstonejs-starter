@@ -18,11 +18,33 @@
 // ------------------------------
 
 
+// introduce iOS style springy scrolling
+
+.springy-scrolling {
+	position: relative;
+
+	&:before,
+	&:after {
+		.square(1px;);
+		content: "";
+		position: absolute;
+	}
+
+	&:before {
+		bottom: -1px;
+	}
+	&:after {
+		top: -1px;
+	}
+}
+
+
 // setup
 
 .view {
 	.fill-space();
 	background-color: @body-bg;
+	overflow: hidden;
 	position: fixed;
 
 	// stop weird text rendering issue after transform/animation end
@@ -40,7 +62,7 @@
 	// view whilst it's processing
 	&:after {
 		.animation( fadeIn 150ms );
-		.fill-space();
+		.fill-space(@statusbar-height,0,0,0);
 		background-color: rgba(255, 255, 255, 0.66);
 		content: "";
 		z-index: 2;

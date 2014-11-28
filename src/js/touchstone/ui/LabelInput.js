@@ -4,6 +4,7 @@ var React = require('react/addons'),
 module.exports = React.createClass({
 	propTypes: {
 		className: React.PropTypes.string,
+		onChange: React.PropTypes.func,
 		type: React.PropTypes.string,
 		label: React.PropTypes.string,
 		noedit: React.PropTypes.bool,
@@ -11,31 +12,21 @@ module.exports = React.createClass({
 	},
 	getDefaultProps: function() {
 		return {
-			className: ''
+			type: 'text',
+			noedit: false
 		};
-	},
-	getInitialState: function() {
-		return {
-			value: this.props.value
-		};
-	},
-	updateInputValue: function(event) {
-		this.setState({
-			value: event.target.value
-		});
 	},
 	render: function() {
-		var className = SetClass({
+		var className = SetClass(this.props.className, {
 			'list-item': true,
 			'is-first': this.props.first
 		});
-		className += this.props.className ? (' ' + this.props.className) : ''
 
 		// output a field, or a div if not editable
 		var value = this.props.noedit ? (
-			<div className="field">{this.state.value}</div>
+			<div className="field">{this.props.value}</div>
 		) : (
-			<input type={this.props.type} value={this.state.value} onChange={this.updateInputValue} className="field" placeholder={this.props.placeholder} />
+			<input type={this.props.type} value={this.props.value} onChange={this.props.onChange} className="field" placeholder={this.props.placeholder} />
 		);
 
 		return (

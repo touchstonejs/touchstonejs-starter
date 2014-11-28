@@ -13,7 +13,8 @@ button {
 // ------------------------------
 
 .btn {
-	background: none;
+	.box-shadow( inset 0 -1px 0 rgba(0,0,0,0.1) );
+	border-radius: @border-radius-base;
 	border: 0 none;
 	display: inline-block;
 	font-weight: 500;
@@ -53,28 +54,85 @@ button {
 
 
 
+// Variants
+// ------------------------------
+
+
+// default button
+
+.btn-default {
+	#gradient .vertical(#eee, #ddd);
+	color: @text-color;
+
+	&:hover,
+	&:focus {
+		#gradient .vertical(#f6f6f6, #e6e6e6);
+		color: @text-color;
+	}
+
+	&:active,
+	&.active {
+		background: #ddd;
+		box-shadow: inset 0 1px 2px rgba(0,0,0,.125);
+	}
+}
+
+
+// colour variants
+
+// .btn-default {
+// 	.button-variant(#333, #e6e6e6, #ccc);
+// }
+.btn-primary {
+	.button-variant(white, @app-primary);
+}
+.btn-success {
+	.button-variant(white, @app-success);
+}
+.btn-info {
+	.button-variant(white, @app-info);
+}
+.btn-warning {
+	.button-variant(white, @app-warning);
+}
+.btn-danger {
+	.button-variant(white, @app-danger);
+}
+
+.btn-block {
+	display: block;
+	width: 100%;
+}
+
+
+
 
 // Panel Buttons
 // ------------------------------
 
 .panel-button {
-	background-color: white;
+	// de-chrome
 	border: 0 none;
-	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
-	color: @text-color;
-	display: block;
 	font-weight: normal;
 	line-height: 1;
-	margin-bottom: @gutter-large;
-	padding: @padding-base-vertical @padding-base-horizontal;
-	position: relative;
 	outline: none;
-	text-align: center;
 	text-decoration: none;
-	width: 100%;
 	-webkit-appearance: none;
 
+	// default styles
+	.panel-base();
+
+	// re-chrome
+	color: @text-color;
+	display: block;
+	padding: @padding-base-vertical @padding-base-horizontal;
+	position: relative;
+	text-align: center;
+	width: 100%;
+
+	&.muted { color: @gray; }
 	&.primary { color: @app-primary; }
+	&.info { color: @app-info; }
 	&.success { color: @app-success; }
 	&.warning { color: @app-warning; }
 	&.danger { color: @app-danger; }
@@ -90,6 +148,18 @@ button {
 	&.Tappable-active {
 		background-color: @gray-lighter;
 	}
+
+
+	// add disabled state
+
+	&.disabled,
+	&[disabled] {
+		pointer-events: none;
+		opacity: .5;
+	}
+}
+.panel-button--first {
+	margin-top: @gutter-large;
 }
 
 
@@ -132,7 +202,7 @@ button {
 
 
 
-// Strip Buttons
+// Action Buttons
 // ------------------------------
 
 .action-buttons {
@@ -247,6 +317,10 @@ button {
 	text-decoration: none;
 	-webkit-appearance: none;
 
+
+	// tapped/active state
+
+	&.loading,
 	&.Tappable-active {
 		background-color: darken(@app-primary, 10%);
 
@@ -255,8 +329,32 @@ button {
 			box-shadow: 0 0 0 4px darken(@app-primary, 10%);
 		}
 	}
+
+	
+	// stow the button before the scanner comes up
+
+	&.loading {
+		.transition( all 500ms cubic-bezier(0.680, -0.660, 0.265, 1.660) );
+		.translateY(125%);
+	}
+
+
+	// gray out the button if disabled
+
+	&[disabled],
+	&.disabled {
+		background-color: @gray;
+		opacity: .2;
+		pointer-events: none;
+		
+		.scan-button-icon {
+			box-shadow: 0 0 0 4px @gray;
+		}
+	}
 }
 
+
+// icon
 
 .scan-button-icon {
 	.inline-align();
@@ -280,8 +378,8 @@ button {
 		.inline-align();
 		.square(32px);
 
-		// pull up just a wee bit
-		margin-top: -4px;
+		// magic numbers are bad, forget you saw this
+		margin-top: -7px;
 	}
 }
 

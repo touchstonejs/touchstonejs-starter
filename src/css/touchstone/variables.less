@@ -6,12 +6,11 @@
 // Colors
 // ------------------------------
 
-@gray-darker:                   lighten(#000, 13.5%); // #222
-@gray-dark:                     lighten(#000, 20%);   // #333
-@gray:                          lighten(#000, 40%); // #666
-// @gray-light:                    lighten(#000, 60%); // #999
-@gray-light:                    #8e8e93; // iOS 7 gray light
-@gray-lighter:                  lighten(#000, 93.5%); // #eee
+@gray-darker:            lighten(#000, 13.5%); // #222
+@gray-dark:              lighten(#000, 20%);   // #333
+@gray:                   lighten(#000, 40%); // #666
+@gray-light:             lighten(#000, 60%); // #999
+@gray-lighter:           lighten(#000, 93.5%); // #eee
 
 @app-primary:                   #348dd9; // blue
 
@@ -27,26 +26,14 @@
 @app-danger:                    #e74c3c;
 
 
-
-
 // Scaffolding
 // ------------------------------
 
 @body-bg:                      #efeff4;
-@text-color:                   #111;
+@text-color:                   black;
 
 @link-color:                   @app-primary;
-@link-hover-color:             darken(@link-color, 10%);
-
-
-// Onboarding
-// ------------------------------
-
-@onboarding-body-bg:           @app-primary;
-@onboarding-text-color:        white;
-
-@onboarding-link-color:        #ffe359;
-@onboarding-link-hover-color:  darken(@onboarding-link-color, 10%);
+@link-hover-color:             lighten(@link-color, 10%);
 
 
 // Typography
@@ -100,8 +87,11 @@
 @gutter-base:                 10px;
 @gutter-large:                34px;
 
+@list-divider-color:          mix(black, @body-bg, 20%);
 @list-icon-size:              29px;
 @list-avatar-size:            40px;
+
+@panel-header-color:          #4d4d4d;
 
 
 // views
@@ -131,6 +121,9 @@
 @headerbar-inverted-button-color:    fade(white, 80%);
 @headerbar-inverted-button-color-disabled:    fade(white, 40%);
 
+@headerbar-field-gutter:     8px;
+@headerbar-field-height:     28px;
+
 
 // tables
 
@@ -150,28 +143,6 @@
 @field-height:                44px;
 @field-padding-vertical:      @padding-base-vertical;
 @field-padding-horizontal:    @padding-base-horizontal;
-
-
-// Dropdowns
-// -------------------------
-
-@dropdown-bg:                    #fff;
-@dropdown-border:                rgba(0,0,0,.15);
-@dropdown-fallback-border:       #ccc;
-@dropdown-divider-bg:            #e5e5e5;
-
-@dropdown-link-active-color:     #fff;
-@dropdown-link-active-bg:        @link-color;
-
-@dropdown-link-color:            @text-color;
-@dropdown-link-hover-color:      @text-color;
-@dropdown-link-hover-bg:         @gray-lighter;
-
-@dropdown-link-disabled-color:   @gray-light;
-
-@dropdown-header-color:          @gray-light;
-
-@dropdown-caret-color:           #000;
 
 
 

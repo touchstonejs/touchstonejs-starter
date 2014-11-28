@@ -24,11 +24,10 @@ module.exports = React.createClass({
 	},
 	render: function() {
 		// Class Name
-		var className = SetClass({
+		var className = SetClass(this.props.className, {
 			'loading-button': true,
 			'is-loading': this.props.loading
 		});
-		className += this.props.className ? (' ' + this.props.className) : '';
 
 		// Set Variables
 		var label = this.props.label ? <div className="loading-button-text">{this.props.label}</div> : null;

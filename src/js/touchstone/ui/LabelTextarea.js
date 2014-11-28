@@ -16,23 +16,21 @@ module.exports = React.createClass({
 			rows: 3
 		};
 	},
-	onChange: function(value) {
-		if (this.props.onChange) {
-			this.props.onChange(value);
-		}
-	},
 	render: function() {
+		var className = SetClass(this.props.className, {
+			'list-item': true,
+			'is-first': this.props.first
+		});
 		var className = SetClass({
 			'list-item': true,
 			'is-first': this.props.first
 		});
-		className += this.props.className ? (' ' + this.props.className) : ''
 
 		// output a field, or a div if not editable
 		var value = this.props.noedit ? (
 			<div className="field">{this.state.value}</div>
 		) : (
-			<textarea type={this.props.type} value={this.props.value} onChange={this.onChange} className="field" placeholder={this.props.placeholder} rows={this.props.rows} />
+			<textarea type={this.props.type} value={this.props.value} onChange={this.props.onChange} className="field" placeholder={this.props.placeholder} rows={this.props.rows} />
 		);
 
 		return (

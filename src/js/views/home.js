@@ -49,13 +49,12 @@ module.exports = React.createClass({
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.FlexBlock height="44px" className="Headerbar primary">
-					<div className="Headerbar-label">TouchstoneJS</div>
-				</UI.FlexBlock>
+				<UI.Headerbar label="TouchstoneJS" type="primary" />
 				<UI.FlexBlock scrollable>
 					<div className="panel-header text-caps">Bars</div>
 					<div className="panel ios-list">
 						<Link component="div" to="component-headerbar" viewTransition="show-from-right" className="list-item is-tappable">Header Bar</Link>
+						<Link component="div" to="component-headerbar-search" viewTransition="show-from-right" className="list-item is-tappable">Header Bar Search</Link>
 						<Link component="div" to="component-alertbar" viewTransition="show-from-right" className="list-item is-tappable">Alert Bar</Link>
 						<Link component="div" to="component-actionbar" viewTransition="show-from-right" className="list-item is-tappable">Action Bar</Link>
 						<Link component="div" to="component-footerbar" viewTransition="show-from-right" className="list-item is-tappable">Footer Bar</Link>
@@ -64,7 +63,7 @@ module.exports = React.createClass({
 					<div className="panel ios-list">
 						<Link component="div" to="component-simple-list" viewTransition="show-from-right" className="list-item is-tappable">Simple List</Link>
 						<Link component="div" to="component-complex-list" viewTransition="show-from-right" className="list-item is-tappable">Complex List</Link>
-						<Link component="div" to="component-header-list" viewTransition="show-from-right" className="list-item is-tappable">Categorised List</Link>
+						<Link component="div" to="component-categorised-list" viewTransition="show-from-right" className="list-item is-tappable">Categorised List</Link>
 					</div>
 					<div className="panel-header text-caps">UI Elements</div>
 					<div className="panel ios-list">

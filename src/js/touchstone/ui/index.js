@@ -9,6 +9,9 @@ module.exports = {
 	ActionButtons: require('./ActionButtons'),
 	ActionButton: require('./ActionButton'),
 	
+	Headerbar: require('./Headerbar'),
+	HeaderbarButton: require('./HeaderbarButton'),
+	
 	FlexLayout: require('./FlexLayout'),
 	FlexBlock: require('./FlexBlock'),
 
@@ -17,16 +20,3 @@ module.exports = {
 	LabelSelect: require('./LabelSelect'),
 	LabelTextarea: require('./LabelTextarea')
 };
-
-/*
-
-TODO
-
-- Input
-	- clear button (x) on the right
-- Button
-- Overlay Warning. for instance;
-	- please check your connection
-	- please update your app
-
-*/

@@ -21,9 +21,9 @@ var SimpleListItem = React.createClass({
 	render: function() {
 
 		return (
-			<Tappable onTap={this.showDetailsView} className="list-item is-tappable" component="div">
+			<Link to="details" viewTransition="show-from-right" params={{ user: this.props.user, prevView: 'component-simple-list' }} className="list-item is-tappable" component="div">
 				<div className="list-title">{this.props.user.name}</div>
-			</Tappable>
+			</Link>
 		);
 	}
 });
@@ -55,10 +55,9 @@ module.exports = React.createClass({
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.FlexBlock height="44px" className="Headerbar">
-					<Link to="home" viewTransition="reveal-from-right" className="Headerbar-button ion-chevron-left" component="button">Back</Link>
-					<div className="Headerbar-label">Simple List</div>
-				</UI.FlexBlock>
+				<UI.Headerbar label="Simple List">
+					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
+				</UI.Headerbar>
 				<UI.FlexBlock scrollable>
 					<SimpleList users={People} />
 				</UI.FlexBlock>

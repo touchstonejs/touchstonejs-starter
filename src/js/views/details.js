@@ -11,6 +11,12 @@ var moment = require('moment')
 module.exports = React.createClass({
 	mixins: [Navigation],
 
+	getDefaultProps: function() {
+		return {
+			prevView: 'home'
+		}
+	},
+
 	getInitialState: function() {
 		return {
 			processing: false,
@@ -49,11 +55,10 @@ module.exports = React.createClass({
 		// fields
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.FlexBlock height="44px" className="Headerbar">
-					<Link to="home" viewTransition="reveal-from-right" className="Headerbar-button ion-chevron-left" component="button">Back</Link>
-					<div className="Headerbar-label">{this.props.user.name}</div>
+				<UI.Headerbar label={this.props.user.name}>
+					<UI.HeaderbarButton showView={this.props.prevView} viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 					<UI.LoadingButton loading={this.state.processing} disabled={!this.state.formIsValid} onTap={this.processForm} label="Save" className="Headerbar-button right is-primary" />
-				</UI.FlexBlock>
+				</UI.Headerbar>
 				<UI.FlexBlock scrollable>
 					{/*<div className="panel-header text-caps">Basic details</div>*/}
 					<div className="panel panel--first ios-list">

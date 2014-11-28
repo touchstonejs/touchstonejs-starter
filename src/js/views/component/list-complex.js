@@ -12,14 +12,10 @@ var People = require('../../../data/people');
 var ComplexListItem = React.createClass({
 	mixins: [Navigation],
 
-	showDetailsView: function() {
-		this.showView('details', 'show-from-right', { user: this.props.user })
-	},
-
 	render: function() {
 
 		return (
-			<Tappable onTap={this.showDetailsView} className="list-item user-item list-item-icon-left is-tappable" component="div">
+			<Link to="details" viewTransition="show-from-right" params={{ user: this.props.user, prevView: 'component-complex-list' }} className="list-item user-item list-item-icon-left is-tappable" component="div">
 				<span className="list-icon list-avatar left">
 					<img src={this.props.user.img} />
 				</span>
@@ -27,7 +23,7 @@ var ComplexListItem = React.createClass({
 					<div className="list-title">{this.props.user.name}</div>
 					<div className="list-subtitle">{this.props.user.location}</div>
 				</div>
-			</Tappable>
+			</Link>
 		);
 	}
 });
@@ -59,10 +55,9 @@ module.exports = React.createClass({
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.FlexBlock height="44px" className="Headerbar">
-					<Link to="home" viewTransition="reveal-from-right" className="Headerbar-button ion-chevron-left" component="button">Back</Link>
-					<div className="Headerbar-label">Complex List</div>
-				</UI.FlexBlock>
+				<UI.Headerbar label="Complex List">
+					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
+				</UI.Headerbar>
 				<UI.FlexBlock scrollable>
 					<ComplexList users={People} />
 				</UI.FlexBlock>

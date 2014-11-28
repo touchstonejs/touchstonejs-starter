@@ -88,13 +88,17 @@
 		bottom: -1px;
 	}
 	@media (-webkit-min-device-pixel-ratio: 2) {
+		&:after,
 		&:before {
-			height: .5px;
-			top: -.5px;
+			.scaleY(0.5);
+		}
+		&:before {
+			.transform-origin(0 bottom);
+			top: -1px;
 		}
 		&:after {
-			bottom: -.5px;
-			height: .5px;
+			.transform-origin(0 top);
+			bottom: -1px;
 		}
 	}
 }

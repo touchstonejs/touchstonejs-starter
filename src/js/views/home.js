@@ -53,29 +53,29 @@ module.exports = React.createClass({
 					<div className="Headerbar-label">TouchstoneJS</div>
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
-					<div className="view-header text-caps">Bars</div>
+					<div className="panel-header text-caps">Bars</div>
 					<div className="panel ios-list">
 						<Link component="div" to="component-headerbar" viewTransition="show-from-right" className="list-item is-tappable">Header Bar</Link>
 						<Link component="div" to="component-alertbar" viewTransition="show-from-right" className="list-item is-tappable">Alert Bar</Link>
 						<Link component="div" to="component-actionbar" viewTransition="show-from-right" className="list-item is-tappable">Action Bar</Link>
 						<Link component="div" to="component-footerbar" viewTransition="show-from-right" className="list-item is-tappable">Footer Bar</Link>
 					</div>
-					<div className="view-header text-caps">Lists</div>
+					<div className="panel-header text-caps">Lists</div>
 					<div className="panel ios-list">
 						<Link component="div" to="component-simple-list" viewTransition="show-from-right" className="list-item is-tappable">Simple List</Link>
 						<Link component="div" to="component-complex-list" viewTransition="show-from-right" className="list-item is-tappable">Complex List</Link>
 						<Link component="div" to="component-header-list" viewTransition="show-from-right" className="list-item is-tappable">Categorised List</Link>
 					</div>
-					<div className="view-header text-caps">UI Elements</div>
+					<div className="panel-header text-caps">UI Elements</div>
 					<div className="panel ios-list">
 						<Link component="div" to="component-passcode" viewTransition="show-from-right" className="list-item is-tappable">Passcode / Keypad</Link>
 					</div>
-					<div className="view-header text-caps">Application State</div>
+					<div className="panel-header text-caps">Application State</div>
 					<div className="panel ios-list">
 						<Link component="div" to="transitions" viewTransition="show-from-right" className="list-item is-tappable">View Transitions</Link>
 						<Link component="div" to="component-feedback" viewTransition="show-from-right" className="list-item is-tappable">View Feedback</Link>
 					</div>
-					<div className="view-header text-caps">Modals</div>
+					<div className="panel-header text-caps">Modals</div>
 					<div className="panel ios-list">
 						<Tappable component="div" onTap={this.showMessageModal} className="list-item is-tappable">Modal Message</Tappable>
 						<Tappable component="div" onTap={this.showLoadingModal} className="list-item is-tappable">Modal Loading</Tappable>

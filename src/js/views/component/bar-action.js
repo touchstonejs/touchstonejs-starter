@@ -23,28 +23,28 @@ module.exports = React.createClass({
 					<div className="Headerbar-label">Action Bar</div>
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
-					<div className="view-header text-caps">Label Only</div>
+					<div className="panel-header text-caps">Label Only</div>
 					<div className="panel">
 						<UI.ActionButtons>
 							<UI.ActionButton onTap={this.flashAlert.bind(this, 'You tapped an action button.')}  label="Primary Action" />
 							<UI.ActionButton onTap={this.flashAlert.bind(this, 'You tapped an action button.')} label="Secondary Action" />
 						</UI.ActionButtons>
 					</div>
-					<div className="view-header text-caps">Icon Only</div>
+					<div className="panel-header text-caps">Icon Only</div>
 					<div className="panel">
 						<UI.ActionButtons>
 							<UI.ActionButton onTap={this.flashAlert.bind(this, 'You tapped an action button.')}  icon="ion-arrow-up-c" />
 							<UI.ActionButton onTap={this.flashAlert.bind(this, 'You tapped an action button.')} icon="ion-arrow-down-c" />
 						</UI.ActionButtons>
 					</div>
-					<div className="view-header text-caps">Icon & Label</div>
+					<div className="panel-header text-caps">Icon & Label</div>
 					<div className="panel">
 						<UI.ActionButtons>
 							<UI.ActionButton onTap={this.flashAlert.bind(this, 'You tapped an action button.')}  label="Primary Action"    icon="ion-arrow-up-c" />
 							<UI.ActionButton onTap={this.flashAlert.bind(this, 'You tapped an action button.')} label="Secondary Action" icon="ion-arrow-down-c" />
 						</UI.ActionButtons>
 					</div>
-					<div className="view-header text-caps">Easily Customisable</div>
+					<div className="panel-header text-caps">Easily Customisable</div>
 					<UI.ActionButtons className="special">
 						<UI.ActionButton onTap={this.flashAlert.bind(this, 'You tapped an action button.')}  label="Primary"   icon="ion-android-contact" />
 						<UI.ActionButton onTap={this.flashAlert.bind(this, 'You tapped an action button.')}  label="Secondary" icon="ion-android-contacts" />

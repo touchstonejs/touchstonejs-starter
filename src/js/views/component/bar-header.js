@@ -26,13 +26,8 @@ module.exports = React.createClass({
 
 	render: function() {
 
-		var headerbarClass = SetClass({
-			'Headerbar': true,
-			'primary': this.state.typeKey === 'blue',
-			'success': this.state.typeKey === 'green',
-			'warning': this.state.typeKey === 'yellow',
-			'danger': this.state.typeKey === 'red',
-			'inverted': this.state.typeKey === 'black'
+		var headerbarClass = SetClass(this.state.typeKey, {
+			'Headerbar': true
 		});
 
 		return (
@@ -45,11 +40,14 @@ module.exports = React.createClass({
 					<div className="panel panel--first ios-list">
 						<UI.RadioList value={this.state.typeKey} onChange={this.handleHeaderChange} options={[
 							{ label: 'Default',  value: 'default' },
-							{ label: 'Blue',  value: 'blue' },
-							{ label: 'Green',  value: 'green' },
-							{ label: 'Yellow',  value: 'yellow' },
-							{ label: 'Red',   value: 'red' },
-							{ label: 'Black', value: 'black' }
+							{ label: 'Green', value: 'green' },
+							{ label: 'Blue', value: 'blue' },
+							{ label: 'Light Blue', value: 'light-blue' },
+							{ label: 'Yellow', value: 'yellow' },
+							{ label: 'Orange', value: 'orange' },
+							{ label: 'Red', value: 'red' },
+							{ label: 'Pink', value: 'pink' },
+							{ label: 'Purple', value: 'purple' }
 						]} />
 					</div>
 				</UI.FlexBlock>

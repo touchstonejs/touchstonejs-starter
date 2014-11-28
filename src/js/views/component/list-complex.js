@@ -20,8 +20,8 @@ var ComplexListItem = React.createClass({
 					<img src={this.props.user.img} />
 				</span>
 				<div className="list-inner">
-					<div className="list-title">{this.props.user.name}</div>
-					<div className="list-subtitle">{this.props.user.location}</div>
+					<div className="list-item-title">{this.props.user.name}</div>
+					<div className="list-item-subtitle">{this.props.user.location}</div>
 				</div>
 			</Link>
 		);

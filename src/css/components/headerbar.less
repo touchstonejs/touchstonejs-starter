@@ -200,12 +200,13 @@
 	}
 }
 .Headerbar-form-input {
-	.placeholder( @field-placeholder );
-	background: white;
+	.placeholder( @gray-light );
+	.transition( background-color 200ms linear );
+	background: rgba(0, 0, 0, 0.06);
 	border: 0;
-	border-radius: @border-radius-small;
-	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+	border-radius: 5px;
 	color: @field-color;
+	font-size: @font-size-small;
 	height: @headerbar-field-height;
 	line-height: @headerbar-field-height;
 	margin: 0;
@@ -213,6 +214,10 @@
 	padding: @headerbar-field-gutter (@headerbar-field-gutter * 2);
 	width: 100%;
 	-webkit-appearance: none;
+
+	&:active {
+		background: rgba(0, 0, 0, 0.12);
+	}
 }
 
 
@@ -240,12 +245,13 @@
 	}
 	
 	&:before {
-		.align-headerbar-form-icon(@field-placeholder, @headerbar-field-gutter, auto);
+		.align-headerbar-form-icon(@gray-light, @headerbar-field-gutter, auto);
+		pointer-events: none;
 	}
 }
 
 .Headerbar-form-clear {
-	.align-headerbar-form-icon(@field-placeholder, auto, @headerbar-field-gutter);
+	.align-headerbar-form-icon(@gray-light, auto, @headerbar-field-gutter);
 
 	&.Tappable-active {
 		color: @gray-light;

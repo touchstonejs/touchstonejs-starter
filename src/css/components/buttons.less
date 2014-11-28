@@ -111,6 +111,9 @@ button {
 // ------------------------------
 
 .panel-button {
+	// add retina borders
+	.panel-base();
+
 	// de-chrome
 	border: 0 none;
 	font-weight: normal;
@@ -118,9 +121,6 @@ button {
 	outline: none;
 	text-decoration: none;
 	-webkit-appearance: none;
-
-	// default styles
-	.panel-base();
 
 	// re-chrome
 	color: @text-color;
@@ -131,7 +131,7 @@ button {
 	width: 100%;
 
 	&.muted { color: @gray; }
-	&.primary { color: @app-primary; }
+	&.primary { color: @app-primary; font-weight: 500; }
 	&.info { color: @app-info; }
 	&.success { color: @app-success; }
 	&.warning { color: @app-warning; }

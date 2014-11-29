@@ -14,7 +14,6 @@
 	background-color: @headerbar-bg;
 	color: @headerbar-color;
 	height: @headerbar-height;
-	line-height: @headerbar-height;
 	margin: 0;
 	position: relative;
 	z-index: 3;
@@ -100,7 +99,7 @@
 	border: 0 none;
 	color: @app-primary;
 	cursor: pointer; // for piece of mind when developing on the desktop
-	padding: 5px;
+	padding: 0 5px;
 	position: relative;
 	text-align: center;
 	width: 100%;
@@ -147,8 +146,8 @@
 // label
 .Footerbar-button-label {
 	.text-overflow();
-	font-size: @font-size-small;
-	font-weight: 500;
+	color: @text-color;
+	font-size: @font-size-tiny;
 }
 
 

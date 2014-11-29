@@ -12,7 +12,7 @@ module.exports = React.createClass({
 
 	getInitialState: function() {
 		return {
-			typeKey: 'default'
+			typeKey: 'icon'
 		}
 	},
 
@@ -29,6 +29,33 @@ module.exports = React.createClass({
 		var footerbarClass = SetClass(this.state.typeKey, {
 			'footerbar': true
 		});
+		var renderFooterbar;
+
+		if (this.state.typeKey === 'icon') {
+			var renderFooterbar = (<UI.Footerbar>
+				<UI.FooterbarButton icon="ion-ios7-arrow-left" />
+				<UI.FooterbarButton icon="ion-ios7-arrow-right" disabled />
+				<UI.FooterbarButton icon="ion-ios7-download" />
+				<UI.FooterbarButton icon="ion-ios7-bookmarks-outline" />
+				<UI.FooterbarButton icon="ion-ios7-browsers" />
+			</UI.Footerbar>)
+		} else if (this.state.typeKey === 'label') {
+			var renderFooterbar = (<UI.Footerbar>
+				<UI.FooterbarButton label="Back" />
+				<UI.FooterbarButton label="Forward" disabled />
+				<UI.FooterbarButton label="Download" />
+				<UI.FooterbarButton label="Bookmarks" />
+				<UI.FooterbarButton label="Tabs" />
+			</UI.Footerbar>)
+		} else if (this.state.typeKey === 'both') {
+			var renderFooterbar = (<UI.Footerbar>
+				<UI.FooterbarButton label="Back" icon="ion-ios7-arrow-left" />
+				<UI.FooterbarButton label="Forward" icon="ion-ios7-arrow-right" disabled />
+				<UI.FooterbarButton label="Download" icon="ion-ios7-download" />
+				<UI.FooterbarButton label="Bookmarks" icon="ion-ios7-bookmarks-outline" />
+				<UI.FooterbarButton label="Tabs" icon="ion-ios7-browsers" />
+			</UI.Footerbar>)
+		}
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
@@ -37,27 +64,15 @@ module.exports = React.createClass({
 					<div className="Headerbar-label">Footer Bar</div>
 				</UI.Headerbar>
 				<UI.FlexBlock scrollable>
-					<div className="panel panel--first ios-list">
-						<UI.RadioList value={this.state.typeKey} onChange={this.handleFooterChange} options={[
-							{ label: 'Default',  value: 'default' },
-							{ label: 'Green', value: 'green' },
-							{ label: 'Blue', value: 'blue' },
-							{ label: 'Light Blue', value: 'light-blue' },
-							{ label: 'Yellow', value: 'yellow' },
-							{ label: 'Orange', value: 'orange' },
-							{ label: 'Red', value: 'red' },
-							{ label: 'Pink', value: 'pink' },
-							{ label: 'Purple', value: 'purple' }
+					<div className="view-inner">
+						<UI.Toggle value={this.state.typeKey} onChange={this.handleFooterChange} options={[
+							{ label: 'Icon', value: 'icon' },
+							{ label: 'Label', value: 'label' },
+							{ label: 'Both', value: 'both' }
 						]} />
 					</div>
 				</UI.FlexBlock>
-				<UI.Footerbar className={footerbarClass}>
-					<UI.FooterbarButton icon="ion-ios7-arrow-left" />
-					<UI.FooterbarButton icon="ion-ios7-arrow-right" disabled />
-					<UI.FooterbarButton icon="ion-ios7-download" />
-					<UI.FooterbarButton icon="ion-ios7-bookmarks-outline" />
-					<UI.FooterbarButton icon="ion-ios7-browsers" />
-				</UI.Footerbar>
+				{renderFooterbar}
 			</UI.FlexLayout>
 		);
 	}

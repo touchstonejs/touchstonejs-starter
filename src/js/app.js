@@ -44,7 +44,7 @@ var App = React.createClass({
 
 	getInitialState: function() {
 		var initialState = {
-			currentView: 'component-toggle',
+			currentView: 'home',
 			online: true,
 			centre: undefined,
 			gate: undefined,

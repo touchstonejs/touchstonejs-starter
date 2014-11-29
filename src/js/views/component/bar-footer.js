@@ -10,29 +10,54 @@ var React = require('react'),
 module.exports = React.createClass({
 	mixins: [Navigation],
 
-	flashAlert: function(alertContent) {
-		alert(alertContent);
+	getInitialState: function() {
+		return {
+			typeKey: 'default'
+		}
+	},
+
+	handleFooterChange: function(newType) {
+
+		this.setState({
+			typeKey: newType
+		});
+
 	},
 
 	render: function() {
 
+		var footerbarClass = SetClass(this.state.typeKey, {
+			'footerbar': true
+		});
+
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.FlexBlock height="44px" className="Headerbar">
+				<UI.Headerbar>
 					<Link to="home" viewTransition="reveal-from-right" className="Headerbar-button ion-chevron-left" component="button">Back</Link>
 					<div className="Headerbar-label">Footer Bar</div>
-				</UI.FlexBlock>
+				</UI.Headerbar>
 				<UI.FlexBlock scrollable>
-					<div className="view-inner text-center">Your amazing app content and components go here!</div>
+					<div className="panel panel--first ios-list">
+						<UI.RadioList value={this.state.typeKey} onChange={this.handleFooterChange} options={[
+							{ label: 'Default',  value: 'default' },
+							{ label: 'Green', value: 'green' },
+							{ label: 'Blue', value: 'blue' },
+							{ label: 'Light Blue', value: 'light-blue' },
+							{ label: 'Yellow', value: 'yellow' },
+							{ label: 'Orange', value: 'orange' },
+							{ label: 'Red', value: 'red' },
+							{ label: 'Pink', value: 'pink' },
+							{ label: 'Purple', value: 'purple' }
+						]} />
+					</div>
 				</UI.FlexBlock>
-				<UI.FlexBlock height="44px" className="footerbar primary">
-					<UI.ActionButtons>
-						<UI.ActionButton onTap={this.flashAlert.bind(this, 'You tapped a footer button.')}  label="Timeline"      icon="ion-ios7-home" />
-						<UI.ActionButton onTap={this.flashAlert.bind(this, 'You tapped a footer button.')}  label="Notifications" icon="ion-ios7-bell" />
-						<UI.ActionButton onTap={this.flashAlert.bind(this, 'You tapped a footer button.')}  label="Messages"      icon="ion-ios7-email" />
-						<UI.ActionButton onTap={this.flashAlert.bind(this, 'You tapped a footer button.')}  label="Account"       icon="ion-ios7-person" />
-					</UI.ActionButtons>
-				</UI.FlexBlock>
+				<UI.Footerbar className={footerbarClass}>
+					<UI.FooterbarButton icon="ion-ios7-arrow-left" />
+					<UI.FooterbarButton icon="ion-ios7-arrow-right" disabled />
+					<UI.FooterbarButton icon="ion-ios7-download" />
+					<UI.FooterbarButton icon="ion-ios7-bookmarks-outline" />
+					<UI.FooterbarButton icon="ion-ios7-browsers" />
+				</UI.Footerbar>
 			</UI.FlexLayout>
 		);
 	}

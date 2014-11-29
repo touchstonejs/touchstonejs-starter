@@ -18,10 +18,9 @@ module.exports = React.createClass({
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.FlexBlock height="44px" className="Headerbar">
-					<Link to="home" viewTransition="reveal-from-right" className="Headerbar-button ion-chevron-left" component="button">Back</Link>
-					<div className="Headerbar-label">Feedback</div>
-				</UI.FlexBlock>
+				<UI.Headerbar label="Feedback">
+					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" icon="ion-chevron-left" label="Back" />
+				</UI.Headerbar>
 				<UI.FlexBlock>
 					<UI.Feedback iconKey="ion-compass" iconType="primary" header="Optional Header" subheader="Subheader, also optional" text="Feedback message copy goes here. It can be of any length." actionText="Optional Action" actionFn={this.flashAlert.bind(this, 'You clicked the action.')} />
 				</UI.FlexBlock>

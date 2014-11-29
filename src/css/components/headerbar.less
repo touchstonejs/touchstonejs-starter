@@ -43,10 +43,9 @@
 .Headerbar.purple {
 	color: @headerbar-inverted-color;
 	
-	// move the defining line
+	// hide the shadow
 	&:after {
-		.transform-origin(0 bottom);
-		bottom: 0;
+		display: none;
 	}
 	
 	.Headerbar-button {
@@ -165,6 +164,19 @@
 	position: absolute;
 	text-align: center;
 	width: 100%;
+}
+
+
+
+
+// Toggle
+// ------------------------------
+
+.Headerbar > .Toggle {
+	margin: @headerbar-field-gutter;
+}
+.Subheader > .Toggle {
+	margin: 0 @headerbar-field-gutter;
 }
 
 

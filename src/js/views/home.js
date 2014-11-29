@@ -68,6 +68,7 @@ module.exports = React.createClass({
 					<div className="panel-header text-caps">UI Elements</div>
 					<div className="panel ios-list">
 						<Link component="div" to="component-passcode" viewTransition="show-from-right" className="list-item is-tappable">Passcode / Keypad</Link>
+						<Link component="div" to="component-toggle"   viewTransition="show-from-right" className="list-item is-tappable">Toggle</Link>
 					</div>
 					<div className="panel-header text-caps">Application State</div>
 					<div className="panel ios-list">

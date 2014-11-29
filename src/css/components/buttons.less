@@ -125,6 +125,7 @@ button {
 	// re-chrome
 	color: @text-color;
 	display: block;
+	margin-bottom: @gutter-large;
 	padding: @padding-base-vertical @padding-base-horizontal;
 	position: relative;
 	text-align: center;
@@ -214,8 +215,9 @@ button {
 	}
 }
 .action-button-cell {
-	.flex(1,0,0);
+	.flex-grow(1);
 	border-left: 1px solid darken(@body-bg, 10%);
+	text-align: center;
 
 	&:first-child {
 		border-left: none;
@@ -224,6 +226,7 @@ button {
 .action-button {
 	.display-flex();
 	.align-items(center);
+	.flex-direction(column);
 	.justify-content(center);
 	background: none transparent;
 	border: 0 none;
@@ -231,48 +234,43 @@ button {
 	min-height: 70px;
 	padding: 5px;
 	position: relative;
-
-	// vertically center content
-
+	text-align: center;
 	width: 100%;
 	-webkit-appearance: none;
+
+	
+	// disabled state
 
 	&.disabled,
 	&[disabled] {
 		pointer-events: none;
-		
-		> * {
-			.transition( opacity 300ms linear );
-			opacity: .5;
+
+		&:before,
+		> .action-button-label {
+			color: @headerbar-button-color-disabled;
 		}
-	}
-	&.inactive > .action-button-inner {
-		> .action-button-icon {
-			opacity: .25;
-		}
-	}
-	&.active {
-		background-color: darken(@body-bg, 6%);
-		box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.1);
 	}
 
-	// add active state
+	
+	// active state
 
 	&.Tappable-active {
 		background-color: @gray-lighter;
 	}
+
+	
+	// icon
+
+	&:before {
+		color: @app-primary;
+		display: inline-block;
+		font-size: @ionicons-size-huge;
+		height: @ionicons-size-huge;
+		line-height: 1;
+	}
 }
-.action-button-inner {
-	text-align: center;
-}
-.action-button-icon {
-	color: @app-primary;
-	display: inline-block;
-	font-size: @ionicons-size-huge;
-	height: @ionicons-size-huge;
-	line-height: 1;
-	// margin-bottom: @gutter-base / 2;
-}
+
+// label
 .action-button-label {
 	.text-overflow();
 	font-size: @font-size-small;

@@ -63,10 +63,9 @@ module.exports = React.createClass({
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.FlexBlock height="44px" className="Headerbar">
-					<Link to="home" viewTransition="reveal-from-right" className="Headerbar-button ion-chevron-left" component="button">Back</Link>
-					<div className="Headerbar-label">Enter Passcode</div>
-				</UI.FlexBlock>
+				<UI.Headerbar label="Enter Passcode">
+					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" icon="ion-chevron-left" label="Back" />
+				</UI.Headerbar>
 				<UI.FlexBlock>
 					<div className="Passcode" style={passcodeStyle}>
 						<input type="hidden" name="pinEntry" />

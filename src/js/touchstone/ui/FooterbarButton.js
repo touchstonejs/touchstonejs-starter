@@ -25,19 +25,17 @@ module.exports = React.createClass({
 	},
 	render: function() {
 		var className = SetClass(this.props.className, this.props.icon, {
-			'action-button': true
+			'Footerbar-button': true
 		});
 
-		var label = this.props.label ? <div className="action-button-label">{this.props.label}</div> : null;
+		var label = this.props.label ? <div className="Footerbar-button-label">{this.props.label}</div> : null;
 		var action = this.props.showView ? this.showViewFn(this.props.showView, this.props.viewTransition, this.props.viewProps) : this.props.onTap;
 
 		return (
-			<div className="action-button-cell">
-				<Tappable className={className} component={this.props.component} onTap={action} disabled={this.props.disabled}>
-					{label}
-					{this.props.children}
-				</Tappable>
-			</div>
+			<Tappable className={className} component={this.props.component} onTap={action} disabled={this.props.disabled}>
+				{label}
+				{this.props.children}
+			</Tappable>
 		);
 	}
 });

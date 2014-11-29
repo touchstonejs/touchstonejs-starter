@@ -9,13 +9,18 @@ var React = require('react'),
 
 var Months = require('../../../data/months');
 
-var HeaderList = React.createClass({
+var MonthList = React.createClass({
 	render: function() {
 
 		var months = [];
 		var	lastSeason = '';
+		var filterState = this.props.filterState;
 		
 		this.props.months.forEach(function(month, i) {
+			
+			if (filterState !== 'all' && filterState !== month.season.toLowerCase()) {
+				return;
+			}
 
 			var season = month.season;
 
@@ -42,15 +47,40 @@ var HeaderList = React.createClass({
 module.exports = React.createClass({
 	mixins: [Navigation],
 
+	getInitialState: function() {
+		return {
+			activeToggleItemKey: 'all',
+			typeKey: 'primary',
+			months: Months
+		}
+	},
+
+	handleToggleActiveChange: function(newItem) {
+
+		this.setState({
+			activeToggleItemKey: newItem
+		});
+
+	},
+
 	render: function() {
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.Headerbar label="Categorised List">
-					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" icon="ion-chevron-left" label="Back" />
+				<UI.Headerbar label="Toggle">
+					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
+				</UI.Headerbar>
+				<UI.Headerbar height="36px" className="Subheader">
+					<UI.Toggle value={this.state.activeToggleItemKey} onChange={this.handleToggleActiveChange} options={[
+						{ label: 'All', value: 'all' },
+						{ label: 'Summer', value: 'summer' },
+						{ label: 'Autumn', value: 'autumn' },
+						{ label: 'Winter', value: 'winter' },
+						{ label: 'Spring', value: 'spring' }
+					]} />
 				</UI.Headerbar>
 				<UI.FlexBlock scrollable>
-					<HeaderList months={Months} />
+					<MonthList months={this.state.months} filterState={this.state.activeToggleItemKey} />
 				</UI.FlexBlock>
 			</UI.FlexLayout>
 		);

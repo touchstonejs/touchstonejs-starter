@@ -24,6 +24,7 @@ var views = {
 	'component-footerbar': require('./views/component/bar-footer'),
 
 	'component-passcode': require('./views/component/passcode'),
+	'component-toggle': require('./views/component/toggle'),
 
 	'component-simple-list': require('./views/component/list-simple'),
 	'component-complex-list': require('./views/component/list-complex'),
@@ -43,7 +44,7 @@ var App = React.createClass({
 
 	getInitialState: function() {
 		var initialState = {
-			currentView: 'home',
+			currentView: 'component-toggle',
 			online: true,
 			centre: undefined,
 			gate: undefined,

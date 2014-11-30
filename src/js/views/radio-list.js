@@ -28,10 +28,9 @@ module.exports = React.createClass({
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.FlexBlock height="44px" className="Headerbar">
-					<Link to="details" viewTransition="reveal-from-right" params={{ user: this.props.user, flavour: this.state.flavour }} className="Headerbar-button ion-chevron-left" component="button">Details</Link>
-					<div className="Headerbar-label">Favourite Icecream</div>
-				</UI.FlexBlock>
+				<UI.Headerbar label="Favourite Icecream">
+					<UI.HeaderbarButton showView="details" viewTransition="reveal-from-right" viewProps={{ user: this.props.user, flavour: this.state.flavour }} label="Details" icon="ion-chevron-left" />
+				</UI.Headerbar>
 				<UI.FlexBlock scrollable>
 					<div className="panel panel--first ios-list">
 						<UI.RadioList value={this.state.flavour} onChange={this.handleFlavourChange} options={[

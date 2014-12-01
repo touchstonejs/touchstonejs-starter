@@ -56,7 +56,6 @@ module.exports = React.createClass({
 						<Link component="div" to="component-headerbar" viewTransition="show-from-right" className="list-item is-tappable">Header Bar</Link>
 						<Link component="div" to="component-headerbar-search" viewTransition="show-from-right" className="list-item is-tappable">Header Bar Search</Link>
 						<Link component="div" to="component-alertbar" viewTransition="show-from-right" className="list-item is-tappable">Alert Bar</Link>
-						<Link component="div" to="component-actionbar" viewTransition="show-from-right" className="list-item is-tappable">Action Bar</Link>
 						<Link component="div" to="component-footerbar" viewTransition="show-from-right" className="list-item is-tappable">Footer Bar</Link>
 					</div>
 					<div className="panel-header text-caps">Lists</div>

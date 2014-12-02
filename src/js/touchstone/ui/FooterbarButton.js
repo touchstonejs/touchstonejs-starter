@@ -19,7 +19,7 @@ module.exports = React.createClass({
 	},
 	getDefaultProps: function() {
 		return {
-			component: 'button',
+			component: 'div',
 			disabled: false
 		};
 	},

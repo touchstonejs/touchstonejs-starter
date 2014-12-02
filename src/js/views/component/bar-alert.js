@@ -39,11 +39,11 @@ module.exports = React.createClass({
 				<UI.Headerbar label="Alert Bar">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 				</UI.Headerbar>
+				<UI.FlexBlock height="30px" className={alertbarClass}>
+					<div className="alertbar-text">When the state is "{this.state.alertKey}"</div>
+				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
-					<div className={alertbarClass}>
-						<div className="alertbar-text">When the state is "{this.state.alertKey}"</div>
-					</div>
-					<div className="panel ios-list">
+					<div className="panel panel--first ios-list">
 						<UI.RadioList value={this.state.alertKey} onChange={this.handleAlertChange} options={[
 							{ label: 'Muted',  value: 'muted' },
 							{ label: 'Primary',  value: 'primary' },

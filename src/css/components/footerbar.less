@@ -10,23 +10,13 @@
 
 .Footerbar {
 	.display-flex();
-	.panel-base();
+	.retina-1px-border-top( rgba(0,0,0,0.3) );
 	background-color: @headerbar-bg;
 	color: @headerbar-color;
 	height: @headerbar-height;
 	margin: 0;
 	position: relative;
 	z-index: 3;
-
-	// darken the top border
-	&:before {
-		background-color: fade(black, 30%);
-	}
-	
-	// hide the bottom border added by the 'panel-base' mixin
-	&:after {
-		display: none;
-	}
 }
 
 

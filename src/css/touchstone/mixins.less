@@ -17,6 +17,7 @@
 @import "mixins/loader.less";
 @import "mixins/nav-divider.less";
 @import "mixins/resize.less";
+@import "mixins/retina-borders.less";
 @import "mixins/size.less";
 @import "mixins/text.less";
 @import "mixins/vendor-prefixes.less";
@@ -62,44 +63,6 @@
 .inline-align(@align: middle;) {
 	display: inline-block;
 	vertical-align: @align;
-}
-
-
-// panel styles
-
-.panel-base() {
-	background-color: white;
-	position: relative;
-
-	 // simulate a 1px border on retina screens
-	&:after,
-	&:before {
-		.size(100%,1px);
-		background-color: @list-divider-color;
-		content: " ";
-		left: 0;
-		position: absolute;
-	}
-	&:before {
-		top: -1px;
-	}
-	&:after {
-		bottom: -1px;
-	}
-	@media (-webkit-min-device-pixel-ratio: 2) {
-		&:after,
-		&:before {
-			.scaleY(0.5);
-		}
-		&:before {
-			.transform-origin(0 bottom);
-			top: -1px;
-		}
-		&:after {
-			.transform-origin(0 top);
-			bottom: -1px;
-		}
-	}
 }
 
 

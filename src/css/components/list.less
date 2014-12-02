@@ -18,13 +18,17 @@
 	// separator
 	&:before {
 		.size(100%,1px);
-		.scaleY(0.5);
 		.transform-origin(0 0);
 		background-color: @list-divider-color;
 		content: " ";
 		left: 0;
 		position: absolute;
 		top: 0;
+	
+		// simulate a 1px border on retina screens
+		@media (-webkit-min-device-pixel-ratio: 2) {
+			.scaleY(0.5);
+		}
 	}
 
 	// hide the first separator
@@ -32,12 +36,20 @@
 	&.is-first:before {
 		display: none;
 	}
+	
 
 	// provide context for different separators
 	.ios-list &:before {
 		left: @padding-base-horizontal;
 	}
 	.icon-list & {
+		padding-left: (@padding-base-horizontal * 2) + @list-icon-size;
+
+		&:before {
+			left: (@padding-base-horizontal * 2) + @list-icon-size;
+		}
+	}
+	.avatar-list & {
 		padding-left: (@padding-base-horizontal * 2) + @list-avatar-size;
 
 		&:before {
@@ -163,9 +175,9 @@
 }
 .list-icon {
 	.inline-align();
-	.square(@list-avatar-size);
+	.square(@list-icon-size);
 	.translateY(-50%);
-	line-height: @list-avatar-size;
+	line-height: @list-icon-size;
 	position: absolute;
 	top: 50%;
 	text-align: center;
@@ -197,17 +209,21 @@
 }
 
 
-// image (like a user avatar) as icon
+// contact lists
 
 .list-avatar {
 	.inline-align();
 	.square(@list-avatar-size);
+	.translateY(-50%);
 	background-color: mix(white, black, 70%);
 	border-radius: 50%;
 	color: white;
 	font-size: @ionicons-size-large;
-	line-height: @list-avatar-size - 4;
+	line-height: @list-avatar-size;
+	left: @padding-base-horizontal;
+	position: absolute;
 	text-align: center;
+	top: 50%;
 
 	> img {
 		border-radius: 50%;
@@ -218,10 +234,13 @@
 }
 
 
-// headers
+
+
+// Headers
+// ------------------------------
 
 .list-header {
-	.panel-base();
+	.retina-1px-border-top-and-bottom( @list-divider-color );
 	background-color: @body-bg;
 	color: @panel-header-color;
 	display: block;
@@ -233,5 +252,7 @@
 	position: relative;
 	text-transform: uppercase;
 }
+
+
 
 

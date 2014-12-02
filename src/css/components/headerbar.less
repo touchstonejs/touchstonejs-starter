@@ -9,7 +9,7 @@
 // ------------------------------
 
 .Headerbar {
-	.panel-base();
+	.retina-1px-border-bottom( rgba(0,0,0,0.3) );
 	background-color: @headerbar-bg;
 	color: @headerbar-color;
 	height: @headerbar-height;
@@ -17,16 +17,6 @@
 	margin: 0;
 	position: relative;
 	z-index: 3;
-
-	// hide the top border added by the 'panel-base' mixin
-	&:before {
-		display: none;
-	}
-	
-	// darken the bottom border
-	&:after {
-		background-color: fade(black, 30%);
-	}
 }
 
 

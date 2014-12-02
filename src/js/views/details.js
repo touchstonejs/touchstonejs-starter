@@ -55,14 +55,14 @@ module.exports = React.createClass({
 		// fields
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.Headerbar label={this.props.user.name}>
+				<UI.Headerbar label={[this.props.user.name.first, this.props.user.name.last].join(' ')}>
 					<UI.HeaderbarButton showView={this.props.prevView} viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 					<UI.LoadingButton loading={this.state.processing} disabled={!this.state.formIsValid} onTap={this.processForm} label="Save" className="Headerbar-button right is-primary" />
 				</UI.Headerbar>
 				<UI.FlexBlock scrollable>
 					{/*<div className="panel-header text-caps">Basic details</div>*/}
 					<div className="panel panel--first ios-list">
-						<UI.LabelInput label="Name"     value={this.props.user.name}       placeholder="Full name" first />
+						<UI.LabelInput label="Name"     value={[this.props.user.name.first, this.props.user.name.last].join(' ')}       placeholder="Full name" first />
 						<UI.LabelInput label="Location" value={this.props.user.location}   placeholder="Suburb, Country" />
 						<UI.LabelInput label="Joined"   value={this.props.user.joinedDate} placeholder="Date" />
 						<UI.LabelTextarea label="Bio"   value={this.state.bioValue}        placeholder="(required)" onChange={this.handleBioInput} />

@@ -22,7 +22,7 @@ var SimpleListItem = React.createClass({
 
 		return (
 			<Link to="details" viewTransition="show-from-right" params={{ user: this.props.user, prevView: 'component-simple-list' }} className="list-item is-tappable" component="div">
-				<div className="list-title">{this.props.user.name}</div>
+				<div className="list-item-title">{[this.props.user.name.first, this.props.user.name.last].join(' ')}</div>
 			</Link>
 		);
 	}

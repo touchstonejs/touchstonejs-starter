@@ -13,14 +13,19 @@ var ComplexListItem = React.createClass({
 	mixins: [Navigation],
 
 	render: function() {
+		
+		var initials = this.props.user.name.first.charAt(0).toUpperCase() +
+			this.props.user.name.last.charAt(0).toUpperCase();
+
+		var renderAvatar = this.props.user.img ? <img src={this.props.user.img} /> : initials;
 
 		return (
-			<Link to="details" viewTransition="show-from-right" params={{ user: this.props.user, prevView: 'component-complex-list' }} className="list-item user-item list-item-icon-left is-tappable" component="div">
-				<span className="list-icon list-avatar left">
-					<img src={this.props.user.img} />
+			<Link to="details" viewTransition="show-from-right" params={{ user: this.props.user, prevView: 'component-complex-list' }} className="list-item is-tappable" component="div">
+				<span className="list-avatar">
+					{renderAvatar}
 				</span>
 				<div className="list-inner">
-					<div className="list-item-title">{this.props.user.name}</div>
+					<div className="list-item-title">{[this.props.user.name.first, this.props.user.name.last].join(' ')}</div>
 					<div className="list-item-subtitle">{this.props.user.location}</div>
 				</div>
 			</Link>
@@ -40,7 +45,7 @@ var ComplexList = React.createClass({
 		
 		return (
 			<div>
-				<div className="panel panel--first icon-list">
+				<div className="panel panel--first avatar-list">
 					{users}
 				</div>
 			</div>

@@ -44,7 +44,7 @@ var App = React.createClass({
 
 	getInitialState: function() {
 		var initialState = {
-			currentView: 'home',
+			currentView: 'component-complex-list',
 			online: true,
 			centre: undefined,
 			gate: undefined,

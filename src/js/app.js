@@ -25,6 +25,7 @@ var views = {
 
 	'component-passcode': require('./views/component/passcode'),
 	'component-toggle': require('./views/component/toggle'),
+	'component-form': require('./views/component/form'),
 
 	'component-simple-list': require('./views/component/list-simple'),
 	'component-complex-list': require('./views/component/list-complex'),

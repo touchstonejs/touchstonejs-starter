@@ -19,15 +19,6 @@
     <feature name="LocalStorage">
         <param name="ios-package" value="CDVLocalStorage" />
     </feature>
-    <name>Touchstone</name>
-    <description>
-        A sample Apache Cordova application that responds to the deviceready event.
-    </description>
-    <author email="dev@cordova.apache.org" href="http://cordova.io">
-        Apache Cordova Team
-    </author>
-    <content src="index.html" />
-    <access origin="*" />
     <feature name="BarcodeScanner">
         <param name="ios-package" value="CDVBarcodeScanner" />
     </feature>
@@ -39,4 +30,13 @@
     </feature>
     <preference name="StatusBarOverlaysWebView" value="true" />
     <preference name="StatusBarStyle" value="lightcontent" />
+    <name>Touchstone</name>
+    <description>
+        Touchstone Starter App
+    </description>
+    <author email="hello@thinkmill.com.au" href="http://www.thinkmill.com.au">
+        Thinkmill Team
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
 </widget>

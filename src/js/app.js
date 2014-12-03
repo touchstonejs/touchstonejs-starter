@@ -5,8 +5,8 @@ var React = require('react/addons');
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 var SetClass = require('classnames');
 
-var app = require('./touchstone/app');
-// var Tappable = require('./touchstone/tappable');
+var Touchstone = require('touchstonejs');
+
 var config = require('./config')
 
 var views = {
@@ -40,7 +40,7 @@ var views = {
 };
 
 var App = React.createClass({
-	mixins: [app(views)],
+	mixins: [Touchstone.createApp(views)],
 
 	getInitialState: function() {
 		var initialState = {

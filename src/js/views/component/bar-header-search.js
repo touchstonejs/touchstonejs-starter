@@ -1,9 +1,9 @@
 var React = require('react'),
 	SetClass = require('classnames'),
-	Navigation = require('../../touchstone/navigation'),
-	Tappable = require('../../touchstone/tappable'),
-	Link = require('../../touchstone/link'),
-	UI = require('../../touchstone/ui');
+	Navigation = require('touchstonejs').Navigation,
+	Tappable = require('react-tappable'),
+	Link = require('touchstonejs').Link,
+	UI = require('touchstonejs').UI;
 
 var Months = require('../../../data/months');
 

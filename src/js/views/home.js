@@ -2,10 +2,10 @@
 
 var React = require('react'),
 	SetClass = require('classnames'),
-	Tappable = require('../touchstone/tappable'),
-	Navigation = require('../touchstone/navigation'),
-	Link = require('../touchstone/link'),
-	UI = require('../touchstone/ui');
+	Tappable = require('react-tappable'),
+	Navigation = require('touchstonejs').Navigation,
+	Link = require('touchstonejs').Link,
+	UI = require('touchstonejs').UI;
 
 var Icons = {
 	Logo: require('../components/svg/icon-logo')

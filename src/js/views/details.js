@@ -1,10 +1,10 @@
 /** @jsx React.DOM */
 
 var React = require('react'),
-    Link = require('../touchstone/link'),
-	Tappable = require('../touchstone/tappable'),
-	Navigation = require('../touchstone/navigation'),
-	UI = require('../touchstone/ui');
+    Link = require('touchstonejs').Link,
+	Tappable = require('react-tappable'),
+	Navigation = require('touchstonejs').Navigation,
+	UI = require('touchstonejs').UI;
 
 var moment = require('moment')
 

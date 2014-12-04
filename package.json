@@ -13,7 +13,7 @@
     "react": "^0.12.1",
     "react-tappable": "^0.2.3",
     "superagent": "^0.21.0",
-    "touchstonejs": "^0.1.0",
+    "touchstonejs": "^0.1.1",
     "underscore": "^1.7.0"
   },
   "devDependencies": {

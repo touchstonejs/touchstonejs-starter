@@ -3640,11 +3640,10 @@ div.select-field {
 }
 .select-field-indicator,
 .select-field-indicator-arrow {
-  bottom: 1px;
-  content: '';
+  bottom: 0;
   display: inline-block;
-  right: 1px;
-  top: 1px;
+  right: 0;
+  top: 0;
   position: absolute;
   pointer-events: none;
 }
@@ -3655,18 +3654,26 @@ div.select-field {
   width: 1.5em;
 }
 .select-field-indicator-arrow {
+  top: 50%;
+}
+.select-field-indicator-arrow:before,
+.select-field-indicator-arrow:after {
   width: 0;
   height: 0;
-  -webkit-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  -o-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
   border: 4px solid transparent;
-  border-top-color: #c7c7cd;
+  content: "";
+  position: absolute;
+  right: 2px;
+}
+.select-field-indicator-arrow:before {
+  border-bottom-color: #000000;
+  border-top-width: 0;
+  margin-top: -6px;
+}
+.select-field-indicator-arrow:after {
+  border-top-color: #000000;
   border-bottom-width: 0;
-  right: 4px;
-  text-align: center;
-  top: 50%;
+  margin-bottom: -6px;
 }
 .g-row {
   display: -webkit-flex;
@@ -4584,17 +4591,13 @@ fieldset[disabled] .btn-link {
   z-index: 1;
 }
 .list-item:before {
-  width: 100%;
-  height: 1px;
-  -webkit-transform-origin: 0 0;
-  -moz-transform-origin: 0 0;
-  -ms-transform-origin: 0 0;
-  transform-origin: 0 0;
-  background-color: #bfbfc3;
+  background-color: rgba(0, 0, 0, 0.15);
   content: " ";
+  height: 1px;
   left: 0;
   position: absolute;
   top: 0;
+  width: calc(100% - 16px);
 }
 @media (-webkit-min-device-pixel-ratio: 2) {
   .list-item:before {
@@ -4602,6 +4605,10 @@ fieldset[disabled] .btn-link {
     -ms-transform: scaleY(0.5);
     -o-transform: scaleY(0.5);
     transform: scaleY(0.5);
+    -webkit-transform-origin: 0 0;
+    -moz-transform-origin: 0 0;
+    -ms-transform-origin: 0 0;
+    transform-origin: 0 0;
   }
 }
 .list-item:first-child:before,
@@ -4632,6 +4639,7 @@ fieldset[disabled] .btn-link {
 .list-item.Tappable-active {
   background-color: #eeeeee;
 }
+.ios-list--tappable > .list-item:after,
 .list-item.is-tappable:after {
   display: inline-block;
   font-family: "Ionicons";
@@ -4758,7 +4766,7 @@ fieldset[disabled] .btn-link {
   align-items: center;
   -webkit-justify-content: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 24px;
   height: 100%;
 }
 .list-icon.left {
@@ -5086,6 +5094,7 @@ fieldset[disabled] .btn-link {
     transform: scaleY(0.5);
   }
 }
+.Headerbar.transparent,
 .Headerbar.green,
 .Headerbar.blue,
 .Headerbar.primary,
@@ -5097,6 +5106,7 @@ fieldset[disabled] .btn-link {
 .Headerbar.purple {
   color: #ffffff;
 }
+.Headerbar.transparent:after,
 .Headerbar.green:after,
 .Headerbar.blue:after,
 .Headerbar.primary:after,
@@ -5108,6 +5118,7 @@ fieldset[disabled] .btn-link {
 .Headerbar.purple:after {
   display: none;
 }
+.Headerbar.transparent .Headerbar-button,
 .Headerbar.green .Headerbar-button,
 .Headerbar.blue .Headerbar-button,
 .Headerbar.primary .Headerbar-button,
@@ -5119,6 +5130,7 @@ fieldset[disabled] .btn-link {
 .Headerbar.purple .Headerbar-button {
   color: rgba(255, 255, 255, 0.8);
 }
+.Headerbar.transparent .Headerbar-button.disabled,
 .Headerbar.green .Headerbar-button.disabled,
 .Headerbar.blue .Headerbar-button.disabled,
 .Headerbar.primary .Headerbar-button.disabled,
@@ -5128,6 +5140,7 @@ fieldset[disabled] .btn-link {
 .Headerbar.red .Headerbar-button.disabled,
 .Headerbar.pink .Headerbar-button.disabled,
 .Headerbar.purple .Headerbar-button.disabled,
+.Headerbar.transparent .Headerbar-button[disabled],
 .Headerbar.green .Headerbar-button[disabled],
 .Headerbar.blue .Headerbar-button[disabled],
 .Headerbar.primary .Headerbar-button[disabled],
@@ -5163,6 +5176,9 @@ fieldset[disabled] .btn-link {
 }
 .Headerbar.purple {
   background-color: #5856d6;
+}
+.Headerbar.transparent {
+  background: none;
 }
 .Headerbar.yellow {
   color: #222222;
@@ -5407,11 +5423,11 @@ fieldset[disabled] .btn-link {
 .Keypad-button.is-auxiliary:active {
   background-color: #b3b3ca;
 }
-.Keypad-button[disabled] {
+.Keypad-button.is-disabled {
   pointer-events: none;
 }
-.Keypad-button[disabled] .Keypad-button-primary-label,
-.Keypad-button[disabled] .Keypad-button-secondary-label {
+.Keypad-button.is-disabled .Keypad-button-primary-label,
+.Keypad-button.is-disabled .Keypad-button-secondary-label {
   opacity: .3;
 }
 .Keypad-button-primary-label {

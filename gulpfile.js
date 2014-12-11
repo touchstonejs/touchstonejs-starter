@@ -93,7 +93,7 @@ function buildApp(watch) {
 	
 	var opts = watch ? watchify.args : {};
 	
-	opts.debug = true;
+	opts.debug = watch ? true : false;
 	opts.hasExports = true;
 	
 	var src = './src/js',
@@ -101,9 +101,9 @@ function buildApp(watch) {
 	name = 'app.js';
 	
 	var bundle = browserify(opts)
-	.add([src, name].join('/'))
-	.transform(reactify)
-	.transform(brfs);
+		.add([src, name].join('/'))
+		.transform(reactify)
+		.transform(brfs);
 	
 	if (watch) {
 		watchBundle(bundle, name, dest);

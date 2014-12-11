@@ -1,7 +1,7 @@
-Touchstone Starter
-==================
+TouchstoneJS Starter
+====================
 
-Reference Touchstone App with examples of all UI components.
+Reference TouchstoneJS App with examples of all UI components.
 
 To build and preview locally, run the `gulp dev` task. It will build the app with browserify, and start a preview server at [localhost:8000](http://localhost:8000).
 
@@ -16,7 +16,7 @@ More documentation and examples to come soon.
 
 Let us know! Contact us at [thinkmill.com.au](http://www.thinkmill.com.au/) or open an issue.
 
-We're busily building the Touchstone framework and welcome any ideas / contributions / PRs.
+We're busily building the TouchstoneJS framework and welcome any ideas / contributions / PRs.
 
 
 # License

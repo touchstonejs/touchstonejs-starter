@@ -36,7 +36,7 @@ module.exports = React.createClass({
 							<UI.ActionButton onTap={this.flashAlert.bind(this, 'You tapped an action button.')} icon="ion-arrow-down-c" />
 						</UI.ActionButtons>
 					</div>
-					<div className="panel-header text-caps">Icon & Label</div>
+					<div className="panel-header text-caps">Icon &amp; Label</div>
 					<div className="panel">
 						<UI.ActionButtons>
 							<UI.ActionButton onTap={this.flashAlert.bind(this, 'You tapped an action button.')}  label="Primary Action"    icon="ion-arrow-up-c" />

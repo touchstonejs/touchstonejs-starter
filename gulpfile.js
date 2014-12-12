@@ -10,7 +10,9 @@ var del = require('del'),
 	reactify = require('reactify'),
 	source = require('vinyl-source-stream'),
 	merge = require('merge-stream'),
-	chalk = require('chalk');
+	chalk = require('chalk'),
+	uglify = require('gulp-uglify'),
+	streamify = require('gulp-streamify');
 
 /**
 * Clean
@@ -68,6 +70,7 @@ function doBundle(target, name, dest) {
 		gutil.log('Browserify Error', e);
 	})
 	.pipe(source(name))
+	.pipe(streamify(uglify()))
 	.pipe(gulp.dest(dest));
 }
 

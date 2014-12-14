@@ -28,7 +28,7 @@ var HeaderList = React.createClass({
 			}
 
 			month.key = 'month-' + i;
-			months.push(<div className="list-item">{month.name}</div>);
+			months.push(<div className="list-item"><div className="item-inner">{month.name}</div></div>);
 		});
 		
 		return (

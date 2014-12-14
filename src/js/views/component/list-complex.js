@@ -20,13 +20,21 @@ var ComplexListItem = React.createClass({
 		var renderAvatar = this.props.user.img ? <img src={this.props.user.img} /> : initials;
 
 		return (
-			<Link to="details" viewTransition="show-from-right" params={{ user: this.props.user, prevView: 'component-complex-list' }} className="list-item is-tappable" component="div">
-				<span className="list-avatar">
-					{renderAvatar}
+			<Link to="details" viewTransition="show-from-right" params={{ user: this.props.user, prevView: 'component-complex-list' }} className="list-item" component="div">
+				<span className="item-media">
+					<span className="list-avatar">
+						{renderAvatar}
+					</span>
 				</span>
-				<div className="list-inner">
-					<div className="list-item-title">{[this.props.user.name.first, this.props.user.name.last].join(' ')}</div>
-					<div className="list-item-subtitle">{this.props.user.location}</div>
+				<div className="item-inner">
+					<div className="item-content">
+						<div className="item-title">{[this.props.user.name.first, this.props.user.name.last].join(' ')}</div>
+						<div className="item-subtitle">{this.props.user.location}</div>
+					</div>
+					<div className="item-note default">
+						<div className="item-note-label">{this.props.user.joinedDate}</div>
+						<div className="item-note-icon ion-chevron-right" />
+					</div>
 				</div>
 			</Link>
 		);

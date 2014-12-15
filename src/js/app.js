@@ -3,7 +3,7 @@
 var _ = require('underscore');
 var React = require('react/addons');
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
-var SetClass = require('classnames');
+var classnames = require('classnames');
 
 var Touchstone = require('touchstonejs');
 
@@ -66,18 +66,30 @@ var App = React.createClass({
 	},
 
 	render: function() {
-		var appWrapperClassName = 'app-wrapper';
-
-		if (this.state.isNativeApp) appWrapperClassName += ' is-native-app';
-
-		var viewWrapperClassName = 'view-wrapper ' + this.state.viewWrapperClassName;
+		var appWrapperClassName = classnames({
+			'app-wrapper': true,
+			'is-native-app': this.state.isNativeApp
+		});
 
 		return (
 			<div className={appWrapperClassName}>
-				<div className={viewWrapperClassName}>
-					<ReactCSSTransitionGroup transitionName={this.state.viewTransition.name} transitionEnter={this.state.viewTransition.in} transitionLeave={this.state.viewTransition.out}>
-						{this.getCurrentView()}
-					</ReactCSSTransitionGroup>
+				<div className="device-silhouette">
+					<div className="view-wrapper">
+						<ReactCSSTransitionGroup transitionName={this.state.viewTransition.name} transitionEnter={this.state.viewTransition.in} transitionLeave={this.state.viewTransition.out}>
+							{this.getCurrentView()}
+						</ReactCSSTransitionGroup>
+					</div>
+				</div>
+				<div className="demo-wrapper">
+					<img src="img/logo-mark.svg" alt="TouchstoneJS" className="demo-brand" width="80" height="80" />
+					<h1>
+						TouchstoneJS 
+						<small> (demo)</small>
+					</h1>
+					<p>React.js powered UI framework for developing beautiful hybrid mobile apps.</p>
+					<p>
+						<a href="http://touchstonejs.io/" target="_blankl">View Website &rarr;</a>
+					</p>
 				</div>
 			</div>
 		);

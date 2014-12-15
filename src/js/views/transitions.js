@@ -20,35 +20,27 @@ module.exports = React.createClass({
 				<UI.FlexBlock scrollable>
 					<div className="panel-header text-caps">Default</div>
 					<div className="panel">
-						<div className="ios-list">
-							<Link to="transitions-target" className="list-item is-tappable">None</Link>
-						</div>
+						<Link to="transitions-target" className="list-item is-tappable" component="div"><div className="item-inner">None</div></Link>
 					</div>
 					<div className="panel-header text-caps">Fade</div>
 					<div className="panel">
-						<div className="ios-list">
-							<Link to="transitions-target" viewTransition="fade" className="list-item is-tappable">Fade</Link>
-							<Link to="transitions-target" viewTransition="fade-expand" className="list-item is-tappable">Fade Expand</Link>
-							<Link to="transitions-target" viewTransition="fade-contract" className="list-item is-tappable">Fade Contract</Link>
-						</div>
+						<Link to="transitions-target" viewTransition="fade" className="list-item is-tappable" component="div"><div className="item-inner">Fade</div></Link>
+						<Link to="transitions-target" viewTransition="fade-expand" className="list-item is-tappable" component="div"><div className="item-inner">Fade Expand</div></Link>
+						<Link to="transitions-target" viewTransition="fade-contract" className="list-item is-tappable" component="div"><div className="item-inner">Fade Contract</div></Link>
 					</div>
 					<div className="panel-header text-caps">Show</div>
 					<div className="panel">
-						<div className="ios-list">
-							<Link to="transitions-target" viewTransition="show-from-left" className="list-item is-tappable">Show from Left</Link>
-							<Link to="transitions-target" viewTransition="show-from-right" className="list-item is-tappable">Show from Right</Link>
-							<Link to="transitions-target" viewTransition="show-from-top" className="list-item is-tappable">Show from Top</Link>
-							<Link to="transitions-target" viewTransition="show-from-bottom" className="list-item is-tappable">Show from Bottom</Link>
-						</div>
+						<Link to="transitions-target" viewTransition="show-from-left" className="list-item is-tappable" component="div"><div className="item-inner">Show from Left</div></Link>
+						<Link to="transitions-target" viewTransition="show-from-right" className="list-item is-tappable" component="div"><div className="item-inner">Show from Right</div></Link>
+						<Link to="transitions-target" viewTransition="show-from-top" className="list-item is-tappable" component="div"><div className="item-inner">Show from Top</div></Link>
+						<Link to="transitions-target" viewTransition="show-from-bottom" className="list-item is-tappable" component="div"><div className="item-inner">Show from Bottom</div></Link>
 					</div>
 					<div className="panel-header text-caps">Reveal</div>
 					<div className="panel">
-						<div className="ios-list">
-							<Link to="transitions-target" viewTransition="reveal-from-left" className="list-item is-tappable">Reveal from Left</Link>
-							<Link to="transitions-target" viewTransition="reveal-from-right" className="list-item is-tappable">Reveal from Right</Link>
-							<Link to="transitions-target" viewTransition="reveal-from-top" className="list-item is-tappable">Reveal from Top</Link>
-							<Link to="transitions-target" viewTransition="reveal-from-bottom" className="list-item is-tappable">Reveal from Bottom</Link>
-						</div>
+						<Link to="transitions-target" viewTransition="reveal-from-left" className="list-item is-tappable" component="div"><div className="item-inner">Reveal from Left</div></Link>
+						<Link to="transitions-target" viewTransition="reveal-from-right" className="list-item is-tappable" component="div"><div className="item-inner">Reveal from Right</div></Link>
+						<Link to="transitions-target" viewTransition="reveal-from-top" className="list-item is-tappable" component="div"><div className="item-inner">Reveal from Top</div></Link>
+						<Link to="transitions-target" viewTransition="reveal-from-bottom" className="list-item is-tappable" component="div"><div className="item-inner">Reveal from Bottom</div></Link>
 					</div>
 				</UI.FlexBlock>
 			</UI.FlexLayout>

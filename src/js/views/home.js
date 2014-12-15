@@ -7,10 +7,6 @@ var React = require('react'),
 	Link = require('touchstonejs').Link,
 	UI = require('touchstonejs').UI;
 
-var Icons = {
-	Logo: require('../components/svg/icon-logo')
-};
-
 module.exports = React.createClass({
 	mixins: [Navigation],
 

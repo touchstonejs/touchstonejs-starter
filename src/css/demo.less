@@ -1,0 +1,115 @@
+// 
+// Demo
+// ==============================
+
+
+
+// Variables
+// ------------------------------
+
+
+@demo-bg:                   #c32964;
+@device-chrome-vertical:       50px;
+
+
+
+
+// Layout
+// ------------------------------
+
+
+.demo-wrapper {
+	.size(320px,auto);
+	color: fade(white, 75%);
+	display: none; // hide on small devices
+	font-weight: 300;
+	letter-spacing: 0.02em;
+	position: absolute;
+	right: 0;
+	top: 0;
+
+
+	// common
+	* + * {
+		margin-top: 1em;
+	}
+
+	// type
+
+	h1,h2,h3 {
+		color: white;
+		font-weight: 300;
+		margin: 0;
+		line-height: 1.1;
+	}
+
+	a {
+		color: white;
+	}
+}
+.demo-brand {
+	.square(80px);
+	position: relative;
+	top: -@device-chrome-vertical;
+}
+
+
+// desktop wrapper
+@media only screen and (min-width : 768px) {
+	#app {
+		#gradient .directional( spin(@demo-bg,-22%), spin(@demo-bg,22%), 135deg );
+		background-color: @demo-bg;
+		color: fade(white, 50%);
+	}
+
+	.app-wrapper {
+		background: none;
+		left: 50%;
+		top: 50%;
+		overflow: visible;
+		// iPhone 4
+		// .size(320px,480px);
+		// margin-left: -160px;
+		// margin-top: -240px;
+
+		// iPhone 5
+		.size(680px,568px);
+		margin-left: -340px;
+		margin-top: -284px;
+
+		// iPhone 6
+		// .size(376px,668px);
+		// margin-left: -188px;
+		// margin-left: -334px;
+	}
+
+	// fixes for the desktop
+	.view,
+	.loading-overlay,
+	.Modal,
+	.Modal-backdrop,
+	.Keypad {
+		position: absolute;
+	}
+
+	// view
+	.view-wrapper {
+		.size(320px,568px);
+		background: black;
+		position: relative;
+		overflow: hidden;
+	}
+
+	// demo
+	.demo-wrapper {
+		display: block;
+	}
+
+	.device-silhouette {
+		.size(340px,668px);
+		background-color: fade(black, 20%);
+		border-radius: 20px;
+		margin: -@device-chrome-vertical 0 0 -10px;
+		padding: @device-chrome-vertical 10px;
+	}
+}

@@ -32,7 +32,7 @@ module.exports = React.createClass({
 		var renderFooterbar;
 
 		if (this.state.typeKey === 'icon') {
-			var renderFooterbar = (<UI.Footerbar>
+			var renderFooterbar = (<UI.Footerbar type="default">
 				<UI.FooterbarButton icon="ion-ios7-arrow-left" />
 				<UI.FooterbarButton icon="ion-ios7-arrow-right" disabled />
 				<UI.FooterbarButton icon="ion-ios7-download" />
@@ -40,7 +40,7 @@ module.exports = React.createClass({
 				<UI.FooterbarButton icon="ion-ios7-browsers" />
 			</UI.Footerbar>)
 		} else if (this.state.typeKey === 'label') {
-			var renderFooterbar = (<UI.Footerbar>
+			var renderFooterbar = (<UI.Footerbar type="default">
 				<UI.FooterbarButton label="Back" />
 				<UI.FooterbarButton label="Forward" disabled />
 				<UI.FooterbarButton label="Download" />
@@ -48,7 +48,7 @@ module.exports = React.createClass({
 				<UI.FooterbarButton label="Tabs" />
 			</UI.Footerbar>)
 		} else if (this.state.typeKey === 'both') {
-			var renderFooterbar = (<UI.Footerbar>
+			var renderFooterbar = (<UI.Footerbar type="default">
 				<UI.FooterbarButton label="Back" icon="ion-ios7-arrow-left" />
 				<UI.FooterbarButton label="Forward" icon="ion-ios7-arrow-right" disabled />
 				<UI.FooterbarButton label="Download" icon="ion-ios7-download" />

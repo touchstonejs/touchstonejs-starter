@@ -61,18 +61,20 @@ module.exports = React.createClass({
 				</UI.Headerbar>
 				<UI.FlexBlock scrollable>
 					{/*<div className="panel-header text-caps">Basic details</div>*/}
-					<div className="panel panel--first ios-list">
+					<div className="panel panel--first">
 						<UI.LabelInput label="Name"     value={[this.props.user.name.first, this.props.user.name.last].join(' ')}       placeholder="Full name" first />
 						<UI.LabelInput label="Location" value={this.props.user.location}   placeholder="Suburb, Country" />
 						<UI.LabelInput label="Joined"   value={this.props.user.joinedDate} placeholder="Date" />
 						<UI.LabelTextarea label="Bio"   value={this.state.bioValue}        placeholder="(required)" onChange={this.handleBioInput} />
 					</div>
-					<div className="panel ios-list">
+					<div className="panel">
 						<Tappable onTap={this.showFlavourList} className="list-item is-first" component="div">
-							Favourite Icecream
-							<div className="item-note is-muted">
-								<div className="item-note-label">{this.props.user.flavour}</div>
-								<div className="item-note-icon ion-chevron-right" />
+							<div className="item-inner">
+								Favourite Icecream
+								<div className="item-note default">
+									<div className="item-note-label">{this.props.user.flavour}</div>
+									<div className="item-note-icon ion-chevron-right" />
+								</div>
 							</div>
 						</Tappable>
 					</div>

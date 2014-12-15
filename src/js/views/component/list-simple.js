@@ -42,7 +42,7 @@ var SimpleList = React.createClass({
 		
 		return (
 			<div>
-				<div className="panel panel--first ios-list">
+				<div className="panel panel--first">
 					{users}
 				</div>
 			</div>

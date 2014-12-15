@@ -33,13 +33,13 @@ module.exports = React.createClass({
 				</UI.Headerbar>
 				<UI.FlexBlock scrollable>
 					<div className="panel-header text-caps">Inputs</div>
-					<div className="panel ios-list">
+					<div className="panel">
 						<UI.Input placeholder="Default" />
 						<UI.Input defaultValue="With Value" placeholder="Placeholder" />
 						<UI.Textarea defaultValue="Longtext is good for bios etc." placeholder="Longtext" />
 					</div>
 					<div className="panel-header text-caps">Labelled Inputs</div>
-					<div className="panel ios-list">
+					<div className="panel">
 						<UI.LabelInput type="email" label="Email"   placeholder="your.name@example.com" />
 						<UI.LabelInput type="url"   label="URL"     placeholder="http://www.yourwebsite.com" />
 						<UI.LabelInput noedit       label="No Edit" value="Un-editable, scrollable, selectable content" />

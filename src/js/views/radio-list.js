@@ -32,7 +32,7 @@ module.exports = React.createClass({
 					<UI.HeaderbarButton showView="details" viewTransition="reveal-from-right" viewProps={{ user: this.props.user, flavour: this.state.flavour }} label="Details" icon="ion-chevron-left" />
 				</UI.Headerbar>
 				<UI.FlexBlock scrollable>
-					<div className="panel panel--first ios-list">
+					<div className="panel panel--first">
 						<UI.RadioList value={this.state.flavour} onChange={this.handleFlavourChange} options={[
 							{ label: 'Vanilla',    value: 'vanilla' },
 							{ label: 'Chocolate',  value: 'chocolate' },

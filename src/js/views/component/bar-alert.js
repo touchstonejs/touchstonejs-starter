@@ -43,7 +43,7 @@ module.exports = React.createClass({
 					<div className="alertbar-text">When the state is "{this.state.alertKey}"</div>
 				</UI.FlexBlock>
 				<UI.FlexBlock scrollable>
-					<div className="panel panel--first ios-list">
+					<div className="panel panel--first">
 						<UI.RadioList value={this.state.alertKey} onChange={this.handleAlertChange} options={[
 							{ label: 'Muted',  value: 'muted' },
 							{ label: 'Primary',  value: 'primary' },

@@ -29,12 +29,12 @@ var Search = React.createClass({
 		var clearIcon = Boolean(this.props.searchString.length) ? <Tappable onTap={this.reset} className="Headerbar-form-clear ion-close-circled" /> : '';
 		
 		return (
-			<UI.FlexBlock height="36px" className="Headerbar Headerbar-form">
+			<UI.Headerbar height="36px" className="Headerbar-form">
 				<div className="Headerbar-form-field Headerbar-form-icon ion-ios7-search-strong">
 					<input ref="input" value={this.props.searchString} onChange={this.handleChange} className="Headerbar-form-input" placeholder='Search...' />
 					{clearIcon}
 				</div>
-			</UI.FlexBlock>
+			</UI.Headerbar>
 		);
 	}
 	
@@ -45,7 +45,7 @@ var Item = React.createClass({
 	render: function() {
 		return (
 			<div className="list-item">
-				<div className="list-item-title">{this.props.month.name}</div>
+				<div className="item-inner">{this.props.month.name}</div>
 			</div>
 		);
 	}
@@ -89,7 +89,7 @@ var List = React.createClass({
 			months.push(React.createElement(Item, { month: month }));
 		});
 
-		var wrapperClassName = SetClass(months.length ? 'panel mb-0 ios-list' : 'view-feedback');
+		var wrapperClassName = SetClass(months.length ? 'panel mb-0' : 'view-feedback');
 
 		if (months.length) {
 			renderList = months;
@@ -122,7 +122,7 @@ module.exports = React.createClass({
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.Headerbar label="Select a Month">
+				<UI.Headerbar label="Filter Months">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 				</UI.Headerbar>
 				<Search searchString={this.state.searchString} onChange={this.updateSearch} />

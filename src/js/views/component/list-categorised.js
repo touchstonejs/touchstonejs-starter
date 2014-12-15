@@ -32,7 +32,7 @@ var HeaderList = React.createClass({
 		});
 		
 		return (
-			<div className="panel mb-0 ios-list">
+			<div className="panel mb-0">
 				{months}
 			</div>
 		);

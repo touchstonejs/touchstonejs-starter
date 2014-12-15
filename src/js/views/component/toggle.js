@@ -33,11 +33,11 @@ var MonthList = React.createClass({
 			}
 
 			month.key = 'month-' + i;
-			months.push(<div className="list-item">{month.name}</div>);
+			months.push(<div className="list-item"><div className="item-inner">{month.name}</div></div>);
 		});
 		
 		return (
-			<div className="panel mb-0 ios-list">
+			<div className="panel mb-0">
 				{months}
 			</div>
 		);
@@ -72,7 +72,6 @@ module.exports = React.createClass({
 				</UI.Headerbar>
 				<UI.Headerbar height="36px" className="Subheader">
 					<UI.Toggle value={this.state.activeToggleItemKey} onChange={this.handleToggleActiveChange} options={[
-						{ label: 'All', value: 'all' },
 						{ label: 'Summer', value: 'summer' },
 						{ label: 'Autumn', value: 'autumn' },
 						{ label: 'Winter', value: 'winter' },

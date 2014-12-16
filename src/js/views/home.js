@@ -95,6 +95,7 @@ module.exports = React.createClass({
 							<div className="item-inner">View Feedback</div>
 						</Link>
 					</div>
+					{/* Modals need to be implemented properly
 					<div className="panel-header text-caps">Modals</div>
 					<div className="panel">
 						<Tappable component="div" onTap={this.showMessageModal} className="list-item is-tappable">
@@ -103,7 +104,7 @@ module.exports = React.createClass({
 						<Tappable component="div" onTap={this.showLoadingModal} className="list-item is-tappable">
 							<div className="item-inner">Modal Loading</div>
 						</Tappable>
-					</div>
+					</div>*/}
 				</UI.FlexBlock>
 				<UI.Modal header="This is a modal" text="This is the body. Modals can have up to two actions." visible={this.state.modalMessageVisible} className="text-center" primaryActionText="Okay" primaryActionFn={this.hideMessageModal} secondaryActionText="Cancel" secondaryActionFn={this.hideMessageModal} />
 				<UI.Modal header="Loading" iconKey="ion-load-c" iconType="default" visible={this.state.modalLoadingVisible} className="Modal-loading" />

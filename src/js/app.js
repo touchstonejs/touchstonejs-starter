@@ -84,7 +84,7 @@ var App = React.createClass({
 					<img src="img/logo-mark.svg" alt="TouchstoneJS" className="demo-brand" width="80" height="80" />
 					<h1>
 						TouchstoneJS 
-						<small> (demo)</small>
+						<small> demo</small>
 					</h1>
 					<p>React.js powered UI framework for developing beautiful hybrid mobile apps.</p>
 					<ul className="demo-links">

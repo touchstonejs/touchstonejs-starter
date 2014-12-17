@@ -64,12 +64,15 @@ module.exports = React.createClass({
 					<div className="Headerbar-label">Footer Bar</div>
 				</UI.Headerbar>
 				<UI.FlexBlock scrollable>
-					<div className="view-inner">
+					{/*<div className="view-inner">
 						<UI.Toggle value={this.state.typeKey} onChange={this.handleFooterChange} options={[
 							{ label: 'Icon', value: 'icon' },
 							{ label: 'Label', value: 'label' },
 							{ label: 'Both', value: 'both' }
 						]} />
+					</div>*/}
+					<div className="view-feedback">
+						Your app's amazing content here.
 					</div>
 				</UI.FlexBlock>
 				{renderFooterbar}

@@ -87,9 +87,11 @@ var App = React.createClass({
 						<small> (demo)</small>
 					</h1>
 					<p>React.js powered UI framework for developing beautiful hybrid mobile apps.</p>
-					<p>
-						<a href="http://touchstonejs.io/" target="_blankl">View Website &rarr;</a>
-					</p>
+					<ul className="demo-links">
+						<li><a href="https://twitter.com/touchstonejs" target="_blank" className="ion-social-twitter">Twitter</a></li>
+						<li><a href="https://github.com/jedwatson/touchstonejs" target="_blank" className="ion-social-github">Github</a></li>
+						<li><a href="http://touchstonejs.io" target="_blank" className="ion-map">Roadmap</a></li>
+					</ul>
 				</div>
 			</div>
 		);

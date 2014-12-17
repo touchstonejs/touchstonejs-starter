@@ -51,7 +51,40 @@
 	.square(80px);
 	margin-bottom: 30px;
 }
+.demo-links {
+	display: inline-block;
+	font-size: 14px;
+	list-style: none;
+	line-height: 1;
+	margin: 40px 0 0;
+	padding: 0;
+	
+	&:hover > li > a {
+		opacity: .5;
+	}
 
+	> li {
+		// display: inline-block;
+		margin: 0;
+
+		> a {
+			.transition( opacity 150ms );
+			display: block;
+			padding: 8px 0;
+
+			&:before {
+				font-size: 24px;
+				margin-right: 10px;
+				vertical-align: middle;
+			}
+			
+			&:hover {
+				opacity: 1;
+			}
+
+		}
+	}
+}
 .view {
 	color: @text-color;
 }

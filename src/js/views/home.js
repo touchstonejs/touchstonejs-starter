@@ -70,20 +70,21 @@ module.exports = React.createClass({
 						<Link component="div" to="component-complex-list" viewTransition="show-from-right" className="list-item is-tappable">
 							<div className="item-inner">Complex List</div>
 						</Link>
+						{/* This is covered in other components
 						<Link component="div" to="component-categorised-list" viewTransition="show-from-right" className="list-item is-tappable">
 							<div className="item-inner">Categorised List</div>
-						</Link>
+						</Link>*/}
 					</div>
 					<div className="panel-header text-caps">UI Elements</div>
 					<div className="panel">
-						<Link component="div" to="component-passcode" viewTransition="show-from-right" className="list-item is-tappable">
-							<div className="item-inner">Passcode / Keypad</div>
-						</Link>
 						<Link component="div" to="component-toggle"   viewTransition="show-from-right" className="list-item is-tappable">
 							<div className="item-inner">Toggle</div>
 						</Link>
 						<Link component="div" to="component-form"     viewTransition="show-from-right" className="list-item is-tappable">
 							<div className="item-inner">Form Fields</div>
+						</Link>
+						<Link component="div" to="component-passcode" viewTransition="show-from-right" className="list-item is-tappable">
+							<div className="item-inner">Passcode / Keypad</div>
 						</Link>
 					</div>
 					<div className="panel-header text-caps">Application State</div>

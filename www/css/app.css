@@ -3821,7 +3821,7 @@ body {
 .is-native-app .view {
   padding-top: 20px;
 }
-.is-native-app .view .Headerbar:before {
+.is-native-app .view .Headerbar:not(.Subheader):before {
   content: "";
   display: block !important;
   height: 20px;
@@ -3830,34 +3830,34 @@ body {
   top: -20px;
   width: 100%;
 }
-.is-native-app .view .Headerbar.default:before {
+.is-native-app .view .Headerbar:not(.Subheader).default:before {
   background-color: #f6f6f7;
 }
-.is-native-app .view .Headerbar.green:before {
+.is-native-app .view .Headerbar:not(.Subheader).green:before {
   background-color: #4cd964;
 }
-.is-native-app .view .Headerbar.primary:before {
+.is-native-app .view .Headerbar:not(.Subheader).primary:before {
   background-color: #007aff;
 }
-.is-native-app .view .Headerbar.blue:before {
+.is-native-app .view .Headerbar:not(.Subheader).blue:before {
   background-color: #007aff;
 }
-.is-native-app .view .Headerbar.light-blue:before {
+.is-native-app .view .Headerbar:not(.Subheader).light-blue:before {
   background-color: #5ac8fa;
 }
-.is-native-app .view .Headerbar.yellow:before {
+.is-native-app .view .Headerbar:not(.Subheader).yellow:before {
   background-color: #ffcc00;
 }
-.is-native-app .view .Headerbar.orange:before {
+.is-native-app .view .Headerbar:not(.Subheader).orange:before {
   background-color: #ff9500;
 }
-.is-native-app .view .Headerbar.red:before {
+.is-native-app .view .Headerbar:not(.Subheader).red:before {
   background-color: #ff3b30;
 }
-.is-native-app .view .Headerbar.pink:before {
+.is-native-app .view .Headerbar:not(.Subheader).pink:before {
   background-color: #ff2d55;
 }
-.is-native-app .view .Headerbar.purple:before {
+.is-native-app .view .Headerbar:not(.Subheader).purple:before {
   background-color: #5856d6;
 }
 .view-inner {
@@ -5359,6 +5359,8 @@ fieldset[disabled] .btn-link {
   margin: 0;
   position: relative;
   z-index: 3;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 .Headerbar.default {
   position: relative;
@@ -6170,8 +6172,39 @@ fieldset[disabled] .btn-link {
 .demo-brand {
   width: 80px;
   height: 80px;
-  position: relative;
-  top: -50px;
+  margin-bottom: 30px;
+}
+.demo-links {
+  display: inline-block;
+  font-size: 14px;
+  list-style: none;
+  line-height: 1;
+  margin: 40px 0 0;
+  padding: 0;
+}
+.demo-links:hover > li > a {
+  opacity: .5;
+}
+.demo-links > li {
+  margin: 0;
+}
+.demo-links > li > a {
+  -webkit-transition: opacity 150ms;
+  -o-transition: opacity 150ms;
+  transition: opacity 150ms;
+  display: block;
+  padding: 8px 0;
+}
+.demo-links > li > a:before {
+  font-size: 24px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+.demo-links > li > a:hover {
+  opacity: 1;
+}
+.view {
+  color: #000000;
 }
 @media only screen and (min-width: 768px) {
   #app {

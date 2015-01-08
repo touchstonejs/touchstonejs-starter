@@ -86,6 +86,9 @@ module.exports = React.createClass({
 						<Link component="div" to="component-passcode" viewTransition="show-from-right" className="list-item is-tappable">
 							<div className="item-inner">Passcode / Keypad</div>
 						</Link>
+						<Tappable component="div" onTap={this.showLoadingModal} className="list-item is-tappable">
+							<div className="item-inner">Loading Spinner</div>
+						</Tappable>
 					</div>
 					<div className="panel-header text-caps">Application State</div>
 					<div className="panel">

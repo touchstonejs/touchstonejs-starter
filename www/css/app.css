@@ -3801,6 +3801,10 @@ body {
   position: fixed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
 }
 .view-processing {
   pointer-events: none;
@@ -3907,12 +3911,14 @@ body {
 .view-transition-show-from-right-enter,
 .view-transition-show-from-bottom-enter,
 .view-transition-show-from-left-enter {
+  pointer-events: none;
   z-index: 20;
 }
 .view-transition-show-from-top-leave,
 .view-transition-show-from-right-leave,
 .view-transition-show-from-bottom-leave,
 .view-transition-show-from-left-leave {
+  pointer-events: none;
   z-index: 10;
 }
 .view-transition-show-from-top-enter,
@@ -3966,12 +3972,14 @@ body {
 .view-transition-reveal-from-right-enter,
 .view-transition-reveal-from-bottom-enter,
 .view-transition-reveal-from-left-enter {
+  pointer-events: none;
   z-index: 10;
 }
 .view-transition-reveal-from-top-leave,
 .view-transition-reveal-from-right-leave,
 .view-transition-reveal-from-bottom-leave,
 .view-transition-reveal-from-left-leave {
+  pointer-events: none;
   z-index: 20;
 }
 .view-transition-reveal-from-top-enter,
@@ -4359,10 +4367,7 @@ fieldset[disabled] .btn-link {
   display: flex;
   -webkit-align-items: center;
   align-items: center;
-  margin-left: -12px;
-  left: 50%;
   height: 100%;
-  position: absolute;
   top: 0;
 }
 .loading-button-icon {
@@ -4372,7 +4377,6 @@ fieldset[disabled] .btn-link {
   position: relative;
   -webkit-transition-delay: 200ms;
   transition-delay: 200ms;
-  opacity: 0;
 }
 .loading-button-icon:before,
 .loading-button-icon:after {
@@ -4611,6 +4615,9 @@ fieldset[disabled] .btn-link {
   display: inline-block;
   opacity: 1;
 }
+.loading-button.is-loading {
+  pointer-events: none;
+}
 .loading-button.is-loading .loading-button-icon {
   opacity: 1;
 }
@@ -4661,13 +4668,8 @@ fieldset[disabled] .btn-link {
 }
 .action-button.disabled,
 .action-button[disabled] {
+  opacity: .5;
   pointer-events: none;
-}
-.action-button.disabled:before,
-.action-button[disabled]:before,
-.action-button.disabled > .action-button-label,
-.action-button[disabled] > .action-button-label {
-  color: #cccccc;
 }
 .action-button.inactive:before,
 .action-button.inactive > .action-button-label {
@@ -5445,6 +5447,30 @@ fieldset[disabled] .btn-link {
 .Headerbar.purple .Headerbar-button[disabled] {
   color: rgba(255, 255, 255, 0.4);
 }
+.Headerbar.transparent .loading-button-icon:before,
+.Headerbar.green .loading-button-icon:before,
+.Headerbar.blue .loading-button-icon:before,
+.Headerbar.primary .loading-button-icon:before,
+.Headerbar.light-blue .loading-button-icon:before,
+.Headerbar.yellow .loading-button-icon:before,
+.Headerbar.orange .loading-button-icon:before,
+.Headerbar.red .loading-button-icon:before,
+.Headerbar.pink .loading-button-icon:before,
+.Headerbar.purple .loading-button-icon:before {
+  border-color: #ffffff;
+}
+.Headerbar.transparent .loading-button-icon:after,
+.Headerbar.green .loading-button-icon:after,
+.Headerbar.blue .loading-button-icon:after,
+.Headerbar.primary .loading-button-icon:after,
+.Headerbar.light-blue .loading-button-icon:after,
+.Headerbar.yellow .loading-button-icon:after,
+.Headerbar.orange .loading-button-icon:after,
+.Headerbar.red .loading-button-icon:after,
+.Headerbar.pink .loading-button-icon:after,
+.Headerbar.purple .loading-button-icon:after {
+  border-top-color: #ffffff;
+}
 .Headerbar.green {
   background-color: #4cd964;
 }
@@ -5493,6 +5519,7 @@ fieldset[disabled] .btn-link {
   left: 0;
   line-height: 44px;
   height: 44px;
+  min-width: 44px;
   padding-left: 10px;
   padding-right: 10px;
   position: absolute;
@@ -5703,12 +5730,12 @@ fieldset[disabled] .btn-link {
   outline: none;
   -webkit-appearance: none;
 }
-.Keypad-button.is-disabled {
+.Keypad-button.disabled {
   pointer-events: none;
 }
-.Keypad-button.is-disabled .Keypad-button-primary-label,
-.Keypad-button.is-disabled .Keypad-button-secondary-label,
-.Keypad-button.is-disabled .Keypad-button-icon {
+.Keypad-button.disabled .Keypad-button-primary-label,
+.Keypad-button.disabled .Keypad-button-secondary-label,
+.Keypad-button.disabled .Keypad-button-icon {
   opacity: .3;
 }
 .Keypad-button-primary-label {
@@ -5728,7 +5755,7 @@ fieldset[disabled] .btn-link {
 }
 .Keypad--default .Keypad-button {
   background-color: #e0e0ea;
-  color: #000000;
+  color: black;
 }
 .Keypad--default .Keypad-button.Tappable-active {
   background-color: #d1d1df;
@@ -5738,6 +5765,9 @@ fieldset[disabled] .btn-link {
 }
 .Keypad--default .Keypad-button.is-auxiliary.Tappable-active {
   background-color: #b3b3ca;
+}
+.Keypad--default .Keypad-button .svg-path {
+  fill: black;
 }
 .Keypad--black-translucent .Keypad-button {
   background-color: rgba(0, 0, 0, 0.1);
@@ -5752,6 +5782,9 @@ fieldset[disabled] .btn-link {
 .Keypad--black-translucent .Keypad-button.is-auxiliary.Tappable-active {
   background-color: rgba(0, 0, 0, 0.2);
 }
+.Keypad--black-translucent .Keypad-button .svg-path {
+  fill: white;
+}
 .Keypad--white-translucent .Keypad-button {
   background-color: rgba(255, 255, 255, 0.45);
   color: black;
@@ -5764,6 +5797,9 @@ fieldset[disabled] .btn-link {
 }
 .Keypad--white-translucent .Keypad-button.is-auxiliary.Tappable-active {
   background-color: rgba(255, 255, 255, 0.15);
+}
+.Keypad--white-translucent .Keypad-button .svg-path {
+  fill: black;
 }
 .Modal {
   -webkit-transition: all 300ms;

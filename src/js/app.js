@@ -47,8 +47,6 @@ var App = React.createClass({
 		var initialState = {
 			currentView: 'home',
 			online: true,
-			centre: undefined,
-			gate: undefined,
 			isNativeApp: (typeof cordova !== 'undefined') ? true : false
 		}
 
@@ -74,11 +72,9 @@ var App = React.createClass({
 		return (
 			<div className={appWrapperClassName}>
 				<div className="device-silhouette">
-					<div className="view-wrapper">
-						<ReactCSSTransitionGroup transitionName={this.state.viewTransition.name} transitionEnter={this.state.viewTransition.in} transitionLeave={this.state.viewTransition.out}>
-							{this.getCurrentView()}
-						</ReactCSSTransitionGroup>
-					</div>
+					<ReactCSSTransitionGroup transitionName={this.state.viewTransition.name} transitionEnter={this.state.viewTransition.in} transitionLeave={this.state.viewTransition.out} className="view-wrapper" component="div">
+						{this.getCurrentView()}
+					</ReactCSSTransitionGroup>
 				</div>
 				<div className="demo-wrapper">
 					<img src="img/logo-mark.svg" alt="TouchstoneJS" className="demo-brand" width="80" height="80" />

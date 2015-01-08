@@ -2,7 +2,6 @@
 
 var React = require('react'),
 	SetClass = require('classnames'),
-	Tappable = require('react-tappable'),
 	Navigation = require('touchstonejs').Navigation,
 	Link = require('touchstonejs').Link,
 	UI = require('touchstonejs').UI;

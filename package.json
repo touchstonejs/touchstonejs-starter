@@ -8,18 +8,18 @@
   "dependencies": {
     "async": "^0.9.0",
     "classnames": "^1.0.0",
-    "express": "^4.10.4",
-    "moment": "^2.8.4",
-    "react": "^0.12.1",
-    "react-tappable": "^0.2.3",
+    "express": "^4.11.0",
+    "moment": "^2.9.0",
+    "react": "^0.12.2",
+    "react-tappable": "^0.2.5",
     "superagent": "^0.21.0",
-    "touchstonejs": "^0.1.1",
+    "touchstonejs": "^0.1.2",
     "underscore": "^1.7.0"
   },
   "devDependencies": {
     "gulp": "^3.8.10",
     "reactify": "^0.17.1",
-    "touchstonejs-tasks": "0.0.2"
+    "touchstonejs-tasks": "0.0.3"
   },
   "scripts": {
     "watch": "gulp watch"

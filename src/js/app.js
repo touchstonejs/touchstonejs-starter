@@ -1,13 +1,12 @@
 /** @jsx React.DOM */
 
-var _ = require('underscore');
 var React = require('react/addons');
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 var classnames = require('classnames');
 
 var Touchstone = require('touchstonejs');
 
-var config = require('./config')
+var config = require('./config');
 
 var views = {
 
@@ -47,10 +46,10 @@ var App = React.createClass({
 		var initialState = {
 			currentView: 'home',
 			online: true,
-			isNativeApp: (typeof cordova !== 'undefined') ? true : false
-		}
+			isNativeApp: (typeof cordova !== 'undefined')
+		};
 
-		return initialState
+		return initialState;
 	},
 
 	getViewProps: function() {

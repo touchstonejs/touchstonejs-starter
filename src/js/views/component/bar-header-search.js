@@ -25,7 +25,6 @@ var Search = React.createClass({
 	
 	render: function() {
 		
-		var iconClass = 'search-field-icon ' + (this.props.searchString ? 'ion-close-circled' : 'ion-search');
 		var clearIcon = Boolean(this.props.searchString.length) ? <Tappable onTap={this.reset} className="Headerbar-form-clear ion-close-circled" /> : '';
 		
 		return (
@@ -54,7 +53,9 @@ var Item = React.createClass({
 var List = React.createClass({
 	
 	getDefaultProps: function() {
-		searchString: ''
+		return {
+			searchString: ''
+		};
 	},
 
 	render: function() {

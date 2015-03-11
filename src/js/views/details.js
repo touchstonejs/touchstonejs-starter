@@ -47,10 +47,8 @@ module.exports = React.createClass({
 		}.bind(this), 750);
 	},
 
-	flashAlert: function(alertContent) {
-		return this.showAlertDialog({ message: alertContent }, function() {
-			this.showView('home', 'fade')
-		}.bind(this));
+	flashAlert: function(alertContent, callback) {
+		return callback(this.showAlertDialog({ message: alertContent }));
 	},
 
 	render: function() {

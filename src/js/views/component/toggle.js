@@ -78,7 +78,7 @@ module.exports = React.createClass({
 						{ label: 'Spring', value: 'spring' }
 					]} />
 				</UI.Headerbar>
-				<UI.FlexBlock scrollable>
+				<UI.FlexBlock grow scrollable>
 					<MonthList months={this.state.months} filterState={this.state.activeToggleItemKey} />
 				</UI.FlexBlock>
 			</UI.FlexLayout>

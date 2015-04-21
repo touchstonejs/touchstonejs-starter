@@ -127,7 +127,7 @@ module.exports = React.createClass({
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 				</UI.Headerbar>
 				<Search searchString={this.state.searchString} onChange={this.updateSearch} />
-				<UI.FlexBlock scrollable>
+				<UI.FlexBlock grow scrollable>
 					<List months={this.state.months} searchString={this.state.searchString} />
 				</UI.FlexBlock>
 			</UI.FlexLayout>

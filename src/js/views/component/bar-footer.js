@@ -63,7 +63,7 @@ module.exports = React.createClass({
 					<Link to="home" viewTransition="reveal-from-right" className="Headerbar-button ion-chevron-left" component="button">Back</Link>
 					<div className="Headerbar-label">Footer Bar</div>
 				</UI.Headerbar>
-				<UI.FlexBlock scrollable>
+				<UI.FlexBlock grow scrollable>
 					{/*<div className="view-inner">
 						<UI.Toggle value={this.state.typeKey} onChange={this.handleFooterChange} options={[
 							{ label: 'Icon', value: 'icon' },

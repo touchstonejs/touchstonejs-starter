@@ -16,7 +16,7 @@ module.exports = React.createClass({
 				<UI.Headerbar label="Transitions">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" icon="ion-chevron-left" label="Back" />
 				</UI.Headerbar>
-				<UI.FlexBlock scrollable>
+				<UI.FlexBlock grow scrollable>
 					<div className="panel-header text-caps">Default</div>
 					<div className="panel">
 						<Link to="transitions-target" className="list-item is-tappable" component="div"><div className="item-inner">None</div></Link>

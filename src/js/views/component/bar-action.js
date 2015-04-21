@@ -21,7 +21,7 @@ module.exports = React.createClass({
 				<UI.Headerbar label="Action Bar">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 				</UI.Headerbar>
-				<UI.FlexBlock scrollable>
+				<UI.FlexBlock grow scrollable>
 					<div className="panel-header text-caps">Label Only</div>
 					<div className="panel">
 						<UI.ActionButtons>

@@ -54,7 +54,7 @@ module.exports = React.createClass({
 				<UI.Headerbar label="Simple List">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 				</UI.Headerbar>
-				<UI.FlexBlock scrollable>
+				<UI.FlexBlock grow scrollable>
 					<SimpleList users={People} />
 				</UI.FlexBlock>
 			</UI.FlexLayout>

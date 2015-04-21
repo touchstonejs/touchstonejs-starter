@@ -35,7 +35,7 @@ module.exports = React.createClass({
 				<UI.Headerbar label="Header Bar" className={headerbarClass}>
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" icon="ion-chevron-left" label="Back" />
 				</UI.Headerbar>
-				<UI.FlexBlock scrollable>
+				<UI.FlexBlock grow scrollable>
 					<div className="panel panel--first">
 						<UI.RadioList value={this.state.typeKey} onChange={this.handleHeaderChange} options={[
 							{ label: 'Default',  value: 'default' },

@@ -110,8 +110,8 @@ module.exports = React.createClass({
 						</Tappable>
 					</div>*/}
 				</UI.FlexBlock>
-				<UI.Modal header="This is a modal" text="This is the body. Modals can have up to two actions." visible={this.state.modalMessageVisible} className="text-center" primaryActionText="Okay" primaryActionFn={this.hideMessageModal} secondaryActionText="Cancel" secondaryActionFn={this.hideMessageModal} />
-				<UI.Modal header="Loading" iconKey="ion-load-c" iconType="default" visible={this.state.modalLoadingVisible} className="Modal-loading" />
+				{this.state.modalMessageVisible && <UI.Modal header="This is a modal" text="This is the body. Modals can have up to two actions." className="text-center" primaryActionText="Okay" primaryActionFn={this.hideMessageModal} secondaryActionText="Cancel" secondaryActionFn={this.hideMessageModal} />}
+				{this.state.modalLoadingVisible && <UI.Modal header="Loading" iconKey="ion-load-c" iconType="default" className="Modal-loading" />}
 			</UI.FlexLayout>
 		);
 	}

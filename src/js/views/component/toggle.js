@@ -67,7 +67,7 @@ module.exports = React.createClass({
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.Headerbar label="Toggle">
+				<UI.Headerbar type="default" label="Toggle">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 				</UI.Headerbar>
 				<UI.Headerbar height="36px" className="Subheader">

@@ -123,7 +123,7 @@ module.exports = React.createClass({
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.Headerbar label="Filter Months">
+				<UI.Headerbar type="default" label="Filter Months">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 				</UI.Headerbar>
 				<Search searchString={this.state.searchString} onChange={this.updateSearch} />

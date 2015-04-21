@@ -26,13 +26,9 @@ module.exports = React.createClass({
 
 	render: function() {
 
-		var headerbarClass = SetClass(this.state.typeKey, {
-			'Headerbar': true
-		});
-
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.Headerbar label="Header Bar" className={headerbarClass}>
+				<UI.Headerbar type={this.state.typeKey} label="Header Bar">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" icon="ion-chevron-left" label="Back" />
 				</UI.Headerbar>
 				<UI.FlexBlock grow scrollable>

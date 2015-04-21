@@ -59,9 +59,8 @@ module.exports = React.createClass({
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.Headerbar>
+				<UI.Headerbar type="default" label="Footer Bar">
 					<Link to="home" viewTransition="reveal-from-right" className="Headerbar-button ion-chevron-left" component="button">Back</Link>
-					<div className="Headerbar-label">Footer Bar</div>
 				</UI.Headerbar>
 				<UI.FlexBlock grow scrollable>
 					{/*<div className="view-inner">

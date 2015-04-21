@@ -28,7 +28,7 @@ module.exports = React.createClass({
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.Headerbar label="Form">
+				<UI.Headerbar type="default" label="Form">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 				</UI.Headerbar>
 				<UI.FlexBlock grow scrollable>

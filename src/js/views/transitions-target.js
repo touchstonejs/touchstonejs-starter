@@ -20,7 +20,7 @@ module.exports = React.createClass({
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.Headerbar label="Target View" />
+				<UI.Headerbar type="default" label="Target View" />
 				<UI.FlexBlock>
 					<UI.Feedback iconKey="ion-ios7-photos" iconType="muted" text="Hold on a sec..." />
 				</UI.FlexBlock>

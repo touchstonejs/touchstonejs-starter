@@ -28,7 +28,7 @@ module.exports = React.createClass({
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.Headerbar label="Favourite Icecream">
+				<UI.Headerbar type="default" label="Favourite Icecream">
 					<UI.HeaderbarButton showView="details" viewTransition="reveal-from-right" viewProps={{ user: this.props.user, flavour: this.state.flavour }} label="Details" icon="ion-chevron-left" />
 				</UI.Headerbar>
 				<UI.FlexBlock grow scrollable>

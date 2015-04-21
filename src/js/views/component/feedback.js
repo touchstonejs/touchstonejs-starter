@@ -18,7 +18,7 @@ module.exports = React.createClass({
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.Headerbar label="Feedback">
+				<UI.Headerbar type="default" label="Feedback">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" icon="ion-chevron-left" label="Back" />
 				</UI.Headerbar>
 				<UI.FlexBlock>

@@ -22,7 +22,7 @@ module.exports = React.createClass({
 
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.Headerbar label="Enter Passcode">
+				<UI.Headerbar type="default" label="Enter Passcode">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" icon="ion-chevron-left" label="Back" />
 				</UI.Headerbar>
 				<UI.Passcode action={this.handlePasscode} helpText="Enter a passcode" />

@@ -56,7 +56,7 @@ module.exports = React.createClass({
 		// fields
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
-				<UI.Headerbar label={[this.props.user.name.first, this.props.user.name.last].join(' ')}>
+				<UI.Headerbar type="default" label={[this.props.user.name.first, this.props.user.name.last].join(' ')}>
 					<UI.HeaderbarButton showView={this.props.prevView} viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 					<UI.LoadingButton loading={this.state.processing} disabled={!this.state.formIsValid} onTap={this.processForm} label="Save" className="Headerbar-button right is-primary" />
 				</UI.Headerbar>

@@ -12,33 +12,42 @@ module.exports = React.createClass({
 
 	getInitialState: function() {
 		return {
-			modalMessageVisible: false,
-			modalLoadingVisible: false,
-			modalMessageText: ''
+			modal: {
+				visible: false
+			}
 		};
-	},
-
-	showMessageModal: function() {
-		this.setState({
-			modalMessageVisible: true,
-			modalMessageText: 'It will close in 5 seconds...'
-		});
-	},
-
-	hideMessageModal: function() {
-		this.setState({
-			modalMessageVisible: false
-		});
 	},
 
 	showLoadingModal: function() {
 		this.setState({
-			modalLoadingVisible: true
+			modal: {
+				visible: true,
+				loading: true,
+				header: 'Loading',
+				iconKey: 'ion-load-c',
+				iconType: 'default'
+			}
 		});
 
 		setTimeout(function() {
-			this.setState({ modalLoadingVisible: false });
+			this.setState({
+				modal: {
+					visible: true,
+					loading: false,
+					header: 'Done!',
+					iconKey: 'ion-ios7-checkmark',
+					iconType: 'success'
+				}
+			});
 		}.bind(this), 2000);
+
+		setTimeout(function() {
+			this.setState({
+				modal: {
+					visible: false
+				}
+			});
+		}.bind(this), 3000);
 	},
 
 	render: function() {
@@ -99,19 +108,8 @@ module.exports = React.createClass({
 							<div className="item-inner">View Feedback</div>
 						</Link>
 					</div>
-					{/* Modals need to be implemented properly
-					<div className="panel-header text-caps">Modals</div>
-					<div className="panel">
-						<Tappable component="div" onTap={this.showMessageModal} className="list-item is-tappable">
-							<div className="item-inner">Modal Message</div>
-						</Tappable>
-						<Tappable component="div" onTap={this.showLoadingModal} className="list-item is-tappable">
-							<div className="item-inner">Modal Loading</div>
-						</Tappable>
-					</div>*/}
 				</UI.FlexBlock>
-				{this.state.modalMessageVisible && <UI.Modal header="This is a modal" text="This is the body. Modals can have up to two actions." className="text-center" primaryActionText="Okay" primaryActionFn={this.hideMessageModal} secondaryActionText="Cancel" secondaryActionFn={this.hideMessageModal} />}
-				{this.state.modalLoadingVisible && <UI.Modal header="Loading" iconKey="ion-load-c" iconType="default" className="Modal-loading" />}
+				{this.state.modal.visible && <UI.Modal header={this.state.modal.header} iconKey={this.state.modal.iconKey} iconType={this.state.modal.iconType} mini loading={this.state.modal.loading} />}
 			</UI.FlexLayout>
 		);
 	}

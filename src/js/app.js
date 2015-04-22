@@ -43,8 +43,17 @@ var App = React.createClass({
 	mixins: [Touchstone.createApp(views)],
 
 	getInitialState: function() {
+		var startView = 'home';
+
+		// resort to #viewName if it exists
+		if (window.location.hash) {
+			var hash = window.location.hash.slice(1)
+
+			if (hash in views) startView = hash
+		}
+
 		var initialState = {
-			currentView: 'home',
+			currentView: startView,
 			online: true,
 			isNativeApp: (typeof cordova !== 'undefined')
 		};

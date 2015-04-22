@@ -57,8 +57,14 @@ module.exports = React.createClass({
 
 	handleToggleActiveChange: function(newItem) {
 
+		var selectedItem = newItem;
+
+		if (this.state.activeToggleItemKey === newItem) {
+			selectedItem = 'all';
+		}
+
 		this.setState({
-			activeToggleItemKey: newItem
+			activeToggleItemKey: selectedItem
 		});
 
 	},
@@ -70,7 +76,7 @@ module.exports = React.createClass({
 				<UI.Headerbar type="default" label="Toggle">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 				</UI.Headerbar>
-				<UI.Headerbar height="36px" className="Subheader">
+				<UI.Headerbar type="default" height="36px" className="Subheader">
 					<UI.Toggle value={this.state.activeToggleItemKey} onChange={this.handleToggleActiveChange} options={[
 						{ label: 'Summer', value: 'summer' },
 						{ label: 'Autumn', value: 'autumn' },

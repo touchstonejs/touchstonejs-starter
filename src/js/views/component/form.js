@@ -24,6 +24,13 @@ module.exports = React.createClass({
 
 	},
 
+	handleSwitch: function(key, event) {
+		var newState = {};
+		newState[key] = !this.state[key];
+
+		this.setState(newState);
+	},
+
 	render: function() {
 
 		return (
@@ -52,6 +59,12 @@ module.exports = React.createClass({
 							{ label: 'Lemon',      value: 'lemon' },
 							{ label: 'Pastaccio',  value: 'pastaccio' }
 						]} />
+						<div className="list-item field-item">
+							<div className="item-inner">
+								<div className="field-label">Switch</div>
+								<UI.Switch onTap={this.handleSwitch.bind(this, 'verifiedCreditCard')} on={this.state.verifiedCreditCard} />
+							</div>
+						</div>
 					</div>
 				</UI.FlexBlock>
 			</UI.FlexLayout>

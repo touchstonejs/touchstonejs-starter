@@ -28,7 +28,7 @@ var Search = React.createClass({
 		var clearIcon = Boolean(this.props.searchString.length) ? <Tappable onTap={this.reset} className="Headerbar-form-clear ion-close-circled" /> : '';
 		
 		return (
-			<UI.Headerbar height="36px" className="Headerbar-form Subheader">
+			<UI.Headerbar type="default" height="36px" className="Headerbar-form Subheader">
 				<div className="Headerbar-form-field Headerbar-form-icon ion-ios7-search-strong">
 					<input ref="input" value={this.props.searchString} onChange={this.handleChange} className="Headerbar-form-input" placeholder='Search...' />
 					{clearIcon}

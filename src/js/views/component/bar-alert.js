@@ -12,40 +12,30 @@ module.exports = React.createClass({
 
 	getInitialState: function() {
 		return {
-			alertKey: 'muted'
+			alertType: 'default'
 		}
 	},
 
-	handleAlertChange: function(newAlert) {
+	handleAlertChange: function(newAlertType) {
 
 		this.setState({
-			alertKey: newAlert
+			alertType: newAlertType
 		});
 
 	},
 
 	render: function() {
 
-		var alertbarClass = SetClass({
-			'alertbar': true,
-			'primary': this.state.alertKey === 'primary',
-			'success': this.state.alertKey === 'success',
-			'warning': this.state.alertKey === 'warning',
-			'danger': this.state.alertKey === 'danger'
-		});
-
 		return (
 			<UI.FlexLayout className={this.props.viewClassName}>
 				<UI.Headerbar type="default" label="Alert Bar">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 				</UI.Headerbar>
-				<UI.FlexBlock height="30px" className={alertbarClass}>
-					<div className="alertbar-text">When the state is "{this.state.alertKey}"</div>
-				</UI.FlexBlock>
+				<UI.Alertbar type={this.state.alertType}>When the state is "{this.state.alertType}"</UI.Alertbar>
 				<UI.FlexBlock grow scrollable>
 					<div className="panel panel--first">
-						<UI.RadioList value={this.state.alertKey} onChange={this.handleAlertChange} options={[
-							{ label: 'Muted',  value: 'muted' },
+						<UI.RadioList value={this.state.alertType} onChange={this.handleAlertChange} options={[
+							{ label: 'Default',  value: 'default' },
 							{ label: 'Primary',  value: 'primary' },
 							{ label: 'Success',  value: 'success' },
 							{ label: 'Warning',  value: 'warning' },

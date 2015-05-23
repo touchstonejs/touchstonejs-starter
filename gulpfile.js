@@ -1,4 +1,6 @@
-var gulp = require('gulp'),
-    initGulpTasks = require('touchstonejs-tasks');
+/**
+ * Gulp tasks are added by the touchstonejs-tasks package
+ * See https://github.com/JedWatson/touchstonejs-tasks
+ */
 
-initGulpTasks(gulp);
+require('touchstonejs-tasks')(require('gulp'));

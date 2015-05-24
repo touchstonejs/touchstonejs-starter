@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 var React = require('react/addons');
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 var classnames = require('classnames');

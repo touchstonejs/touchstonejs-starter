@@ -1,7 +1,5 @@
-/** @jsx React.DOM */
-
 var React = require('react'),
-  Link = require('touchstonejs').Link,
+	Link = require('touchstonejs').Link,
 	Tappable = require('react-tappable'),
 	Dialogs = require('touchstonejs').Dialogs,
 	Navigation = require('touchstonejs').Navigation,

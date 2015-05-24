@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 var React = require('react'),
 	SetClass = require('classnames'),
 	Navigation = require('touchstonejs').Navigation,

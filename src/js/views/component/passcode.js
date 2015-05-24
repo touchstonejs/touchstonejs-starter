@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 var React = require('react'),
 	Dialogs = require('touchstonejs').Dialogs,
 	Navigation = require('touchstonejs').Navigation,

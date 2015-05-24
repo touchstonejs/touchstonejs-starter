@@ -70,7 +70,7 @@ module.exports = React.createClass({
 	render: function() {
 
 		return (
-			<UI.FlexLayout className={this.props.viewClassName}>
+			<UI.View className={this.props.viewClassName}>
 				<UI.Headerbar type="default" label="Toggle">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 				</UI.Headerbar>
@@ -82,10 +82,10 @@ module.exports = React.createClass({
 						{ label: 'Spring', value: 'spring' }
 					]} />
 				</UI.Headerbar>
-				<UI.FlexBlock grow scrollable>
+				<UI.ViewContent grow scrollable>
 					<MonthList months={this.state.months} filterState={this.state.activeToggleItemKey} />
-				</UI.FlexBlock>
-			</UI.FlexLayout>
+				</UI.ViewContent>
+			</UI.View>
 		);
 	}
 });

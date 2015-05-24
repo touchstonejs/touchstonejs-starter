@@ -43,14 +43,14 @@ module.exports = React.createClass({
 	render: function() {
 
 		return (
-			<UI.FlexLayout className={this.props.viewClassName}>
+			<UI.View className={this.props.viewClassName}>
 				<UI.Headerbar type="default" label="Categorised List">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" icon="ion-chevron-left" label="Back" />
 				</UI.Headerbar>
-				<UI.FlexBlock grow scrollable>
+				<UI.ViewContent grow scrollable>
 					<HeaderList months={Months} />
-				</UI.FlexBlock>
-			</UI.FlexLayout>
+				</UI.ViewContent>
+			</UI.View>
 		);
 	}
 });

@@ -15,14 +15,14 @@ module.exports = React.createClass({
 	render: function() {
 
 		return (
-			<UI.FlexLayout className={this.props.viewClassName}>
+			<UI.View className={this.props.viewClassName}>
 				<UI.Headerbar type="default" label="Feedback">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" icon="ion-chevron-left" label="Back" />
 				</UI.Headerbar>
-				<UI.FlexBlock>
+				<UI.ViewContent>
 					<UI.Feedback iconKey="ion-compass" iconType="primary" header="Optional Header" subheader="Subheader, also optional" text="Feedback message copy goes here. It can be of any length." actionText="Optional Action" actionFn={this.flashAlert.bind(this, 'You clicked the action.')} />
-				</UI.FlexBlock>
-			</UI.FlexLayout>
+				</UI.ViewContent>
+			</UI.View>
 		);
 	}
 });

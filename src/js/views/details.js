@@ -53,12 +53,12 @@ module.exports = React.createClass({
 
 		// fields
 		return (
-			<UI.FlexLayout className={this.props.viewClassName}>
+			<UI.View className={this.props.viewClassName}>
 				<UI.Headerbar type="default" label={[this.props.user.name.first, this.props.user.name.last].join(' ')}>
 					<UI.HeaderbarButton showView={this.props.prevView} viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 					<UI.LoadingButton loading={this.state.processing} disabled={!this.state.formIsValid} onTap={this.processForm} label="Save" className="Headerbar-button right is-primary" />
 				</UI.Headerbar>
-				<UI.FlexBlock grow scrollable>
+				<UI.ViewContent grow scrollable>
 					{/*<div className="panel-header text-caps">Basic details</div>*/}
 					<div className="panel panel--first">
 						<UI.LabelInput label="Name"     value={[this.props.user.name.first, this.props.user.name.last].join(' ')}       placeholder="Full name" first />
@@ -86,8 +86,8 @@ module.exports = React.createClass({
 					<Tappable onTap={this.flashAlert.bind(this, 'You clicked the Danger Button.')} className="panel-button danger" component="button">
 						Danger Button
 					</Tappable>
-				</UI.FlexBlock>
-			</UI.FlexLayout>
+				</UI.ViewContent>
+			</UI.View>
 		);
 	}
 });

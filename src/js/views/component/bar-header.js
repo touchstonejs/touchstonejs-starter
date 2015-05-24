@@ -25,11 +25,11 @@ module.exports = React.createClass({
 	render: function() {
 
 		return (
-			<UI.FlexLayout className={this.props.viewClassName}>
+			<UI.View className={this.props.viewClassName}>
 				<UI.Headerbar type={this.state.typeKey} label="Header Bar">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" icon="ion-chevron-left" label="Back" />
 				</UI.Headerbar>
-				<UI.FlexBlock grow scrollable>
+				<UI.ViewContent grow scrollable>
 					<div className="panel panel--first">
 						<UI.RadioList value={this.state.typeKey} onChange={this.handleHeaderChange} options={[
 							{ label: 'Default',  value: 'default' },
@@ -43,8 +43,8 @@ module.exports = React.createClass({
 							{ label: 'Purple', value: 'purple' }
 						]} />
 					</div>
-				</UI.FlexBlock>
-			</UI.FlexLayout>
+				</UI.ViewContent>
+			</UI.View>
 		);
 	}
 });

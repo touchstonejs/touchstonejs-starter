@@ -17,12 +17,12 @@ module.exports = React.createClass({
 	render: function() {
 
 		return (
-			<UI.FlexLayout className={this.props.viewClassName}>
+			<UI.View className={this.props.viewClassName}>
 				<UI.Headerbar type="default" label="Target View" />
-				<UI.FlexBlock>
+				<UI.ViewContent>
 					<UI.Feedback iconKey="ion-ios7-photos" iconType="muted" text="Hold on a sec..." />
-				</UI.FlexBlock>
-			</UI.FlexLayout>
+				</UI.ViewContent>
+			</UI.View>
 		);
 	}
 });

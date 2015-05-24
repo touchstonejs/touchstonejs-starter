@@ -10,11 +10,11 @@ module.exports = React.createClass({
 	render: function() {
 
 		return (
-			<UI.FlexLayout className={this.props.viewClassName}>
+			<UI.View className={this.props.viewClassName}>
 				<UI.Headerbar type="default" label="Transitions">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" icon="ion-chevron-left" label="Back" />
 				</UI.Headerbar>
-				<UI.FlexBlock grow scrollable>
+				<UI.ViewContent grow scrollable>
 					<div className="panel-header text-caps">Default</div>
 					<div className="panel">
 						<Link to="transitions-target" className="list-item is-tappable" component="div"><div className="item-inner">None</div></Link>
@@ -39,8 +39,8 @@ module.exports = React.createClass({
 						<Link to="transitions-target" viewTransition="reveal-from-top" className="list-item is-tappable" component="div"><div className="item-inner">Reveal from Top</div></Link>
 						<Link to="transitions-target" viewTransition="reveal-from-bottom" className="list-item is-tappable" component="div"><div className="item-inner">Reveal from Bottom</div></Link>
 					</div>
-				</UI.FlexBlock>
-			</UI.FlexLayout>
+				</UI.ViewContent>
+			</UI.View>
 		);
 	}
 });

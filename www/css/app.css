@@ -3749,14 +3749,6 @@ label.item-content:after {
 .g-five-sixths {
   width: 83.333%;
 }
-.FlexLayout {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-}
 .springy-scrolling {
   position: relative;
 }
@@ -3773,7 +3765,13 @@ label.item-content:after {
 .springy-scrolling:after {
   top: -1px;
 }
-.view {
+.View {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
   width: 100%;
   height: 100%;
   background-color: #efeff4;
@@ -3975,8 +3973,7 @@ label.item-content:after {
   height: 20px;
   background-color: #f6f6f7;
 }
-.alertbar {
-  background-color: #999999;
+.Alertbar {
   color: white;
   font-size: 15px;
   font-weight: 500;
@@ -3984,23 +3981,23 @@ label.item-content:after {
   line-height: 30px;
   position: relative;
   text-align: center;
-  -webkit-animation: slideDown 320ms cubic-bezier(0.645, 0.045, 0.355, 1);
-  -o-animation: slideDown 320ms cubic-bezier(0.645, 0.045, 0.355, 1);
-  animation: slideDown 320ms cubic-bezier(0.645, 0.045, 0.355, 1);
 }
-.alertbar.primary {
-  background-color: #007aff;
+.Alertbar.default {
+  background-color: #999999;
 }
-.alertbar.success {
-  background-color: #4cd964;
-}
-.alertbar.warning {
-  background-color: #ffcc00;
-}
-.alertbar.danger {
+.Alertbar.danger {
   background-color: #e74c3c;
 }
-.alertbar:after {
+.Alertbar.primary {
+  background-color: #007aff;
+}
+.Alertbar.success {
+  background-color: #4cd964;
+}
+.Alertbar.warning {
+  background-color: #ffcc00;
+}
+.Alertbar.pulse::after {
   -webkit-animation: pulse 2s linear infinite;
   -o-animation: pulse 2s linear infinite;
   animation: pulse 2s linear infinite;
@@ -4014,7 +4011,7 @@ label.item-content:after {
   opacity: 0;
   z-index: 1;
 }
-.alertbar-text {
+.Alertbar-inner {
   position: relative;
   z-index: 2;
 }

@@ -16,6 +16,11 @@ module.exports = React.createClass({
 		};
 	},
 
+	componentDidMount: function() {
+		console.log('UI', UI);
+		console.log('UI.View', UI.View);
+	},
+
 	showLoadingModal: function() {
 		this.setState({
 			modal: {
@@ -51,9 +56,9 @@ module.exports = React.createClass({
 	render: function() {
 
 		return (
-			<UI.FlexLayout className={this.props.viewClassName}>
+			<UI.View className={this.props.viewClassName}>
 				<UI.Headerbar type="default" label="TouchstoneJS" />
-				<UI.FlexBlock grow scrollable>
+				<UI.ViewContent grow scrollable>
 					<div className="panel-header text-caps">Bars</div>
 					<div className="panel">
 						<Link component="div" to="component-headerbar" viewTransition="show-from-right" className="list-item is-tappable">
@@ -106,9 +111,9 @@ module.exports = React.createClass({
 							<div className="item-inner">View Feedback</div>
 						</Link>
 					</div>
-				</UI.FlexBlock>
+				</UI.ViewContent>
 				{this.state.modal.visible && <UI.Modal header={this.state.modal.header} iconKey={this.state.modal.iconKey} iconType={this.state.modal.iconType} mini loading={this.state.modal.loading} />}
-			</UI.FlexLayout>
+			</UI.View>
 		);
 	}
 });

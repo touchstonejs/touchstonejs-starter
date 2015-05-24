@@ -129,15 +129,15 @@ module.exports = React.createClass({
 	render: function() {
 
 		return (
-			<UI.FlexLayout className={this.props.viewClassName}>
+			<UI.View className={this.props.viewClassName}>
 				<UI.Headerbar type="default" label="Filter Months">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 				</UI.Headerbar>
 				<Search searchString={this.state.searchString} onChange={this.updateSearch} />
-				<UI.FlexBlock grow scrollable>
+				<UI.ViewContent grow scrollable>
 					<List months={this.state.months} searchString={this.state.searchString} />
-				</UI.FlexBlock>
-			</UI.FlexLayout>
+				</UI.ViewContent>
+			</UI.View>
 		);
 	}
 });

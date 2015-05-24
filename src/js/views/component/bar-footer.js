@@ -56,11 +56,11 @@ module.exports = React.createClass({
 		}
 
 		return (
-			<UI.FlexLayout className={this.props.viewClassName}>
+			<UI.View className={this.props.viewClassName}>
 				<UI.Headerbar type="default" label="Footer Bar">
 					<Link to="home" viewTransition="reveal-from-right" className="Headerbar-button ion-chevron-left" component="button">Back</Link>
 				</UI.Headerbar>
-				<UI.FlexBlock grow scrollable>
+				<UI.ViewContent grow scrollable>
 					{/*<div className="view-inner">
 						<UI.Toggle value={this.state.typeKey} onChange={this.handleFooterChange} options={[
 							{ label: 'Icon', value: 'icon' },
@@ -71,9 +71,9 @@ module.exports = React.createClass({
 					<div className="view-feedback">
 						Your app's amazing content here.
 					</div>
-				</UI.FlexBlock>
+				</UI.ViewContent>
 				{renderFooterbar}
-			</UI.FlexLayout>
+			</UI.View>
 		);
 	}
 });

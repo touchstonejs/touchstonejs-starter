@@ -15,11 +15,11 @@ module.exports = React.createClass({
 	render: function() {
 
 		return (
-			<UI.FlexLayout className={this.props.viewClassName}>
+			<UI.View className={this.props.viewClassName}>
 				<UI.Headerbar type="default" label="Action Bar">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 				</UI.Headerbar>
-				<UI.FlexBlock grow scrollable>
+				<UI.ViewContent grow scrollable>
 					<div className="panel-header text-caps">Label Only</div>
 					<div className="panel">
 						<UI.ActionButtons>
@@ -47,8 +47,8 @@ module.exports = React.createClass({
 						<UI.ActionButton onTap={this.flashAlert.bind(this, 'You tapped an action button.')}  label="Secondary" icon="ion-android-contacts" />
 						<UI.ActionButton onTap={this.flashAlert.bind(this, 'You tapped an action button.')}  label="Tertiary"  icon="ion-android-friends" />
 					</UI.ActionButtons>
-				</UI.FlexBlock>
-			</UI.FlexLayout>
+				</UI.ViewContent>
+			</UI.View>
 		);
 	}
 });

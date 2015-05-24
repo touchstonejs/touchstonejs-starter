@@ -25,12 +25,12 @@ module.exports = React.createClass({
 	render: function() {
 
 		return (
-			<UI.FlexLayout className={this.props.viewClassName}>
+			<UI.View className={this.props.viewClassName}>
 				<UI.Headerbar type="default" label="Alert Bar">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 				</UI.Headerbar>
 				<UI.Alertbar type={this.state.alertType}>When the state is "{this.state.alertType}"</UI.Alertbar>
-				<UI.FlexBlock grow scrollable>
+				<UI.ViewContent grow scrollable>
 					<div className="panel panel--first">
 						<UI.RadioList value={this.state.alertType} onChange={this.handleAlertChange} options={[
 							{ label: 'Default',  value: 'default' },
@@ -40,8 +40,8 @@ module.exports = React.createClass({
 							{ label: 'Danger',   value: 'danger' }
 						]} />
 					</div>
-				</UI.FlexBlock>
-			</UI.FlexLayout>
+				</UI.ViewContent>
+			</UI.View>
 		);
 	}
 });

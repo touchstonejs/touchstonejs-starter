@@ -11,13 +11,12 @@ module.exports = React.createClass({
 	},
 
 	handlePasscode: function(passcode) {
-		return this.showAlertDialog({ title: 'Alert with Callback', message: 'Your passcode is "' + passcode + '".' }, function() {
-			this.showView('home', 'fade')
-		}.bind(this));
+		alert('Your passcode is "' + passcode + '".');
+
+		this.showView('home', 'fade');
 	},
 
 	render: function() {
-
 		return (
 			<UI.View className={this.props.viewClassName}>
 				<UI.Headerbar type="default" label="Enter Passcode">

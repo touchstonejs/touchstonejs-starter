@@ -1,21 +1,21 @@
 var React = require('react'),
-	SetClass = require('classnames'),
-	Tappable = require('react-tappable'),
 	Navigation = require('touchstonejs').Navigation,
-	Link = require('touchstonejs').Link,
 	UI = require('touchstonejs').UI;
 
+var Timers = require('react-timers')
+
 module.exports = React.createClass({
-	mixins: [Navigation],
-	
+	mixins: [Navigation, Timers()],
+
 	componentDidMount: function() {
-		setTimeout(function() {
-			this.showView('transitions', 'fade');
-		}.bind(this), 1000);
+		var self = this;
+
+		this.setTimeout(function() {
+			self.showView('transitions', 'fade');
+		}, 1000);
 	},
 
 	render: function() {
-
 		return (
 			<UI.View className={this.props.viewClassName}>
 				<UI.Headerbar type="default" label="Target View" />

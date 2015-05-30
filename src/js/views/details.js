@@ -1,14 +1,13 @@
 var React = require('react'),
-	Link = require('touchstonejs').Link,
 	Tappable = require('react-tappable'),
 	Dialogs = require('touchstonejs').Dialogs,
 	Navigation = require('touchstonejs').Navigation,
 	UI = require('touchstonejs').UI;
 
-var moment = require('moment')
+var Timers = require('react-timers')
 
 module.exports = React.createClass({
-	mixins: [Navigation, Dialogs],
+	mixins: [Navigation, Dialogs, Timers()],
 
 	getDefaultProps: function() {
 		return {
@@ -36,13 +35,13 @@ module.exports = React.createClass({
 	},
 
 	processForm: function() {
-		this.setState({
-			processing: true
-		});
+		var self = this;
 
-		setTimeout(function() {
-			this.showView('home', 'fade', {});
-		}.bind(this), 750);
+		this.setState({ processing: true });
+
+		this.setTimeout(function() {
+			self.showView('home', 'fade', {});
+		}, 750);
 	},
 
 	flashAlert: function(alertContent, callback) {

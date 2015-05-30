@@ -1,12 +1,13 @@
 var React = require('react'),
-	SetClass = require('classnames'),
 	Tappable = require('react-tappable'),
 	Navigation = require('touchstonejs').Navigation,
 	Link = require('touchstonejs').Link,
 	UI = require('touchstonejs').UI;
 
+var Timers = require('react-timers')
+
 module.exports = React.createClass({
-	mixins: [Navigation],
+	mixins: [Navigation, Timers()],
 
 	getInitialState: function() {
 		return {
@@ -32,8 +33,10 @@ module.exports = React.createClass({
 			}
 		});
 
-		setTimeout(function() {
-			this.setState({
+		var self = this;
+
+		this.setTimeout(function() {
+			self.setState({
 				modal: {
 					visible: true,
 					loading: false,
@@ -42,19 +45,18 @@ module.exports = React.createClass({
 					iconType: 'success'
 				}
 			});
-		}.bind(this), 2000);
+		}, 2000);
 
-		setTimeout(function() {
-			this.setState({
+		this.setTimeout(function() {
+			self.setState({
 				modal: {
 					visible: false
 				}
 			});
-		}.bind(this), 3000);
+		}, 3000);
 	},
 
 	render: function() {
-
 		return (
 			<UI.View className={this.props.viewClassName}>
 				<UI.Headerbar type="default" label="TouchstoneJS" />
@@ -117,4 +119,3 @@ module.exports = React.createClass({
 		);
 	}
 });
-

@@ -11,6 +11,7 @@
     "moment": "^2.9.0",
     "react": "^0.13.0",
     "react-tappable": "^0.2.5",
+    "react-timers": "^2.0.0",
     "superagent": "^0.21.0",
     "touchstonejs": "^0.3.0",
     "underscore": "^1.7.0"

@@ -2,38 +2,40 @@ var React = require('react'),
 	SetClass = require('classnames'),
 	Navigation = require('touchstonejs').Navigation,
 	Tappable = require('react-tappable'),
-	Link = require('touchstonejs').Link,
 	UI = require('touchstonejs').UI;
 
+var Timers = require('react-timers');
 var Months = require('../../../data/months');
 
 var Search = React.createClass({
-	
+	mixins: [Timers()],
+
 	propTypes: {
 		searchString: React.PropTypes.string,
 		onChange: React.PropTypes.func.isRequired
 	},
-	
+
 	componentDidMount: function() {
 		var self = this;
-		setTimeout(function() {
+
+		this.setTimeout(function() {
 			self.refs.input.getDOMNode().focus();
 		}, 1000);
 	},
-	
+
 	handleChange: function(event) {
 		this.props.onChange(event.target.value);
 	},
-	
+
 	reset: function() {
 		this.props.onChange('');
 		this.refs.input.getDOMNode().focus();
 	},
-	
+
 	render: function() {
-		
+
 		var clearIcon = Boolean(this.props.searchString.length) ? <Tappable onTap={this.reset} className="Headerbar-form-clear ion-close-circled" /> : '';
-		
+
 		return (
 			<UI.Headerbar type="default" height="36px" className="Headerbar-form Subheader">
 				<div className="Headerbar-form-field Headerbar-form-icon ion-ios7-search-strong">
@@ -43,7 +45,7 @@ var Search = React.createClass({
 			</UI.Headerbar>
 		);
 	}
-	
+
 });
 
 var Item = React.createClass({
@@ -58,7 +60,7 @@ var Item = React.createClass({
 });
 
 var List = React.createClass({
-	
+
 	getDefaultProps: function() {
 		return {
 			searchString: ''
@@ -71,13 +73,13 @@ var List = React.createClass({
 		var months = [];
 		var	lastSeason = '';
 		var renderList = <div className="view-feedback-text">No match found...</div>;
-		
+
 		this.props.months.forEach(function(month, i) {
 
 			// filter months
 			if (searchString && month.name.toLowerCase().indexOf(searchString.toLowerCase()) === -1) {
 				return;
-			}	
+			}
 
 			// insert categories
 
@@ -102,7 +104,7 @@ var List = React.createClass({
 		if (months.length) {
 			renderList = months;
 		}
-		
+
 		return (
 			<div className={wrapperClassName}>
 				{renderList}
@@ -112,20 +114,20 @@ var List = React.createClass({
 });
 
 module.exports = React.createClass({
-	
+
 	mixins: [Navigation],
-	
+
 	getInitialState: function() {
 		return {
 			searchString: '',
 			months: Months
 		}
 	},
-	
+
 	updateSearch: function(str) {
 		this.setState({ searchString: str });
 	},
-	
+
 	render: function() {
 
 		return (

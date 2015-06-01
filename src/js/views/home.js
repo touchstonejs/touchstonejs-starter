@@ -1,34 +1,28 @@
-var React = require('react'),
-	Tappable = require('react-tappable'),
-	Navigation = require('touchstonejs').Navigation,
-	Link = require('touchstonejs').Link,
-	UI = require('touchstonejs').UI;
+var React = require('react');
+var Tappable = require('react-tappable');
+var Navigation = require('touchstonejs').Navigation;
+var Link = require('touchstonejs').Link;
+var UI = require('touchstonejs').UI;
 
-var Timers = require('react-timers')
+var Timers = require('react-timers');
 
 module.exports = React.createClass({
 	mixins: [Navigation, Timers()],
 
 	getInitialState: function() {
 		return {
-			modal: {
+			popup: {
 				visible: false
 			}
 		};
 	},
-
-	componentDidMount: function() {
-		console.log('UI', UI);
-		console.log('UI.View', UI.View);
-	},
-
-	showLoadingModal: function() {
+	showLoadingPopup: function() {
 		this.setState({
-			modal: {
+			popup: {
 				visible: true,
 				loading: true,
 				header: 'Loading',
-				iconKey: 'ion-load-c',
+				iconName: 'ion-load-c',
 				iconType: 'default'
 			}
 		});
@@ -37,11 +31,11 @@ module.exports = React.createClass({
 
 		this.setTimeout(function() {
 			self.setState({
-				modal: {
+				popup: {
 					visible: true,
 					loading: false,
 					header: 'Done!',
-					iconKey: 'ion-ios7-checkmark',
+					iconName: 'ion-ios7-checkmark',
 					iconType: 'success'
 				}
 			});
@@ -49,7 +43,7 @@ module.exports = React.createClass({
 
 		this.setTimeout(function() {
 			self.setState({
-				modal: {
+				popup: {
 					visible: false
 				}
 			});
@@ -100,7 +94,7 @@ module.exports = React.createClass({
 						<Link component="div" to="component-passcode" viewTransition="show-from-right" className="list-item is-tappable">
 							<div className="item-inner">Passcode / Keypad</div>
 						</Link>
-						<Tappable component="div" onTap={this.showLoadingModal} className="list-item is-tappable">
+						<Tappable component="div" onTap={this.showLoadingPopup} className="list-item is-tappable">
 							<div className="item-inner">Loading Spinner</div>
 						</Tappable>
 					</div>
@@ -114,7 +108,10 @@ module.exports = React.createClass({
 						</Link>
 					</div>
 				</UI.ViewContent>
-				{this.state.modal.visible && <UI.Modal header={this.state.modal.header} iconKey={this.state.modal.iconKey} iconType={this.state.modal.iconType} mini loading={this.state.modal.loading} />}
+				<UI.Popup header={this.state.popup.header} visible={this.state.popup.visible}>
+					<UI.PopupIcon name={this.state.popup.iconName} type={this.state.popup.iconType} spinning={this.state.popup.loading} />
+					<strong>{this.state.popup.header}</strong>
+				</UI.Popup>
 			</UI.View>
 		);
 	}

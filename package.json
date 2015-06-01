@@ -18,6 +18,7 @@
   },
   "devDependencies": {
     "gulp": "^3.8.10",
+    "happiness": "*",
     "touchstonejs-tasks": "^0.2.0"
   },
   "scripts": {
@@ -26,6 +27,15 @@
     "start": "gulp clean && gulp dev",
     "prepare": "gulp clean && gulp prepare",
     "build:production": "gulp clean && NODE_ENV=production gulp build",
-    "prepare:production": "gulp clean && NODE_ENV=production gulp prepare"
+    "prepare:production": "gulp clean && NODE_ENV=production gulp prepare",
+    "test": "happiness"
+  },
+  "happiness": {
+    "ignore": [
+      "platforms",
+      "plugins",
+      "src/data",
+      "www"
+    ]
   }
 }

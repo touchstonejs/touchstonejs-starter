@@ -8,12 +8,12 @@ var React = require('react'),
 var Months = require('../../../data/months');
 
 var HeaderList = React.createClass({
-	render: function() {
+	render: function () {
 
 		var months = [];
 		var	lastSeason = '';
 		
-		this.props.months.forEach(function(month, i) {
+		this.props.months.forEach(function (month, i) {
 
 			var season = month.season;
 
@@ -40,7 +40,7 @@ var HeaderList = React.createClass({
 module.exports = React.createClass({
 	mixins: [Navigation],
 
-	render: function() {
+	render: function () {
 
 		return (
 			<UI.View className={this.props.viewClassName}>

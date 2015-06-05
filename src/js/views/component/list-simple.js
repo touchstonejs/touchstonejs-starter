@@ -10,7 +10,7 @@ var People = require('../../../data/people');
 var SimpleListItem = React.createClass({
 	mixins: [Navigation],
 
-	render: function() {
+	render: function () {
 
 		return (
 			<Link to="details" viewTransition="show-from-right" params={{ user: this.props.user, prevView: 'component-simple-list' }} className="list-item is-tappable" component="div">
@@ -23,11 +23,11 @@ var SimpleListItem = React.createClass({
 });
 
 var SimpleList = React.createClass({
-	render: function() {
+	render: function () {
 
 		var users = [];
 		
-		this.props.users.forEach(function(user, i) {
+		this.props.users.forEach(function (user, i) {
 			user.key = 'user-' + i;
 			users.push(React.createElement(SimpleListItem, { user: user }));
 		});
@@ -45,7 +45,7 @@ var SimpleList = React.createClass({
 module.exports = React.createClass({
 	mixins: [Navigation],
 
-	render: function() {
+	render: function () {
 
 		return (
 			<UI.View className={this.props.viewClassName}>

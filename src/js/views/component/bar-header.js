@@ -8,13 +8,13 @@ var React = require('react'),
 module.exports = React.createClass({
 	mixins: [Navigation],
 
-	getInitialState: function() {
+	getInitialState: function () {
 		return {
 			typeKey: 'default'
 		}
 	},
 
-	handleHeaderChange: function(newType) {
+	handleHeaderChange: function (newType) {
 
 		this.setState({
 			typeKey: newType
@@ -22,7 +22,7 @@ module.exports = React.createClass({
 
 	},
 
-	render: function() {
+	render: function () {
 
 		return (
 			<UI.View className={this.props.viewClassName}>

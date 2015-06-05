@@ -7,15 +7,15 @@ var Timers = require('react-timers')
 module.exports = React.createClass({
 	mixins: [Navigation, Timers()],
 
-	componentDidMount: function() {
+	componentDidMount: function () {
 		var self = this;
 
-		this.setTimeout(function() {
+		this.setTimeout(function () {
 			self.showView('transitions', 'fade');
 		}, 1000);
 	},
 
-	render: function() {
+	render: function () {
 		return (
 			<UI.View className={this.props.viewClassName}>
 				<UI.Headerbar type="default" label="Target View" />

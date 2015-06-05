@@ -8,13 +8,13 @@ var React = require('react'),
 module.exports = React.createClass({
 	mixins: [Navigation],
 
-	getInitialState: function() {
+	getInitialState: function () {
 		return {
 			flavour: 'strawberry'
 		}
 	},
 
-	handleFlavourChange: function(newFlavour) {
+	handleFlavourChange: function (newFlavour) {
 
 		this.setState({
 			flavour: newFlavour
@@ -22,14 +22,14 @@ module.exports = React.createClass({
 
 	},
 
-	handleSwitch: function(key, event) {
+	handleSwitch: function (key, event) {
 		var newState = {};
 		newState[key] = !this.state[key];
 
 		this.setState(newState);
 	},
 
-	render: function() {
+	render: function () {
 
 		return (
 			<UI.View className={this.props.viewClassName}>

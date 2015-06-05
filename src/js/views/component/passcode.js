@@ -6,17 +6,17 @@ var React = require('react'),
 module.exports = React.createClass({
 	mixins: [Navigation, Dialogs],
 
-	getInitialState: function() {
+	getInitialState: function () {
 		return {}
 	},
 
-	handlePasscode: function(passcode) {
+	handlePasscode: function (passcode) {
 		alert('Your passcode is "' + passcode + '".');
 
 		this.showView('home', 'fade');
 	},
 
-	render: function() {
+	render: function () {
 		return (
 			<UI.View className={this.props.viewClassName}>
 				<UI.Headerbar type="default" label="Enter Passcode">

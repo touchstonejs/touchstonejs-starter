@@ -8,13 +8,13 @@ var React = require('react'),
 module.exports = React.createClass({
 	mixins: [Navigation],
 
-	getInitialState: function() {
+	getInitialState: function () {
 		return {
 			typeKey: 'icon'
 		}
 	},
 
-	handleFooterChange: function(newType) {
+	handleFooterChange: function (newType) {
 
 		this.setState({
 			typeKey: newType
@@ -22,7 +22,7 @@ module.exports = React.createClass({
 
 	},
 
-	render: function() {
+	render: function () {
 
 		var footerbarClass = SetClass(this.state.typeKey, {
 			'footerbar': true

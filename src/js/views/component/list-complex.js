@@ -10,7 +10,7 @@ var People = require('../../../data/people');
 var ComplexListItem = React.createClass({
 	mixins: [Navigation],
 
-	render: function() {
+	render: function () {
 		
 		var initials = this.props.user.name.first.charAt(0).toUpperCase() +
 			this.props.user.name.last.charAt(0).toUpperCase();
@@ -31,11 +31,11 @@ var ComplexListItem = React.createClass({
 });
 
 var ComplexList = React.createClass({
-	render: function() {
+	render: function () {
 
 		var users = [];
 		
-		this.props.users.forEach(function(user, i) {
+		this.props.users.forEach(function (user, i) {
 			user.key = 'user-' + i;
 			users.push(React.createElement(ComplexListItem, { user: user }));
 		});
@@ -53,7 +53,7 @@ var ComplexList = React.createClass({
 module.exports = React.createClass({
 	mixins: [Navigation],
 
-	render: function() {
+	render: function () {
 
 		return (
 			<UI.View className={this.props.viewClassName}>

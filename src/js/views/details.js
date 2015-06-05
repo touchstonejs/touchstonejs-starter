@@ -9,13 +9,13 @@ var Timers = require('react-timers')
 module.exports = React.createClass({
 	mixins: [Navigation, Dialogs, Timers()],
 
-	getDefaultProps: function() {
+	getDefaultProps: function () {
 		return {
 			prevView: 'home'
 		}
 	},
 
-	getInitialState: function() {
+	getInitialState: function () {
 		return {
 			processing: false,
 			formIsValid: false,
@@ -23,32 +23,32 @@ module.exports = React.createClass({
 		}
 	},
 
-	showFlavourList: function() {
+	showFlavourList: function () {
 		this.showView('radio-list', 'show-from-right', { user: this.props.user, flavour: this.state.flavour });
 	},
 
-	handleBioInput: function(event) {
+	handleBioInput: function (event) {
 		this.setState({
 			bioValue: event.target.value,
 			formIsValid: event.target.value.length ? true : false
 		});
 	},
 
-	processForm: function() {
+	processForm: function () {
 		var self = this;
 
 		this.setState({ processing: true });
 
-		this.setTimeout(function() {
+		this.setTimeout(function () {
 			self.showView('home', 'fade', {});
 		}, 750);
 	},
 
-	flashAlert: function(alertContent, callback) {
+	flashAlert: function (alertContent, callback) {
 		return callback(this.showAlertDialog({ message: alertContent }));
 	},
 
-	render: function() {
+	render: function () {
 
 		// fields
 		return (

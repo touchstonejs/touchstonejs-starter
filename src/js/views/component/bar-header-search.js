@@ -15,24 +15,24 @@ var Search = React.createClass({
 		onChange: React.PropTypes.func.isRequired
 	},
 
-	componentDidMount: function() {
+	componentDidMount: function () {
 		var self = this;
 
-		this.setTimeout(function() {
+		this.setTimeout(function () {
 			self.refs.input.getDOMNode().focus();
 		}, 1000);
 	},
 
-	handleChange: function(event) {
+	handleChange: function (event) {
 		this.props.onChange(event.target.value);
 	},
 
-	reset: function() {
+	reset: function () {
 		this.props.onChange('');
 		this.refs.input.getDOMNode().focus();
 	},
 
-	render: function() {
+	render: function () {
 
 		var clearIcon = Boolean(this.props.searchString.length) ? <Tappable onTap={this.reset} className="Headerbar-form-clear ion-close-circled" /> : '';
 
@@ -50,7 +50,7 @@ var Search = React.createClass({
 
 var Item = React.createClass({
 	mixins: [Navigation],
-	render: function() {
+	render: function () {
 		return (
 			<div className="list-item">
 				<div className="item-inner">{this.props.month.name}</div>
@@ -61,20 +61,20 @@ var Item = React.createClass({
 
 var List = React.createClass({
 
-	getDefaultProps: function() {
+	getDefaultProps: function () {
 		return {
 			searchString: ''
 		};
 	},
 
-	render: function() {
+	render: function () {
 
 		var searchString = this.props.searchString;
 		var months = [];
 		var	lastSeason = '';
 		var renderList = <div className="view-feedback-text">No match found...</div>;
 
-		this.props.months.forEach(function(month, i) {
+		this.props.months.forEach(function (month, i) {
 
 			// filter months
 			if (searchString && month.name.toLowerCase().indexOf(searchString.toLowerCase()) === -1) {
@@ -117,18 +117,18 @@ module.exports = React.createClass({
 
 	mixins: [Navigation],
 
-	getInitialState: function() {
+	getInitialState: function () {
 		return {
 			searchString: '',
 			months: Months
 		}
 	},
 
-	updateSearch: function(str) {
+	updateSearch: function (str) {
 		this.setState({ searchString: str });
 	},
 
-	render: function() {
+	render: function () {
 
 		return (
 			<UI.View className={this.props.viewClassName}>

@@ -9,14 +9,14 @@ var Timers = require('react-timers');
 module.exports = React.createClass({
 	mixins: [Navigation, Timers()],
 
-	getInitialState: function() {
+	getInitialState: function () {
 		return {
 			popup: {
 				visible: false
 			}
 		};
 	},
-	showLoadingPopup: function() {
+	showLoadingPopup: function () {
 		this.setState({
 			popup: {
 				visible: true,
@@ -29,7 +29,7 @@ module.exports = React.createClass({
 
 		var self = this;
 
-		this.setTimeout(function() {
+		this.setTimeout(function () {
 			self.setState({
 				popup: {
 					visible: true,
@@ -41,7 +41,7 @@ module.exports = React.createClass({
 			});
 		}, 2000);
 
-		this.setTimeout(function() {
+		this.setTimeout(function () {
 			self.setState({
 				popup: {
 					visible: false
@@ -50,7 +50,7 @@ module.exports = React.createClass({
 		}, 3000);
 	},
 
-	render: function() {
+	render: function () {
 		return (
 			<UI.View className={this.props.viewClassName}>
 				<UI.Headerbar type="default" label="TouchstoneJS" />

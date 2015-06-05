@@ -8,13 +8,13 @@ var React = require('react'),
 var Months = require('../../../data/months');
 
 var MonthList = React.createClass({
-	render: function() {
+	render: function () {
 
 		var months = [];
 		var	lastSeason = '';
 		var filterState = this.props.filterState;
 		
-		this.props.months.forEach(function(month, i) {
+		this.props.months.forEach(function (month, i) {
 			
 			if (filterState !== 'all' && filterState !== month.season.toLowerCase()) {
 				return;
@@ -45,7 +45,7 @@ var MonthList = React.createClass({
 module.exports = React.createClass({
 	mixins: [Navigation],
 
-	getInitialState: function() {
+	getInitialState: function () {
 		return {
 			activeToggleItemKey: 'all',
 			typeKey: 'primary',
@@ -53,7 +53,7 @@ module.exports = React.createClass({
 		}
 	},
 
-	handleToggleActiveChange: function(newItem) {
+	handleToggleActiveChange: function (newItem) {
 
 		var selectedItem = newItem;
 
@@ -67,7 +67,7 @@ module.exports = React.createClass({
 
 	},
 
-	render: function() {
+	render: function () {
 
 		return (
 			<UI.View className={this.props.viewClassName}>

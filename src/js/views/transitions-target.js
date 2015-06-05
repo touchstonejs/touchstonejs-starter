@@ -17,7 +17,7 @@ module.exports = React.createClass({
 
 	render: function () {
 		return (
-			<UI.View className={this.props.viewClassName}>
+			<UI.View>
 				<UI.Headerbar type="default" label="Target View" />
 				<UI.ViewContent>
 					<UI.Feedback iconKey="ion-ios7-photos" iconType="muted" text="Hold on a sec..." />

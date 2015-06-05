@@ -43,7 +43,7 @@ module.exports = React.createClass({
 	render: function () {
 
 		return (
-			<UI.View className={this.props.viewClassName}>
+			<UI.View>
 				<UI.Headerbar type="default" label="Categorised List">
 					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" icon="ion-chevron-left" label="Back" />
 				</UI.Headerbar>

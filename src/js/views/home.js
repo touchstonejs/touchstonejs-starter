@@ -52,7 +52,7 @@ module.exports = React.createClass({
 
 	render: function () {
 		return (
-			<UI.View className={this.props.viewClassName}>
+			<UI.View>
 				<UI.Headerbar type="default" label="TouchstoneJS" />
 				<UI.ViewContent grow scrollable>
 					<div className="panel-header text-caps">Bars</div>

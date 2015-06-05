@@ -25,7 +25,7 @@ module.exports = React.createClass({
 	render: function () {
 
 		return (
-			<UI.View className={this.props.viewClassName}>
+			<UI.View>
 				<UI.Headerbar type="default" label="Favourite Icecream">
 					<UI.HeaderbarButton showView="details" viewTransition="reveal-from-right" viewProps={{ user: this.props.user, flavour: this.state.flavour }} label="Details" icon="ion-chevron-left" />
 				</UI.Headerbar>

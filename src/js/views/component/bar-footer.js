@@ -56,7 +56,7 @@ module.exports = React.createClass({
 		}
 
 		return (
-			<UI.View className={this.props.viewClassName}>
+			<UI.View>
 				<UI.Headerbar type="default" label="Footer Bar">
 					<Link to="home" viewTransition="reveal-from-right" className="Headerbar-button ion-chevron-left" component="button">Back</Link>
 				</UI.Headerbar>

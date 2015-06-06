@@ -75,13 +75,13 @@
     },
     "installed_plugins": {
         "com.phonegap.plugins.barcodescanner": {
-            "PACKAGE_NAME": "com.thinkmill.touchstone-starter"
+            "PACKAGE_NAME": "com.thinkmill.touchstonejs-starter"
         },
         "org.apache.cordova.dialogs": {
-            "PACKAGE_NAME": "com.thinkmill.touchstone-starter"
+            "PACKAGE_NAME": "com.thinkmill.touchstonejs-starter"
         },
         "org.apache.cordova.statusbar": {
-            "PACKAGE_NAME": "com.thinkmill.touchstone-starter"
+            "PACKAGE_NAME": "com.thinkmill.touchstonejs-starter"
         }
     },
     "dependent_plugins": {}

@@ -21,4 +21,4 @@ We're busily building the TouchstoneJS framework and welcome any ideas / contrib
 
 # License
 
-MIT. Copyright (c) 2014 Thinkmill Pty Ltd.
+MIT. Copyright (c) 2015 Thinkmill Pty Ltd.

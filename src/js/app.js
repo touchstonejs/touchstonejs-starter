@@ -52,17 +52,10 @@ var App = React.createClass({
 
     var initialState = {
       currentView: startView,
-      online: true,
       isNativeApp: (typeof cordova !== 'undefined')
     };
 
     return initialState;
-  },
-
-  getViewProps: function () {
-    return {
-      online: this.state.online
-    };
   },
 
   gotoDefaultView: function () {

@@ -108,10 +108,6 @@ module.exports = React.createClass({
 						</Link>
 					</div>
 				</UI.ViewContent>
-				<UI.Popup visible={this.state.popup.visible}>
-					<UI.PopupIcon name={this.state.popup.iconName} type={this.state.popup.iconType} spinning={this.state.popup.loading} />
-					<strong>{this.state.popup.header}</strong>
-				</UI.Popup>
 			</UI.View>
 		);
 	}

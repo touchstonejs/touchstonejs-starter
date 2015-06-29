@@ -1,7 +1,8 @@
+var Container = require('react-container');
+var Link = require('touchstonejs').Link;
+var Navigation = require('touchstonejs').Navigation;
 var React = require('react');
 var Tappable = require('react-tappable');
-var Navigation = require('touchstonejs').Navigation;
-var Link = require('touchstonejs').Link;
 var UI = require('touchstonejs').UI;
 
 var Timers = require('react-timers');

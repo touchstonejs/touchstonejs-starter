@@ -6,20 +6,20 @@
   "main": "src/js/app.js",
   "author": "Jed Watson",
   "dependencies": {
-    "async": "^1.0.0",
-    "classnames": "^2.0.0",
-    "moment": "^2.9.0",
-    "react": "^0.13.0",
-    "react-tappable": "^0.2.5",
-    "react-timers": "^2.0.0",
-    "superagent": "^0.21.0",
-    "touchstonejs": "^0.3.0",
-    "underscore": "^1.7.0"
+    "async": "^1.2.1",
+    "classnames": "^2.1.2",
+    "moment": "^2.10.3",
+    "react": "^0.13.3",
+    "react-tappable": "^0.5.2",
+    "react-timers": "^3.1.0",
+    "superagent": "^1.2.0",
+    "touchstonejs": "^0.3.2",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "gulp": "^3.8.10",
+    "gulp": "^3.9.0",
     "happiness": "*",
-    "touchstonejs-tasks": "^0.2.0"
+    "touchstonejs-tasks": "^0.2.5"
   },
   "scripts": {
     "build": "gulp clean && gulp build",

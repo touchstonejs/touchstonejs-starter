@@ -1,0 +1,37 @@
+// 
+// Components
+// ==============================
+
+
+
+// Tab bar
+// ------------------------------
+
+.Tabs-Icon--lists::before {
+	content: @ionicon-var-ios-list-outline;
+
+	.is-selected > & {
+		content: @ionicon-var-ios-list;
+	}
+}
+.Tabs-Icon--forms::before {
+	content: @ionicon-var-ios-copy-outline;
+
+	.is-selected > & {
+		content: @ionicon-var-ios-copy;
+	}
+}
+.Tabs-Icon--controls::before {
+	content: @ionicon-var-ios-settings;
+
+	.is-selected > & {
+		content: @ionicon-var-ios-settings-strong;
+	}
+}
+.Tabs-Icon--transitions::before {
+	content: @ionicon-var-ios-browsers-outline;
+
+	.is-selected > & {
+		content: @ionicon-var-ios-browsers;
+	}
+}

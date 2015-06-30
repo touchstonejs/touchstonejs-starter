@@ -45,7 +45,7 @@ module.exports = React.createClass({
 		return (
 			<UI.View>
 				<UI.Headerbar type="default" label="Categorised List">
-					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" icon="ion-chevron-left" label="Back" />
+					<UI.HeaderbarButton showView="home" transition="reveal-from-right" icon="ion-chevron-left" label="Back" />
 				</UI.Headerbar>
 				<UI.ViewContent grow scrollable>
 					<HeaderList months={Months} />

@@ -38,7 +38,7 @@ var Search = React.createClass({
 
 		return (
 			<UI.Headerbar type="default" height="36px" className="Headerbar-form Subheader">
-				<div className="Headerbar-form-field Headerbar-form-icon ion-ios7-search-strong">
+				<div className="Headerbar-form-field Headerbar-form-icon ion-ios-search-strong">
 					<input ref="input" value={this.props.searchString} onChange={this.handleChange} className="Headerbar-form-input" placeholder='Search...' />
 					{clearIcon}
 				</div>
@@ -133,7 +133,7 @@ module.exports = React.createClass({
 		return (
 			<UI.View>
 				<UI.Headerbar type="default" label="Filter Months">
-					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
+					<UI.HeaderbarButton showView="home" transition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 				</UI.Headerbar>
 				<Search searchString={this.state.searchString} onChange={this.updateSearch} />
 				<UI.ViewContent grow scrollable>

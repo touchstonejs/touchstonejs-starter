@@ -27,7 +27,7 @@ module.exports = React.createClass({
 		return (
 			<UI.View>
 				<UI.Headerbar type="default" label="Alert Bar">
-					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" label="Back" icon="ion-chevron-left" />
+					<UI.HeaderbarButton showView="home" transition="reveal-from-right" label="Back" icon="ion-chevron-left" />
 				</UI.Headerbar>
 				<UI.Alertbar type={this.state.alertType}>When the state is "{this.state.alertType}"</UI.Alertbar>
 				<UI.ViewContent grow scrollable>

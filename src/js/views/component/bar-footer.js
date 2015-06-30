@@ -31,11 +31,11 @@ module.exports = React.createClass({
 
 		if (this.state.typeKey === 'icon') {
 			renderFooterbar = (<UI.Footerbar type="default">
-				<UI.FooterbarButton icon="ion-ios7-arrow-left" />
-				<UI.FooterbarButton icon="ion-ios7-arrow-right" disabled />
-				<UI.FooterbarButton icon="ion-ios7-download" />
-				<UI.FooterbarButton icon="ion-ios7-bookmarks-outline" />
-				<UI.FooterbarButton icon="ion-ios7-browsers" />
+				<UI.FooterbarButton icon="ion-ios-arrow-left" />
+				<UI.FooterbarButton icon="ion-ios-arrow-right" disabled />
+				<UI.FooterbarButton icon="ion-ios-download" />
+				<UI.FooterbarButton icon="ion-ios-bookmarks-outline" />
+				<UI.FooterbarButton icon="ion-ios-browsers" />
 			</UI.Footerbar>)
 		} else if (this.state.typeKey === 'label') {
 			renderFooterbar = (<UI.Footerbar type="default">
@@ -47,18 +47,18 @@ module.exports = React.createClass({
 			</UI.Footerbar>)
 		} else if (this.state.typeKey === 'both') {
 			renderFooterbar = (<UI.Footerbar type="default">
-				<UI.FooterbarButton label="Back" icon="ion-ios7-arrow-left" />
-				<UI.FooterbarButton label="Forward" icon="ion-ios7-arrow-right" disabled />
-				<UI.FooterbarButton label="Download" icon="ion-ios7-download" />
-				<UI.FooterbarButton label="Bookmarks" icon="ion-ios7-bookmarks-outline" />
-				<UI.FooterbarButton label="Tabs" icon="ion-ios7-browsers" />
+				<UI.FooterbarButton label="Back" icon="ion-ios-arrow-left" />
+				<UI.FooterbarButton label="Forward" icon="ion-ios-arrow-right" disabled />
+				<UI.FooterbarButton label="Download" icon="ion-ios-download" />
+				<UI.FooterbarButton label="Bookmarks" icon="ion-ios-bookmarks-outline" />
+				<UI.FooterbarButton label="Tabs" icon="ion-ios-browsers" />
 			</UI.Footerbar>)
 		}
 
 		return (
 			<UI.View>
 				<UI.Headerbar type="default" label="Footer Bar">
-					<Link to="home" viewTransition="reveal-from-right" className="Headerbar-button ion-chevron-left" component="button">Back</Link>
+					<Link to="home" transition="reveal-from-right" className="Headerbar-button ion-chevron-left" component="button">Back</Link>
 				</UI.Headerbar>
 				<UI.ViewContent grow scrollable>
 					{/*<div className="view-inner">

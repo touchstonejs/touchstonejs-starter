@@ -1,28 +1,25 @@
-var React = require('react'),
-	Navigation = require('touchstonejs').Navigation,
-	UI = require('touchstonejs').UI;
-
-var Timers = require('react-timers')
+var Container = require('react-container');
+var React = require('react');
+var Timers = require('react-timers');
+var Mixins = require('touchstonejs').Mixins;
 
 module.exports = React.createClass({
-	mixins: [Navigation, Timers()],
+	mixins: [Mixins.Transitions, Timers()],
 
 	componentDidMount: function () {
 		var self = this;
 
 		this.setTimeout(function () {
-			self.showView('transitions', 'fade');
+			self.transitionTo('tabs:transitions', { transition: 'fade' });
 		}, 1000);
 	},
 
 	render: function () {
 		return (
-			<UI.View>
-				<UI.Headerbar type="default" label="Target View" />
-				<UI.ViewContent>
-					<UI.Feedback iconKey="ion-ios7-photos" iconType="muted" text="Hold on a sec..." />
-				</UI.ViewContent>
-			</UI.View>
+			<Container>
+				<span className="ion-ios-photos ion-xxl text-muted" />
+				<h2>Hold on a sec...</h2>
+			</Container>
 		);
 	}
 });

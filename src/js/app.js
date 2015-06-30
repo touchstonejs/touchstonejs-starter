@@ -2,12 +2,11 @@ var React = require('react/addons');
 var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 var classnames = require('classnames');
 var {
-	createApp,
 	Container,
-	NavigationBar,
-	Tabs,
-	ViewManager,
-	View
+	createApp,
+	UI,
+	View,
+	ViewManager
 } = require('touchstonejs');
 
 var config = require('./config');
@@ -46,6 +45,12 @@ var views = {
 };
 */
 
+
+
+
+// App Config
+// ------------------------------
+
 var App = React.createClass({
 	mixins: [createApp()],
 
@@ -54,37 +59,100 @@ var App = React.createClass({
 
 		return (
 			<div className={appWrapperClassName}>
-				<div className="device-silhouette">
-					<ViewManager name="app" defaultView="main">
-						<View name="main" component={MainViewController} />
-					</ViewManager>
-				</div>
-				<div className="demo-wrapper">
-					<img src="img/logo-mark.svg" alt="TouchstoneJS" className="demo-brand" width="80" height="80" />
-					<h1>
-						TouchstoneJS
-						<small> demo</small>
-					</h1>
-					<p>React.js powered UI framework for developing beautiful hybrid mobile apps.</p>
-					<ul className="demo-links">
-						<li><a href="https://twitter.com/touchstonejs" target="_blank" className="ion-social-twitter">Twitter</a></li>
-						<li><a href="https://github.com/jedwatson/touchstonejs" target="_blank" className="ion-social-github">Github</a></li>
-						<li><a href="http://touchstonejs.io" target="_blank" className="ion-map">Roadmap</a></li>
-					</ul>
-				</div>
+				<ViewManager name="app" defaultView="main">
+					<View name="main" component={MainViewController} />
+				</ViewManager>
 			</div>
 		);
 	}
 });
 
+
+
+
+// Main Controller
+// ------------------------------
+
 var MainViewController = React.createClass({
 	render () {
 		return (
 			<Container>
-				{/*<NavigationBar name="main" />
-				<ViewManager name="main" defaultView="home">
-					<View name="home" component={require('./views/home')} />
-				</ViewManager>*/}
+				<UI.NavigationBar name="main" />
+				<ViewManager name="main" defaultView="tabs">
+					<View name="tabs" component={TabViewController} />
+				</ViewManager>
+			</Container>
+		);
+	}
+});
+
+
+
+
+// Tab Controller
+// ------------------------------
+
+var lastSelectedTab = 'lists'
+var TabViewController = React.createClass({
+	getInitialState () {
+		return {
+			selectedTab: lastSelectedTab
+		};
+	},
+	onViewChange (nextView) {
+		lastSelectedTab = nextView
+
+		this.setState({
+			selectedTab: nextView
+		});
+	},
+	selectTab (tab) {
+		var viewProps;
+		this.refs.vm.transitionTo(tab.value, {
+			transition: 'instant',
+			viewProps: viewProps
+		});
+	},
+	render () {
+		var selectedTab = this.state.selectedTab;
+		
+		if (selectedTab === 'lists' || selectedTab === 'list-simple' || selectedTab === 'list-complex') {
+			selectedTab = 'lists';
+		}
+		if (selectedTab === 'transitions' || selectedTab === 'transitions-target') {
+			selectedTab = 'transitions';
+		}
+
+		return (
+			<Container>
+				<ViewManager ref="vm" name="tabs" defaultView={this.state.selectedTab} onViewChange={this.onViewChange}>
+					<View name="lists" component={require('./views/lists')} />
+					<View name="list-simple" component={require('./views/list-simple')} />
+					<View name="list-complex" component={require('./views/list-complex')} />
+					<View name="details" component={require('./views/details')} />
+					<View name="form" component={require('./views/form')} />
+					<View name="controls" component={require('./views/controls')} />
+					<View name="transitions" component={require('./views/transitions')} />
+					<View name="transitions-target" component={require('./views/transitions-target')} />
+				</ViewManager>
+				<UI.Tabs.Navigator value={selectedTab} onChange={this.selectTab}>
+					<UI.Tabs.Tab value="lists">
+						<span className="Tabs-Icon Tabs-Icon--lists" />
+						<UI.Tabs.Label>Lists</UI.Tabs.Label>
+					</UI.Tabs.Tab>
+					<UI.Tabs.Tab value="form">
+						<span className="Tabs-Icon Tabs-Icon--forms" />
+						<UI.Tabs.Label>Forms</UI.Tabs.Label>
+					</UI.Tabs.Tab>
+					<UI.Tabs.Tab value="controls">
+						<span className="Tabs-Icon Tabs-Icon--controls" />
+						<UI.Tabs.Label>Controls</UI.Tabs.Label>
+					</UI.Tabs.Tab>
+					<UI.Tabs.Tab value="transitions">
+						<span className="Tabs-Icon Tabs-Icon--transitions" />
+						<UI.Tabs.Label>Transitions</UI.Tabs.Label>
+					</UI.Tabs.Tab>
+				</UI.Tabs.Navigator>
 			</Container>
 		);
 	}

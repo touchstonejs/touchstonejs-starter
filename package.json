@@ -14,7 +14,6 @@
     "react-tappable": "^0.5.2",
     "react-timers": "^3.1.0",
     "superagent": "^1.2.0",
-    "touchstonejs": "^0.3.2",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
@@ -24,12 +23,13 @@
   },
   "scripts": {
     "build": "gulp clean && gulp build",
-    "watch": "gulp clean && gulp watch",
-    "start": "gulp clean && gulp dev",
-    "prepare": "gulp clean && gulp prepare",
     "build:production": "gulp clean && NODE_ENV=production gulp build",
+    "lint": "happiness",
+    "preinstall": "npm link touchstonejs",
+    "prepare": "gulp clean && gulp prepare",
     "prepare:production": "gulp clean && NODE_ENV=production gulp prepare",
-    "test": "happiness"
+    "start": "gulp clean && gulp dev",
+    "watch": "gulp clean && gulp watch"
   },
   "happiness": {
     "ignore": [

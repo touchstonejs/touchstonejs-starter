@@ -16,7 +16,7 @@ var ComplexListItem = React.createClass({
 		var initials = firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
 
 		return (
-			<Link to="details" transition="show-from-right" viewProps={{ user: person, prevView: 'component-complex-list' }} className="list-item" component="div">
+			<Link to="tabs:list-details" transition="show-from-right" viewProps={{ person: person, prevView: 'list-complex' }} className="list-item" component="div">
 				<UI.ItemMedia avatar={person.picture} avatarInitials={initials} />
 				<div className="item-inner">
 					<div className="item-content">
@@ -38,7 +38,7 @@ module.exports = React.createClass({
 				leftArrow: true,
 				leftLabel: 'Lists',
 				leftAction: () => { app.transitionTo('tabs:lists', { transition: 'reveal-from-right' }) },
-				title: 'Complex List'
+				title: 'Complex'
 			}
 		}
 	},

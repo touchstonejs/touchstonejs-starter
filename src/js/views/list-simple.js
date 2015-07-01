@@ -9,9 +9,9 @@ const PEOPLE = require('../../data/people');
 var SimpleListItem = React.createClass({
 	render () {
 		return (
-			<Link to="details" transition="show-from-right" viewProps={{ user: this.props.user, prevView: 'component-simple-list' }} className="list-item is-tappable" component="div">
+			<Link to="tabs:list-details" transition="show-from-right" viewProps={{ person: this.props.person, prevView: 'list-simple' }} className="list-item is-tappable" component="div">
 				<div className="item-inner">
-					<div className="item-title">{this.props.user.name}</div>
+					<div className="item-title">{this.props.person.name}</div>
 				</div>
 			</Link>
 		);
@@ -20,21 +20,17 @@ var SimpleListItem = React.createClass({
 
 var Search = React.createClass({
 	mixins: [Timers()],
-
 	propTypes: {
 		searchString: React.PropTypes.string,
 		onChange: React.PropTypes.func.isRequired
 	},
-
 	handleChange (event) {
 		this.props.onChange(event.target.value);
 	},
-
 	reset () {
 		this.props.onChange('');
 		this.refs.input.getDOMNode().focus();
 	},
-
 	render () {
 
 		var clearIcon = Boolean(this.props.searchString.length) ? <Tappable onTap={this.reset} className="SearchField__icon SearchField__icon--clear" /> : '';
@@ -58,7 +54,7 @@ module.exports = React.createClass({
 				leftArrow: true,
 				leftLabel: 'Lists',
 				leftAction: () => { app.transitionTo('tabs:lists', { transition: 'reveal-from-right' }) },
-				title: 'Simple List'
+				title: 'Simple'
 			}
 		}
 	},
@@ -71,8 +67,8 @@ module.exports = React.createClass({
 		this.setState({ searchString: str });
 	},
 	render () {
-		var list = PEOPLE.map((user, i) => {
-			return <SimpleListItem key={'user_'+i} user={user} />
+		var list = PEOPLE.map((person, i) => {
+			return <SimpleListItem key={'person_'+i} person={person} />
 		});
 
 		return (

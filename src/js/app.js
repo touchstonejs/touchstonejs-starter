@@ -70,8 +70,7 @@ var TabViewController = React.createClass({
 	},
 	render () {
 		var selectedTab = this.state.selectedTab;
-
-		if (selectedTab === 'lists' || selectedTab === 'list-simple' || selectedTab === 'list-complex') {
+		if (selectedTab === 'lists' || selectedTab === 'list-simple' || selectedTab === 'list-complex' || selectedTab === 'list-details') {
 			selectedTab = 'lists';
 		}
 		if (selectedTab === 'transitions' || selectedTab === 'transitions-target') {
@@ -84,7 +83,7 @@ var TabViewController = React.createClass({
 					<View name="lists" component={require('./views/lists')} />
 					<View name="list-simple" component={require('./views/list-simple')} />
 					<View name="list-complex" component={require('./views/list-complex')} />
-					<View name="details" component={require('./views/details')} />
+					<View name="list-details" component={require('./views/list-details')} />
 					<View name="form" component={require('./views/form')} />
 					<View name="controls" component={require('./views/controls')} />
 					<View name="transitions" component={require('./views/transitions')} />

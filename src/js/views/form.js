@@ -86,15 +86,18 @@ module.exports = React.createClass({
 						{ label: 'Pastaccio',  value: 'pastaccio' }
 					]} />
 				</div>
-				<Tappable onTap={this.alert.bind(this, 'You clicked the Primary Button')} className="panel-button primary" component="button">
+				<UI.Button type="primary" onTap={this.alert.bind(this, 'You clicked the Primary Button')}>
 					Primary Button
-				</Tappable>
-				<Tappable onTap={this.alert.bind(this, 'You clicked the Default Button')} className="panel-button" component="button">
+				</UI.Button>
+				<UI.Button onTap={this.alert.bind(this, 'You clicked the Default Button')}>
 					Default Button
-				</Tappable>
-				<Tappable onTap={this.alert.bind(this, 'You clicked the Danger Button')} className="panel-button danger" component="button">
+				</UI.Button>
+				<UI.Button type="danger" onTap={this.alert.bind(this, 'You clicked the Danger Button')}>
 					Danger Button
-				</Tappable>
+				</UI.Button>
+				<UI.Button type="danger" onTap={this.alert.bind(this, 'You clicked the Danger Button')} disabled>
+					Disabled Button
+				</UI.Button>
 			</Container>
 		);
 	}

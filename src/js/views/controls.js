@@ -105,21 +105,21 @@ module.exports = React.createClass({
 				]} />
 
 				<div className="panel-header text-caps">Alert Bar</div>
-				<div className="panel-button-group">
-					<Tappable onTap={this.showAlertbar.bind(this, 'danger', 'No Internet Connection')} className="panel-button primary">
+				<UI.ButtonGroup>
+					<UI.Button type="primary" onTap={this.showAlertbar.bind(this, 'danger', 'No Internet Connection')} disabled={this.state.alertbar.visible}>
 						Danger
-					</Tappable>
-					<Tappable onTap={this.showAlertbar.bind(this, 'warning', 'We cannot confirm your connection')} className="panel-button primary">
+					</UI.Button>
+					<UI.Button type="primary" onTap={this.showAlertbar.bind(this, 'warning', 'We cannot confirm your connection')} disabled={this.state.alertbar.visible}>
 						Warning
-					</Tappable>
-					<Tappable onTap={this.showAlertbar.bind(this, 'success', 'Back online!')} className="panel-button primary">
+					</UI.Button>
+					<UI.Button type="primary" onTap={this.showAlertbar.bind(this, 'success', 'Back online!')} disabled={this.state.alertbar.visible}>
 						Success
-					</Tappable>
-				</div>
+					</UI.Button>
+				</UI.ButtonGroup>
 				<div className="panel-header text-caps">Popup</div>
-				<Tappable component="div" onTap={this.showLoadingPopup} className="panel-button primary">
+				<UI.Button type="primary" onTap={this.showLoadingPopup}>
 					Show Popup
-				</Tappable>
+				</UI.Button>
 				<div className="panel-header text-caps">Application State</div>
 				<div className="panel">
 					<Link component="div" to="tabs:non-existent" transition="show-from-right" className="list-item is-tappable">

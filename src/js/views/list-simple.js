@@ -26,14 +26,6 @@ var Search = React.createClass({
 		onChange: React.PropTypes.func.isRequired
 	},
 
-	componentDidMount: function () {
-		var self = this;
-
-		this.setTimeout(function () {
-			self.refs.input.getDOMNode().focus();
-		}, 1000);
-	},
-
 	handleChange (event) {
 		this.props.onChange(event.target.value);
 	},

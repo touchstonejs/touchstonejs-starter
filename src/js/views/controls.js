@@ -17,7 +17,11 @@ module.exports = React.createClass({
 	},
 	getInitialState () {
 		return {
-			alertBarVisible: false,
+			alertbar: {
+				visible: false,
+				type: '',
+				text: ''
+			},
 			popup: {
 				visible: false
 			}
@@ -56,25 +60,62 @@ module.exports = React.createClass({
 			});
 		}, 3000);
 	},
-	toggleAlertbar () {
+	showAlertbar (type, text) {
+		var self = this;
+
 		this.setState({
-			alertBarVisible: !this.state.alertBarVisible
+			alertbar: {
+				visible: true,
+				type: type,
+				text: text
+			}
 		});
+
+		this.setTimeout(function () {
+			self.setState({
+				alertbar: {
+					visible: false
+				}
+			});
+		}, 2000);
+	},
+	handleModeChange (newMode) {
+		var selectedItem = newMode;
+
+		if (this.state.selectedMode === newMode) {
+			selectedItem = null;
+		}
+
+		this.setState({
+			selectedMode: selectedItem
+		});
+
 	},
 	render () {
+		var { alertbar } = this.state;
 		return (
 			<Container scrollable>
-				<UI.Alertbar type="danger" visible={this.state.alertBarVisible}>No Internet Connection</UI.Alertbar>
-				<div className="panel-header text-caps">UI Elements</div>
-				<div className="panel">
-					<Link component="div" to="component-toggle"   transition="show-from-right" className="list-item is-tappable">
-						<div className="item-inner">Toggle</div>
-					</Link>
-				</div>
+				<UI.Alertbar type={alertbar.type} visible={alertbar.visible}>{alertbar.text}</UI.Alertbar>
+				<div className="panel-header text-caps">Segmented Control</div>
+				<UI.SegmentedControl value={this.state.selectedMode} onChange={this.handleModeChange} hasGutter options={[
+					{ label: 'One', value: 'one' },
+					{ label: 'Two', value: 'two' },
+					{ label: 'Three', value: 'three' },
+					{ label: 'Four', value: 'four' }
+				]} />
+
 				<div className="panel-header text-caps">Alert Bar</div>
-				<Tappable onTap={this.toggleAlertbar} className="panel-button primary">
-					Toggle Alert Bar
-				</Tappable>
+				<div className="panel-button-group">
+					<Tappable onTap={this.showAlertbar.bind(this, 'danger', 'No Internet Connection')} className="panel-button primary">
+						Danger
+					</Tappable>
+					<Tappable onTap={this.showAlertbar.bind(this, 'warning', 'We cannot confirm your connection')} className="panel-button primary">
+						Warning
+					</Tappable>
+					<Tappable onTap={this.showAlertbar.bind(this, 'success', 'Back online!')} className="panel-button primary">
+						Success
+					</Tappable>
+				</div>
 				<div className="panel-header text-caps">Popup</div>
 				<Tappable component="div" onTap={this.showLoadingPopup} className="panel-button primary">
 					Show Popup

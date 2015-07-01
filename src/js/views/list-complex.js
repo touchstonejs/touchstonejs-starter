@@ -4,6 +4,7 @@ var React = require('react');
 var UI = require('touchstonejs').UI;
 
 const PEOPLE = require('../../data/people');
+const scrollable = Container.initScrollable();
 
 var ComplexListItem = React.createClass({
 	render () {
@@ -41,14 +42,34 @@ module.exports = React.createClass({
 			}
 		}
 	},
+	getInitialState () {
+		return {}
+	},
+	handleModeChange (newMode) {
+
+		var selectedItem = newMode;
+
+		if (this.state.selectedMode === newMode) {
+			selectedItem = null;
+		}
+
+		this.setState({
+			selectedMode: selectedItem
+		});
+
+	},
 	render () {
 		var list = PEOPLE.map((user, i) => {
 			return <ComplexListItem key={'user_'+i} user={user} />
 		});
 
 		return (
-			<Container scrollable>
-				<div className="panel panel--first">
+			<Container scrollable={scrollable}>
+				<UI.SegmentedControl value={this.state.selectedMode} onChange={this.handleModeChange} hasGutter options={[
+					{ label: 'Speakers', value: 'speakers' },
+					{ label: 'Organisers', value: 'organisers' }
+				]} />
+				<div className="panel mb-0">
 					{list}
 				</div>
 			</Container>

@@ -1,5 +1,7 @@
 var Container = require('react-container');
+var dialogs = require('cordova-dialogs');
 var React = require('react');
+var Tappable = require('react-tappable');
 var UI = require('touchstonejs').UI;
 
 const scrollable = Container.initScrollable();
@@ -28,6 +30,9 @@ module.exports = React.createClass({
 		newState[key] = !this.state[key];
 
 		this.setState(newState);
+	},
+	alert (message) {
+		dialogs.alert(message, function() {}, null)
 	},
 	render () {
 
@@ -81,6 +86,15 @@ module.exports = React.createClass({
 						{ label: 'Pastaccio',  value: 'pastaccio' }
 					]} />
 				</div>
+				<Tappable onTap={this.alert.bind(this, 'You clicked the Primary Button')} className="panel-button primary" component="button">
+					Primary Button
+				</Tappable>
+				<Tappable onTap={this.alert.bind(this, 'You clicked the Default Button')} className="panel-button" component="button">
+					Default Button
+				</Tappable>
+				<Tappable onTap={this.alert.bind(this, 'You clicked the Danger Button')} className="panel-button danger" component="button">
+					Danger Button
+				</Tappable>
 			</Container>
 		);
 	}

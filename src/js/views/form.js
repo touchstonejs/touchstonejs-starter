@@ -70,7 +70,7 @@ module.exports = React.createClass({
 				<div className="panel">
 					<UI.LabelInput type="email" label="Email"   placeholder="your.name@example.com" />
 					<UI.LabelInput type="url"   label="URL"     placeholder="http://www.yourwebsite.com" />
-					<UI.LabelInput noedit       label="No Edit" value="Un-editable, scrollable, selectable content" />
+					<UI.LabelInput noedit       label="No Edit" defaultValue="Un-editable, scrollable, selectable content" />
 					<UI.LabelSelect label="Flavour" value={this.state.flavour} onChange={this.handleFlavourChange} options={[
 						{ label: 'Vanilla',    value: 'vanilla' },
 						{ label: 'Chocolate',  value: 'chocolate' },

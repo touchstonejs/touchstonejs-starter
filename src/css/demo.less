@@ -38,10 +38,15 @@
 
 // desktop wrapper
 @media only screen and (min-width : 480px) {
+
+	// make it pretty!
+	
 	#app {
 		#gradient .directional( spin(@demo-bg,-22%), spin(@demo-bg,22%), 135deg );
 		background-color: @demo-bg;
 	}
+
+	// center the app inside the viewport
 
 	.app-wrapper {
 		.size(@device-width,@device-height);
@@ -54,23 +59,7 @@
 		top: 50%;
 	}
 
-	// fixes for the desktop
-	.view,
-	.loading-overlay,
-	.Modal,
-	.Modal-backdrop,
-	.Keypad {
-		position: absolute;
-	}
-
-	// view
-	.view-wrapper {
-		background: black;
-		height: 100%;
-		overflow: hidden;
-		position: relative;
-		width: 100%;
-	}
+	// nice for demonstrating on desktop
 
 	.device-silhouette {
 		.size(@silhouette-width, @silhouette-height);

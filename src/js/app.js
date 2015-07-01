@@ -7,8 +7,6 @@ var {
 	ViewManager
 } = require('touchstonejs');
 
-var device = require('./lib/device')
-
 // App Config
 // ------------------------------
 
@@ -16,7 +14,7 @@ var App = React.createClass({
 	mixins: [createApp()],
 
 	render () {
-		var appWrapperClassName = 'app-wrapper device--' + device.platform;
+		var appWrapperClassName = 'app-wrapper device--' + (window.device || {}).platform
 
 		return (
 			<div className={appWrapperClassName}>

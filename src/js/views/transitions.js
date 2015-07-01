@@ -3,6 +3,8 @@ var Link = require('touchstonejs').Link;
 var React = require('react');
 var UI = require('touchstonejs').UI;
 
+const scrollable = Container.initScrollable();
+
 module.exports = React.createClass({
 	statics: {
 		navigationBar: 'main',
@@ -15,10 +17,10 @@ module.exports = React.createClass({
 	render () {
 
 		return (
-			<Container scrollable>
+			<Container scrollable={scrollable}>
 				<div className="panel-header text-caps">Default</div>
 				<div className="panel">
-					<Link to="tabs:transitions-target" className="list-item is-tappable" component="div"><div className="item-inner">None</div></Link>
+					<Link to="tabs:transitions-target" className="list-item is-tappable" component="div"><div className="item-inner">Instant</div></Link>
 				</div>
 				<div className="panel-header text-caps">Fade</div>
 				<div className="panel">

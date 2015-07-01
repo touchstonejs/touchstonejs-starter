@@ -108,15 +108,15 @@ module.exports = React.createClass({
 					<UI.Button type="primary" onTap={this.showAlertbar.bind(this, 'danger', 'No Internet Connection')} disabled={this.state.alertbar.visible}>
 						Danger
 					</UI.Button>
-					<UI.Button type="primary" onTap={this.showAlertbar.bind(this, 'warning', 'We cannot confirm your connection')} disabled={this.state.alertbar.visible}>
+					<UI.Button type="primary" onTap={this.showAlertbar.bind(this, 'warning', 'Connecting...')} disabled={this.state.alertbar.visible}>
 						Warning
 					</UI.Button>
-					<UI.Button type="primary" onTap={this.showAlertbar.bind(this, 'success', 'Back online!')} disabled={this.state.alertbar.visible}>
+					<UI.Button type="primary" onTap={this.showAlertbar.bind(this, 'success', 'Connected')} disabled={this.state.alertbar.visible}>
 						Success
 					</UI.Button>
 				</UI.ButtonGroup>
 				<UI.GroupHeader>Popup</UI.GroupHeader>
-				<UI.Button type="primary" onTap={this.showLoadingPopup}>
+				<UI.Button type="primary" onTap={this.showLoadingPopup} disabled={this.state.popup.visible}>
 					Show Popup
 				</UI.Button>
 				<UI.GroupHeader>Application State</UI.GroupHeader>

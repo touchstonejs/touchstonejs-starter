@@ -8,11 +8,9 @@ const scrollable = Container.initScrollable();
 
 var ComplexListItem = React.createClass({
 	render () {
-		var person = this.props.user;
-
+		var person = this.props.person;
 		var firstName = person.name.split(' ').slice(0, -1).join(' ');
 		var lastName = person.name.split(' ').slice(-1).join(' ');
-		
 		var initials = firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
 
 		return (
@@ -45,8 +43,8 @@ module.exports = React.createClass({
 	getInitialState () {
 		return {}
 	},
-	handleModeChange (newMode) {
 
+	handleModeChange (newMode) {
 		var selectedItem = newMode;
 
 		if (this.state.selectedMode === newMode) {
@@ -58,9 +56,26 @@ module.exports = React.createClass({
 		});
 
 	},
+
 	render () {
-		var list = PEOPLE.map((user, i) => {
-			return <ComplexListItem key={'user_'+i} user={user} />
+		var selectedMode = this.state.selectedMode
+		var persons
+
+		if (selectedMode === 'speakers') {
+			persons = PEOPLE.filter(person => person.isSpeaker)
+
+		} else if (selectedMode === 'organisers') {
+			persons = PEOPLE.filter(person => person.isOrganiser)
+
+		} else if (selectedMode === 'starred') {
+			persons = PEOPLE.filter(person => person.isStarred)
+
+		} else {
+			persons = PEOPLE
+		}
+
+		var list = persons.sort((a, b) => a.name.localeCompare(b.name)).map((person, i) => {
+			return <ComplexListItem key={'person' + i} person={person} />
 		});
 
 		return (

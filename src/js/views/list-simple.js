@@ -1,39 +1,36 @@
 var Container = require('react-container');
-var Link = require('touchstonejs').Link;
 var React = require('react');
 var Tappable = require('react-tappable');
-var Timers = require('react-timers');
+
+var { Link, UI } = require('touchstonejs');
 
 const PEOPLE = require('../../data/people');
 
-var SimpleListItem = React.createClass({
-	render () {
-		return (
-			<Link to="tabs:list-details" transition="show-from-right" viewProps={{ person: this.props.person, prevView: 'list-simple' }} className="list-item is-tappable" component="div">
-				<div className="item-inner">
-					<div className="item-title">{this.props.person.name}</div>
-				</div>
-			</Link>
-		);
-	}
-});
-
 var Search = React.createClass({
-	mixins: [Timers()],
+	displayName: 'Search',
 	propTypes: {
 		searchString: React.PropTypes.string,
 		onChange: React.PropTypes.func.isRequired
 	},
+
+	getDefaultProps () {
+		return {
+			searchString: ''
+		}
+	},
+
 	handleChange (event) {
 		this.props.onChange(event.target.value);
 	},
 	reset () {
 		this.props.onChange('');
-		this.refs.input.getDOMNode().focus();
 	},
 	render () {
+		var clearIcon;
 
-		var clearIcon = Boolean(this.props.searchString.length) ? <Tappable onTap={this.reset} className="SearchField__icon SearchField__icon--clear" /> : '';
+		if (this.props.searchString.length > 0) {
+			clearIcon = <Tappable className="Headerbar-form-clear ion-close-circled" onTap={this.reset} />;
+		}
 
 		return (
 			<div className="SearchField">
@@ -43,7 +40,22 @@ var Search = React.createClass({
 			</div>
 		);
 	}
+});
 
+var SimpleListItem = React.createClass({
+	propTypes: {
+		person: React.PropTypes.object.isRequired
+	},
+
+	render () {
+		return (
+			<Link to="tabs:list-details" transition="show-from-right" viewProps={{ person: this.props.person, prevView: 'list-simple' }} className="list-item is-tappable" component="div">
+				<div className="item-inner">
+					<div className="item-title">{this.props.person.name}</div>
+				</div>
+			</Link>
+		);
+	}
 });
 
 module.exports = React.createClass({
@@ -58,24 +70,68 @@ module.exports = React.createClass({
 			}
 		}
 	},
+
 	getInitialState () {
 		return {
 			searchString: ''
 		}
 	},
+
 	updateSearch (str) {
 		this.setState({ searchString: str });
 	},
+
 	render () {
-		var list = PEOPLE.map((person, i) => {
-			return <SimpleListItem key={'person_'+i} person={person} />
-		});
+		var { searchString } = this.state
+		var searchRegex = new RegExp(searchString)
+		var starredOnly = false;
+
+		function searchFilter (person) { return searchRegex.test(person.name.toLowerCase()) }
+		function starFilter (person) { return !starredOnly || person.isStarred }
+		function sortByName (a, b) { return a.name.localeCompare(b.name) }
+
+		var organizers = PEOPLE.filter(person => person.isOrganiser)
+			.filter(searchFilter)
+			.filter(starFilter)
+			.sort(sortByName)
+			.map((person, i) => {
+				return <SimpleListItem key={'organizer' + i} person={person} />
+			})
+
+		var speakers = PEOPLE.filter(person => person.isSpeaker)
+			.filter(searchFilter)
+			.filter(starFilter)
+			.sort(sortByName)
+			.map((person, i) => {
+				return <SimpleListItem key={'speaker' + i} person={person} />
+			})
+
+		var results
+
+		if (searchString && !organizers.length && !speakers.length) {
+			results = (
+				<Container direction="column" align="center" justify="center" className="no-results">
+					<div className="no-results__icon ion-ios-search-strong" />
+					<div className="no-results__text">{'No results for "' + searchString + '"'}</div>
+				</Container>
+			);
+
+		} else {
+			results = (
+				<div>
+					{organizers.length > 0 ? <UI.ListHeader sticky>Organisers</UI.ListHeader> : ''}
+					{organizers}
+					{speakers.length > 0 ? <UI.ListHeader sticky>Speakers</UI.ListHeader> : ''}
+					{speakers}
+				</div>
+			)
+		}
 
 		return (
 			<Container scrollable>
 				<Search searchString={this.state.searchString} onChange={this.updateSearch} />
 				<div className="panel mb-0">
-					{list}
+					{results}
 				</div>
 			</Container>
 		);

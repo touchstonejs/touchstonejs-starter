@@ -2,7 +2,7 @@ var Container = require('react-container');
 var dialogs = require('cordova-dialogs');
 var React = require('react');
 var Tappable = require('react-tappable');
-var UI = require('touchstonejs').UI;
+var { UI } = require('touchstonejs');
 
 const scrollable = Container.initScrollable();
 
@@ -38,8 +38,8 @@ module.exports = React.createClass({
 
 		return (
 			<Container scrollable={scrollable}>
-				<div className="panel-header text-caps">Checkbox</div>
-				<div className="panel">
+				<UI.GroupHeader>Checkbox</UI.GroupHeader>
+				<UI.Group>
 					<div className="list-item">
 						<div className="item-inner">
 							<div className="field-label">Switch</div>
@@ -52,9 +52,9 @@ module.exports = React.createClass({
 							<UI.Switch disabled />
 						</div>
 					</div>
-				</div>
-				<div className="panel-header text-caps">Radio</div>
-				<div className="panel">
+				</UI.Group>
+				<UI.GroupHeader>Radio</UI.GroupHeader>
+				<UI.Group>
 					<UI.RadioList value={this.state.flavour} onChange={this.handleFlavourChange} options={[
 						{ label: 'Vanilla',    value: 'vanilla' },
 						{ label: 'Chocolate',  value: 'chocolate' },
@@ -64,15 +64,15 @@ module.exports = React.createClass({
 						{ label: 'Lemon',      value: 'lemon' },
 						{ label: 'Pastaccio',  value: 'pastaccio' }
 					]} />
-				</div>
-				<div className="panel-header text-caps">Inputs</div>
-				<div className="panel">
+				</UI.Group>
+				<UI.GroupHeader>Inputs</UI.GroupHeader>
+				<UI.Group>
 					<UI.Input placeholder="Default" />
 					<UI.Input defaultValue="With Value" placeholder="Placeholder" />
 					<UI.Textarea defaultValue="Longtext is good for bios etc." placeholder="Longtext" />
-				</div>
-				<div className="panel-header text-caps">Labelled Inputs</div>
-				<div className="panel">
+				</UI.Group>
+				<UI.GroupHeader>Labelled Inputs</UI.GroupHeader>
+				<UI.Group>
 					<UI.LabelInput type="email" label="Email"   placeholder="your.name@example.com" />
 					<UI.LabelInput type="url"   label="URL"     placeholder="http://www.yourwebsite.com" />
 					<UI.LabelInput noedit       label="No Edit" defaultValue="Un-editable, scrollable, selectable content" />
@@ -85,7 +85,7 @@ module.exports = React.createClass({
 						{ label: 'Lemon',      value: 'lemon' },
 						{ label: 'Pastaccio',  value: 'pastaccio' }
 					]} />
-				</div>
+				</UI.Group>
 				<UI.Button type="primary" onTap={this.alert.bind(this, 'You clicked the Primary Button')}>
 					Primary Button
 				</UI.Button>

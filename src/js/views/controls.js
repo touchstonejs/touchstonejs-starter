@@ -1,9 +1,8 @@
 var Container = require('react-container');
-var Link = require('touchstonejs').Link;
 var React = require('react');
 var Tappable = require('react-tappable');
 var Timers = require('react-timers');
-var UI = require('touchstonejs').UI;
+var { Link, UI } = require('touchstonejs');
 
 module.exports = React.createClass({
 	mixins: [Timers()],
@@ -96,7 +95,7 @@ module.exports = React.createClass({
 		return (
 			<Container scrollable>
 				<UI.Alertbar type={alertbar.type} visible={alertbar.visible}>{alertbar.text}</UI.Alertbar>
-				<div className="panel-header text-caps">Segmented Control</div>
+				<UI.GroupHeader>Segmented Control</UI.GroupHeader>
 				<UI.SegmentedControl value={this.state.selectedMode} onChange={this.handleModeChange} hasGutter options={[
 					{ label: 'One', value: 'one' },
 					{ label: 'Two', value: 'two' },
@@ -104,7 +103,7 @@ module.exports = React.createClass({
 					{ label: 'Four', value: 'four' }
 				]} />
 
-				<div className="panel-header text-caps">Alert Bar</div>
+				<UI.GroupHeader>Alert Bar</UI.GroupHeader>
 				<UI.ButtonGroup>
 					<UI.Button type="primary" onTap={this.showAlertbar.bind(this, 'danger', 'No Internet Connection')} disabled={this.state.alertbar.visible}>
 						Danger
@@ -116,16 +115,16 @@ module.exports = React.createClass({
 						Success
 					</UI.Button>
 				</UI.ButtonGroup>
-				<div className="panel-header text-caps">Popup</div>
+				<UI.GroupHeader>Popup</UI.GroupHeader>
 				<UI.Button type="primary" onTap={this.showLoadingPopup}>
 					Show Popup
 				</UI.Button>
-				<div className="panel-header text-caps">Application State</div>
-				<div className="panel">
+				<UI.GroupHeader>Application State</UI.GroupHeader>
+				<UI.Group>
 					<Link component="div" to="tabs:non-existent" transition="show-from-right" className="list-item is-tappable">
 						<div className="item-inner">Invalid View</div>
 					</Link>
-				</div>
+				</UI.Group>
 
 				<UI.Popup visible={this.state.popup.visible}>
 					<UI.PopupIcon name={this.state.popup.iconName} type={this.state.popup.iconType} spinning={this.state.popup.loading} />		

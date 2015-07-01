@@ -20,9 +20,11 @@ var App = React.createClass({
 
 		return (
 			<div className={appWrapperClassName}>
-				<ViewManager name="app" defaultView="main">
-					<View name="main" component={MainViewController} />
-				</ViewManager>
+				<div className="device-silhouette">
+					<ViewManager name="app" defaultView="main">
+						<View name="main" component={MainViewController} />
+					</ViewManager>
+				</div>
 			</div>
 		);
 	}

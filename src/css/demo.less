@@ -8,8 +8,25 @@
 // ------------------------------
 
 
-@demo-bg:                   #c32964;
-@device-chrome-vertical:       50px;
+@demo-bg:                        #c32964;
+
+@iphone4-width:                  320px;
+@iphone4-height:                 480px;
+
+@iphone5-width:                  340px;
+@iphone5-height:                 568px;
+
+@iphone6-width:                  376px;
+@iphone6-height:                 668px;
+
+@device-width:                   @iphone6-width;
+@device-height:                  @iphone6-height;
+
+@silhouette-chrome-vertical:     50px;
+@silhouette-chrome-horizontal:   10px;
+@silhouette-width:               @device-width + (@silhouette-chrome-horizontal * 2);
+@silhouette-height:              @device-height + (@silhouette-chrome-vertical * 2);
+
 
 
 #app {
@@ -19,112 +36,22 @@
 }
 
 
-
-
-// Layout
-// ------------------------------
-
-
-.demo-wrapper {
-	.size(320px,auto);
-	color: fade(white, 75%);
-	display: none; // hide on small devices
-	font-weight: 300;
-	letter-spacing: 0.02em;
-	position: absolute;
-	right: 0;
-	top: 0;
-
-
-	// common
-	* + * {
-		margin-top: 1em;
-	}
-
-	// type
-
-	h1,h2,h3 {
-		color: white;
-		font-weight: 300;
-		margin: 0;
-		line-height: 1.1;
-	}
-
-	a {
-		color: white;
-	}
-}
-.demo-brand {
-	.square(80px);
-	margin-bottom: 30px;
-}
-.demo-links {
-	display: inline-block;
-	font-size: 14px;
-	list-style: none;
-	line-height: 1;
-	margin: 40px 0 0;
-	padding: 0;
-	
-	&:hover > li > a {
-		opacity: .5;
-	}
-
-	> li {
-		// display: inline-block;
-		margin: 0;
-
-		> a {
-			.transition( opacity 150ms );
-			display: block;
-			padding: 8px 0;
-
-			&:before {
-				font-size: 24px;
-				margin-right: 10px;
-				vertical-align: middle;
-			}
-			
-			&:hover {
-				opacity: 1;
-			}
-
-		}
-	}
-}
-.view {
-	color: @text-color;
-}
-
-
 // desktop wrapper
-@media only screen and (min-width : 768px) {
+@media only screen and (min-width : 480px) {
 	#app {
 		#gradient .directional( spin(@demo-bg,-22%), spin(@demo-bg,22%), 135deg );
 		background-color: @demo-bg;
-		color: fade(white, 50%);
 	}
 
 	.app-wrapper {
+		.size(@device-width,@device-height);
 		background: none;
 		left: 50%;
-		top: 50%;
+		margin-left: -(@device-width / 2);
+		margin-top: -(@device-height / 2);
 		overflow: visible;
 		position: absolute;
-		// iPhone 4
-		// .size(320px,480px);
-		// margin-left: -160px;
-		// margin-top: -240px;
-
-		// iPhone 5
-		.size(680px,568px);
-		margin-left: -340px;
-		margin-top: -284px;
-
-		// iPhone 6
-		// .size(376px,668px);
-		// margin-left: -188px;
-		// margin-left: -334px;
+		top: 50%;
 	}
 
 	// fixes for the desktop
@@ -138,22 +65,18 @@
 
 	// view
 	.view-wrapper {
-		.size(320px,568px);
 		background: black;
-		position: relative;
+		height: 100%;
 		overflow: hidden;
-	}
-
-	// demo
-	.demo-wrapper {
-		display: block;
+		position: relative;
+		width: 100%;
 	}
 
 	.device-silhouette {
-		.size(340px,668px);
+		.size(@silhouette-width, @silhouette-height);
 		background-color: fade(black, 20%);
 		border-radius: 20px;
-		margin: -@device-chrome-vertical 0 0 -10px;
-		padding: @device-chrome-vertical 10px;
+		margin: -@silhouette-chrome-vertical -@silhouette-chrome-horizontal;
+		padding: @silhouette-chrome-vertical @silhouette-chrome-horizontal;
 	}
 }

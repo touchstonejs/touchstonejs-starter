@@ -24,12 +24,12 @@ module.exports = React.createClass({
 						<div className="item-inner">Complex List</div>
 					</Link>
 				</UI.Group>
-				<UI.GroupHeader>Group Header</UI.GroupHeader>
+				<UI.GroupHeader>GroupHeader</UI.GroupHeader>
 				<UI.Group>
-					<UI.GroupBody>A grouped table view always contains at least one group of list items—one list item per row—and each group always contains at least one item</UI.GroupBody>
-					<UI.GroupBody>A grouped table view always contains at least one group of list items—one list item per row—and each group always contains at least one item</UI.GroupBody>
+					<UI.GroupBody>Use groups to contain content or lists. Where appropriate a Group should be accompanied by a GroupHeading and optionally a GroupFooter.</UI.GroupBody>
+					<UI.GroupBody>You can use GroupBody for content inside groups. Subsequent GroupBody components will be separated.</UI.GroupBody>
 				</UI.Group>
-				<UI.GroupFooter>A grouped table view always contains at least one group of list items—one list item per row—and each group always contains at least one item</UI.GroupFooter>
+				<UI.GroupFooter>GroupFooter: useful for a detailed explaination to express the intentions of the Group. Try to be concise - remember that users are likely to read the text in your UI many times.</UI.GroupFooter>
 			</Container>
 		);
 	}

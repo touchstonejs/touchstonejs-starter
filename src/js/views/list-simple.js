@@ -34,16 +34,16 @@ var Search = React.createClass({
 		}, 1000);
 	},
 
-	handleChange: function (event) {
+	handleChange (event) {
 		this.props.onChange(event.target.value);
 	},
 
-	reset: function () {
+	reset () {
 		this.props.onChange('');
 		this.refs.input.getDOMNode().focus();
 	},
 
-	render: function () {
+	render () {
 
 		var clearIcon = Boolean(this.props.searchString.length) ? <Tappable onTap={this.reset} className="SearchField__icon SearchField__icon--clear" /> : '';
 

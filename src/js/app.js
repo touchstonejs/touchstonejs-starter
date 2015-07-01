@@ -105,7 +105,7 @@ var TabViewController = React.createClass({
 						<span className="Tabs-Icon Tabs-Icon--lists" />
 						<UI.Tabs.Label>Lists</UI.Tabs.Label>
 					</UI.Tabs.Tab>
-					<UI.Tabs.Tab onTap={this.selectTab.bind(this, 'forms')} selected={selectedTabSpan === 'forms'}>
+					<UI.Tabs.Tab onTap={this.selectTab.bind(this, 'form')} selected={selectedTabSpan === 'form'}>
 						<span className="Tabs-Icon Tabs-Icon--forms" />
 						<UI.Tabs.Label>Forms</UI.Tabs.Label>
 					</UI.Tabs.Tab>

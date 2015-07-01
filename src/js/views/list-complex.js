@@ -67,7 +67,8 @@ module.exports = React.createClass({
 			<Container scrollable={scrollable}>
 				<UI.SegmentedControl value={this.state.selectedMode} onChange={this.handleModeChange} hasGutter options={[
 					{ label: 'Speakers', value: 'speakers' },
-					{ label: 'Organisers', value: 'organisers' }
+					{ label: 'Organisers', value: 'organisers' },
+					{ label: 'Starred', value: 'starred' }
 				]} />
 				<div className="panel mb-0">
 					{list}

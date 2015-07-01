@@ -16,9 +16,9 @@ module.exports = React.createClass({
 
 	render: function () {
 		return (
-			<Container>
-				<span className="ion-ios-photos ion-xxl text-muted" />
-				<h2>Hold on a sec...</h2>
+			<Container direction="column" align="center" justify="center" className="no-results">
+				<div className="no-results__icon ion-ios-photos" />
+				<div className="no-results__text">Hold on a sec...</div>
 			</Container>
 		);
 	}

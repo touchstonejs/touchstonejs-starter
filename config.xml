@@ -20,15 +20,15 @@
 
 	<!-- ANDROID -->
 	<platform name="android">
-		<icon src="resources/icons/android.png" density="ldpi" />
-		<icon src="resources/icons/android.png" density="mdpi" />
-		<icon src="resources/icons/android.png" density="hdpi" />
-		<icon src="resources/icons/android.png" density="xhdpi" />
+		<icon src="resources/icons/iTunesArtwork@2x.png" density="ldpi" />
+		<icon src="resources/icons/iTunesArtwork@2x.png" density="mdpi" />
+		<icon src="resources/icons/iTunesArtwork@2x.png" density="hdpi" />
+		<icon src="resources/icons/iTunesArtwork@2x.png" density="xhdpi" />
 
-		<splash src="resources/splash/android.png" density="ldpi" />
-		<splash src="resources/splash/android.png" density="mdpi" />
-		<splash src="resources/splash/android.png" density="hdpi" />
-		<splash src="resources/splash/android.png" density="xhdpi" />
+		<splash src="resources/splash/1242x2208.png" density="ldpi" />
+		<splash src="resources/splash/1242x2208.png" density="mdpi" />
+		<splash src="resources/splash/1242x2208.png" density="hdpi" />
+		<splash src="resources/splash/1242x2208.png" density="xhdpi" />
 	</platform>
 
 	<!-- IOS -->

@@ -36,24 +36,36 @@ var ComplexLinkItem = React.createClass({
 	}
 });
 
+// FIXME: this bit is global and hacky, expect it to change
+var EventEmitter = require('events').EventEmitter;
+var emitter = new EventEmitter();
+
+function getNavigation (props, app, filterStarred) {
+	return {
+		leftLabel: 'Lists',
+		leftArrow: true,
+		leftAction: () => { app.transitionTo('tabs:lists', { transition: 'reveal-from-right' }) },
+		rightLabel: filterStarred ? 'All' : 'Starred',
+		rightAction: emitter.emit.bind(emitter, 'navigationBarRightAction'),
+		title: 'Complex'
+	};
+}
+
 module.exports = React.createClass({
+	contextTypes: {
+		app: React.PropTypes.object,
+		peopleStore: React.PropTypes.object.isRequired
+	},
 	mixins: [Sentry()],
-	contextTypes: { peopleStore: React.PropTypes.object.isRequired },
 
 	statics: {
 		navigationBar: 'main',
-		getNavigation (props, app) {
-			return {
-				leftArrow: true,
-				leftLabel: 'Lists',
-				leftAction: () => { app.transitionTo('tabs:lists', { transition: 'reveal-from-right' }) },
-				title: 'Complex'
-			}
-		}
+		getNavigation: getNavigation
 	},
 
 	getInitialState () {
 		return {
+			filterStarred: false,
 			people: this.context.peopleStore.getPeople()
 		}
 	},
@@ -64,6 +76,14 @@ module.exports = React.createClass({
 		this.watch(this.context.peopleStore, 'people-updated', people => {
 			self.setState({ people })
 		})
+
+		this.watch(emitter, 'navigationBarRightAction', this.toggleStarred);
+	},
+
+	toggleStarred () {
+		var filterStarred = !this.state.filterStarred;
+		this.setState({ filterStarred });
+		this.context.app.navigationBars.main.update(getNavigation({}, this.context.app, filterStarred));
 	},
 
 	handleModeChange (newMode) {
@@ -73,20 +93,18 @@ module.exports = React.createClass({
 			selectedMode = null;
 		}
 
-		this.setState({
-			selectedMode: selectedMode
-		});
+		this.setState({ selectedMode })
 	},
 
 	render () {
-		var selectedMode = this.state.selectedMode
-		var { people } = this.state
+		var { people, filterStarred, selectedMode } = this.state
+
+		if (filterStarred) {
+			people = people.filter(person => person.isStarred)
+		}
 
 		if (selectedMode === 'A' || selectedMode === 'B') {
 			people = people.filter(person => person.category === selectedMode)
-
-		} else if (selectedMode === 'starred') {
-			people = people.filter(person => person.isStarred)
 		}
 
 		function sortByName (a, b) { return a.name.full.localeCompare(b.name.full) }
@@ -129,8 +147,7 @@ module.exports = React.createClass({
 			<Container scrollable={scrollable}>
 				<UI.SegmentedControl value={this.state.selectedMode} onChange={this.handleModeChange} hasGutter equalWidthSegments options={[
 					{ label: 'A', value: 'A' },
-					{ label: 'B', value: 'B' },
-					{ label: 'Starred', value: 'starred' }
+					{ label: 'B', value: 'B' }
 				]} />
 				{results}
 			</Container>

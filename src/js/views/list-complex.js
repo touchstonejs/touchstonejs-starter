@@ -28,7 +28,7 @@ var ComplexLinkItem = React.createClass({
 						<UI.ItemSubTitle>{person.bio}</UI.ItemSubTitle>
 					</UI.ItemContent>
 					<Tappable onTap={this.toggleStar} stopPropagation>
-						<UI.ItemNote icon={person.isStarred ? 'ion-ios-star' : 'ion-ios-star-outline'} type={person.isStarred ? 'warning' : 'default'} />
+						<UI.ItemNote icon={person.isStarred ? 'ion-ios-star' : 'ion-ios-star-outline'} type={person.isStarred ? 'warning' : 'default'} className="ion-lg" />
 					</Tappable>
 				</UI.ItemInner>
 			</UI.LinkItem>

@@ -127,7 +127,7 @@ module.exports = React.createClass({
 
 		return (
 			<Container scrollable={scrollable}>
-				<UI.SegmentedControl value={this.state.selectedMode} onChange={this.handleModeChange} hasGutter options={[
+				<UI.SegmentedControl value={this.state.selectedMode} onChange={this.handleModeChange} hasGutter equalWidthSegments options={[
 					{ label: 'A', value: 'A' },
 					{ label: 'B', value: 'B' },
 					{ label: 'Starred', value: 'starred' }

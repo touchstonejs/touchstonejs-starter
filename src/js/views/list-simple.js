@@ -30,7 +30,7 @@ var Search = React.createClass({
 		var clearIcon;
 
 		if (this.props.searchString.length > 0) {
-			clearIcon = <Tappable className="Headerbar-form-clear ion-close-circled" onTap={this.reset} />;
+			clearIcon = <Tappable className="SearchField__icon SearchField__icon--clear" onTap={this.reset} />;
 		}
 
 		return (

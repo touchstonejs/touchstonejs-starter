@@ -28,39 +28,39 @@ module.exports = React.createClass({
 						<UI.ItemInner>Fade</UI.ItemInner>
 					</UI.LinkItem>
 					<UI.LinkItem linkTo="tabs:transitions-target" transition="fade-expand" showDisclosureArrow viewProps={{ navbarTitle: 'Fade Expand' }}>
-						<UI.ItemInner>Fade Expand</UI.ItemInner>
+						<UI.ItemInner><span>Fade Expand <span className="text-muted">(non-standard)</span></span></UI.ItemInner>
 					</UI.LinkItem>
 					<UI.LinkItem linkTo="tabs:transitions-target" transition="fade-contract" showDisclosureArrow viewProps={{ navbarTitle: 'Fade Contract' }}>
-						<UI.ItemInner>Fade Contract</UI.ItemInner>
+						<UI.ItemInner><span>Fade Contract <span className="text-muted">(non-standard)</span></span></UI.ItemInner>
 					</UI.LinkItem>
 				</UI.Group>
 				<UI.GroupHeader>Show</UI.GroupHeader>
 				<UI.Group>
 					<UI.LinkItem linkTo="tabs:transitions-target" transition="show-from-left" showDisclosureArrow viewProps={{ navbarTitle: 'Show from Left' }}>
-						<UI.ItemInner>Show from Left</UI.ItemInner>
+						<UI.ItemInner><span>Show from Left <span className="text-muted">(non-standard)</span></span></UI.ItemInner>
 					</UI.LinkItem>
 					<UI.LinkItem linkTo="tabs:transitions-target" transition="show-from-right" showDisclosureArrow viewProps={{ navbarTitle: 'Show from Right' }}>
 						<UI.ItemInner>Show from Right</UI.ItemInner>
 					</UI.LinkItem>
-					<UI.LinkItem linkTo="tabs:transitions-target" transition="show-from-top" showDisclosureArrow viewProps={{ navbarTitle: 'Show from Top' }}>
-						<UI.ItemInner>Show from Top</UI.ItemInner>
+					<UI.LinkItem linkTo="app:transitions-target-over" transition="show-from-top" showDisclosureArrow viewProps={{ navbarTitle: 'Show from Top' }}>
+						<UI.ItemInner><span>Show from Top <span className="text-muted">(non-standard)</span></span></UI.ItemInner>
 					</UI.LinkItem>
-					<UI.LinkItem linkTo="tabs:transitions-target" transition="show-from-bottom" showDisclosureArrow viewProps={{ navbarTitle: 'Show from Bottom' }}>
+					<UI.LinkItem linkTo="app:transitions-target-over" transition="show-from-bottom" showDisclosureArrow viewProps={{ navbarTitle: 'Show from Bottom' }}>
 						<UI.ItemInner>Show from Bottom</UI.ItemInner>
 					</UI.LinkItem>
 				</UI.Group>
 				<UI.GroupHeader>Reveal</UI.GroupHeader>
 				<UI.Group>
 					<UI.LinkItem linkTo="tabs:transitions-target" transition="reveal-from-left" showDisclosureArrow viewProps={{ navbarTitle: 'Reveal from Left' }}>
-						<UI.ItemInner>Reveal from Left</UI.ItemInner>
+						<UI.ItemInner><span>Reveal from Left <span className="text-muted">(non-standard)</span></span></UI.ItemInner>
 					</UI.LinkItem>
 					<UI.LinkItem linkTo="tabs:transitions-target" transition="reveal-from-right" showDisclosureArrow viewProps={{ navbarTitle: 'Reveal from Right' }}>
 						<UI.ItemInner>Reveal from Right</UI.ItemInner>
 					</UI.LinkItem>
-					<UI.LinkItem linkTo="tabs:transitions-target" transition="reveal-from-top" showDisclosureArrow viewProps={{ navbarTitle: 'Reveal from Top' }}>
-						<UI.ItemInner>Reveal from Top</UI.ItemInner>
+					<UI.LinkItem linkTo="app:transitions-target-over" transition="reveal-from-top" showDisclosureArrow viewProps={{ navbarTitle: 'Reveal from Top' }}>
+						<UI.ItemInner><span>Reveal from Top <span className="text-muted">(non-standard)</span></span></UI.ItemInner>
 					</UI.LinkItem>
-					<UI.LinkItem linkTo="tabs:transitions-target" transition="reveal-from-bottom" showDisclosureArrow viewProps={{ navbarTitle: 'Reveal from Bottom' }}>
+					<UI.LinkItem linkTo="app:transitions-target-over" transition="reveal-from-bottom" showDisclosureArrow viewProps={{ navbarTitle: 'Reveal from Bottom' }}>
 						<UI.ItemInner>Reveal from Bottom</UI.ItemInner>
 					</UI.LinkItem>
 				</UI.Group>

@@ -34,6 +34,7 @@ var App = React.createClass({
 				<div className="device-silhouette">
 					<ViewManager name="app" defaultView="main">
 						<View name="main" component={MainViewController} />
+						<View name="transitions-target-over" component={require('./views/transitions-target-over')} />
 					</ViewManager>
 				</div>
 			</div>

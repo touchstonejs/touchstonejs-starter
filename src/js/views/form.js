@@ -55,10 +55,7 @@ module.exports = React.createClass({
 						{ label: 'Vanilla',    value: 'vanilla' },
 						{ label: 'Chocolate',  value: 'chocolate' },
 						{ label: 'Caramel',    value: 'caramel' },
-						{ label: 'Strawberry', value: 'strawberry' },
-						{ label: 'Banana',     value: 'banana' },
-						{ label: 'Lemon',      value: 'lemon' },
-						{ label: 'Pastaccio',  value: 'pastaccio' }
+						{ label: 'Strawberry', value: 'strawberry' }
 					]} />
 				</UI.Group>
 				<UI.GroupHeader>Inputs</UI.GroupHeader>

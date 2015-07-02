@@ -1,7 +1,7 @@
 var Container = require('react-container');
 var React = require('react');
 var Tappable = require('react-tappable');
-var Forget = require('react-forget');
+var Sentry = require('react-sentry');
 
 var { UI } = require('touchstonejs');
 
@@ -58,7 +58,7 @@ var SimpleLinkItem = React.createClass({
 });
 
 module.exports = React.createClass({
-	mixins: [Forget()],
+	mixins: [Sentry()],
 	contextTypes: { peopleStore: React.PropTypes.object.isRequired },
 
 	statics: {

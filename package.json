@@ -12,7 +12,7 @@
     "httpify": "^1.0.0",
     "react": "^0.13.3",
     "react-container": "^0.2.2",
-    "react-forget": "^0.3.2",
+    "react-sentry": "^0.4.0",
     "react-tappable": "^0.5.2",
     "react-timers": "^3.1.0"
   },

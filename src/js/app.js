@@ -47,7 +47,7 @@ var MainViewController = React.createClass({
 // Tab Controller
 // ------------------------------
 
-var lastSelectedTab = 'lists'
+var lastSelectedTab = 'transitions'
 var TabViewController = React.createClass({
 	getInitialState () {
 		return {

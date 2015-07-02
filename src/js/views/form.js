@@ -40,18 +40,14 @@ module.exports = React.createClass({
 			<Container scrollable={scrollable}>
 				<UI.GroupHeader>Checkbox</UI.GroupHeader>
 				<UI.Group>
-					<div className="list-item">
-						<div className="item-inner">
-							<div className="field-label">Switch</div>
-							<UI.Switch onTap={this.handleSwitch.bind(this, 'switchValue')} on={this.state.switchValue} />
-						</div>
-					</div>
-					<div className="list-item">
-						<div className="item-inner">
-							<div className="field-label">Disabled</div>
-							<UI.Switch disabled />
-						</div>
-					</div>
+					<UI.FieldItem>
+						<UI.FieldLabel>Switch</UI.FieldLabel>
+						<UI.Switch onTap={this.handleSwitch.bind(this, 'switchValue')} on={this.state.switchValue} />
+					</UI.FieldItem>
+					<UI.FieldItem>
+						<UI.FieldLabel>Disabled</UI.FieldLabel>
+						<UI.Switch disabled />
+					</UI.FieldItem>
 				</UI.Group>
 				<UI.GroupHeader>Radio</UI.GroupHeader>
 				<UI.Group>

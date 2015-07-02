@@ -121,9 +121,9 @@ module.exports = React.createClass({
 				</UI.Button>
 				<UI.GroupHeader>Application State</UI.GroupHeader>
 				<UI.Group>
-					<Link component="div" to="tabs:non-existent" transition="show-from-right" className="list-item is-tappable">
-						<div className="item-inner">Invalid View</div>
-					</Link>
+					<UI.LinkItem linkTo="tabs:non-existent" transition="show-from-right" showDisclosureArrow>
+						<UI.ItemInner>Invalid View</UI.ItemInner>
+					</UI.LinkItem>
 				</UI.Group>
 
 				<UI.Popup visible={this.state.popup.visible}>

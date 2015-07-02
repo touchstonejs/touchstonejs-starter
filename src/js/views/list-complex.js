@@ -1,13 +1,12 @@
 var Container = require('react-container');
-var Link = require('touchstonejs').Link;
 var React = require('react');
 var Tappable = require('react-tappable');
-var UI = require('touchstonejs').UI;
+var { Link, UI } = require('touchstonejs');
 
 const PEOPLE = require('../../data/people');
 const scrollable = Container.initScrollable();
 
-var ComplexListItem = React.createClass({
+var ComplexLinkItem = React.createClass({
 	doThing () {
 		console.log('star this user')
 	},
@@ -24,18 +23,18 @@ var ComplexListItem = React.createClass({
 		var starIcon = 'item-note-icon ion-lg ion-ios-star';
 
 		return (
-			<Link to="tabs:list-details" transition="show-from-right" viewProps={{ person: person, prevView: 'list-complex' }} className="list-item" component="div">
+			<UI.LinkItem linkTo="tabs:list-details" transition="show-from-right" viewProps={{ person: person, prevView: 'list-complex' }}>
 				<UI.ItemMedia avatar={person.picture} avatarInitials={initials} />
-				<div className="item-inner">
-					<div className="item-content">
-						<div className="item-title">{person.name}</div>
-						<div className="item-subtitle">{person.bio}</div>
-					</div>
+				<UI.ItemInner>
+					<UI.ItemContent>
+						<UI.ItemTitle>{person.name}</UI.ItemTitle>
+						<UI.ItemSubTitle>{person.bio}</UI.ItemSubTitle>
+					</UI.ItemContent>
 					<Tappable onTap={this.doThing} stopPropagation className={starTap}>
 						<div className={starIcon} />
 					</Tappable>
-				</div>
-			</Link>
+				</UI.ItemInner>
+			</UI.LinkItem>
 		);
 	}
 });
@@ -87,7 +86,7 @@ module.exports = React.createClass({
 		}
 
 		var list = persons.sort((a, b) => a.name.localeCompare(b.name)).map((person, i) => {
-			return <ComplexListItem key={'person' + i} person={person} />
+			return <ComplexLinkItem key={'person' + i} person={person} />
 		});
 
 		return (
@@ -97,9 +96,9 @@ module.exports = React.createClass({
 					{ label: 'Organisers', value: 'organisers' },
 					{ label: 'Starred', value: 'starred' }
 				]} />
-				<div className="panel mb-0">
+				<UI.Group>
 					{list}
-				</div>
+				</UI.Group>
 			</Container>
 		);
 	}

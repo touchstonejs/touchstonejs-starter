@@ -17,12 +17,16 @@ module.exports = React.createClass({
 			<Container scrollable>
 				<UI.GroupHeader>Lists</UI.GroupHeader>
 				<UI.Group>
-					<Link to="tabs:list-simple" transition="show-from-right" className="list-item is-tappable">
-						<div className="item-inner">Simple List</div>
-					</Link>
-					<Link to="tabs:list-complex" transition="show-from-right" className="list-item is-tappable">
-						<div className="item-inner">Complex List</div>
-					</Link>
+					<UI.LinkItem linkTo="tabs:list-simple" transition="show-from-right" showDisclosureArrow>
+						<UI.ItemInner>
+							Simple List
+						</UI.ItemInner>
+					</UI.LinkItem>
+					<UI.LinkItem linkTo="tabs:list-complex" transition="show-from-right" showDisclosureArrow>
+						<UI.ItemInner>
+							Complex List
+						</UI.ItemInner>
+					</UI.LinkItem>
 				</UI.Group>
 				<UI.GroupHeader>GroupHeader</UI.GroupHeader>
 				<UI.Group>

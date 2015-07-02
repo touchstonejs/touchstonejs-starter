@@ -1,7 +1,6 @@
 var Container = require('react-container');
 var React = require('react');
 var Tappable = require('react-tappable');
-
 var { Link, UI } = require('touchstonejs');
 
 const PEOPLE = require('../../data/people');
@@ -42,18 +41,18 @@ var Search = React.createClass({
 	}
 });
 
-var SimpleListItem = React.createClass({
+var SimpleLinkItem = React.createClass({
 	propTypes: {
 		person: React.PropTypes.object.isRequired
 	},
 
 	render () {
 		return (
-			<Link to="tabs:list-details" transition="show-from-right" viewProps={{ person: this.props.person, prevView: 'list-simple' }} className="list-item is-tappable" component="div">
-				<div className="item-inner">
-					<div className="item-title">{this.props.person.name}</div>
-				</div>
-			</Link>
+			<UI.LinkItem linkTo="tabs:list-details" transition="show-from-right" viewProps={{ person: this.props.person, prevView: 'list-simple' }} showDisclosureArrow>
+				<UI.ItemInner>
+					<UI.ItemTitle>{this.props.person.name}</UI.ItemTitle>
+				</UI.ItemInner>
+			</UI.LinkItem>
 		);
 	}
 });
@@ -95,7 +94,7 @@ module.exports = React.createClass({
 			.filter(starFilter)
 			.sort(sortByName)
 			.map((person, i) => {
-				return <SimpleListItem key={'organizer' + i} person={person} />
+				return <SimpleLinkItem key={'organizer' + i} person={person} />
 			})
 
 		var speakers = PEOPLE.filter(person => person.isSpeaker)
@@ -103,7 +102,7 @@ module.exports = React.createClass({
 			.filter(starFilter)
 			.sort(sortByName)
 			.map((person, i) => {
-				return <SimpleListItem key={'speaker' + i} person={person} />
+				return <SimpleLinkItem key={'speaker' + i} person={person} />
 			})
 
 		var results
@@ -130,9 +129,9 @@ module.exports = React.createClass({
 		return (
 			<Container scrollable>
 				<Search searchString={this.state.searchString} onChange={this.updateSearch} />
-				<div className="panel mb-0">
+				<UI.Group>
 					{results}
-				</div>
+				</UI.Group>
 			</Container>
 		);
 	}

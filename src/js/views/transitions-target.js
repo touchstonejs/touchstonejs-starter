@@ -5,16 +5,22 @@ var Mixins = require('touchstonejs').Mixins;
 
 module.exports = React.createClass({
 	mixins: [Mixins.Transitions, Timers()],
-
-	componentDidMount: function () {
+	statics: {
+		navigationBar: 'main',
+		getNavigation (props) {
+			return {
+				title: props.navbarTitle
+			}
+		}
+	},
+	componentDidMount () {
 		var self = this;
 
 		this.setTimeout(function () {
 			self.transitionTo('tabs:transitions', { transition: 'fade' });
 		}, 1000);
 	},
-
-	render: function () {
+	render () {
 		return (
 			<Container direction="column" align="center" justify="center" className="no-results">
 				<div className="no-results__icon ion-ios-photos" />

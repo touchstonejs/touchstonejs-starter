@@ -19,16 +19,6 @@ var ComplexLinkItem = React.createClass({
 	render () {
 		var person = this.props.person;
 
-		var starIcon, starTap
-		if (person.isStarred) {
-			starTap = 'item-note text-warning';
-			starIcon = 'item-note-icon ion-lg ion-ios-star';
-
-		} else {
-			starTap = 'item-note default';
-			starIcon = 'item-note-icon ion-lg ion-ios-star-outline';
-		}
-
 		return (
 			<UI.LinkItem linkTo="tabs:list-details" transition="show-from-right" viewProps={{ person: person, prevView: 'list-complex' }}>
 				<UI.ItemMedia avatar={person.picture} avatarInitials={person.initials} />
@@ -37,8 +27,8 @@ var ComplexLinkItem = React.createClass({
 						<UI.ItemTitle>{person.name.full}</UI.ItemTitle>
 						<UI.ItemSubTitle>{person.bio}</UI.ItemSubTitle>
 					</UI.ItemContent>
-					<Tappable onTap={this.toggleStar} stopPropagation className={starTap}>
-						<div className={starIcon} />
+					<Tappable onTap={this.toggleStar} stopPropagation>
+						<UI.ItemNote icon={person.isStarred ? 'ion-ios-star' : 'ion-ios-star-outline'} type={person.isStarred ? 'warning' : 'default'} />
 					</Tappable>
 				</UI.ItemInner>
 			</UI.LinkItem>
@@ -99,9 +89,17 @@ module.exports = React.createClass({
 			people = people.filter(person => person.isStarred)
 		}
 
+		var noResultsMessage = (
+			<Container direction="column" align="center" justify="center" className="no-results">
+				<div className="no-results__icon ion-ios-star" />
+				<div className="no-results__text">Go star some people!</div>
+			</Container>
+		);
+
 		var list = people.sort((a, b) => a.name.full.localeCompare(b.name.full)).map((person, i) => {
 			return <ComplexLinkItem key={'person' + i} person={person} />
 		});
+		var results = people.length ? <UI.Group>{list}</UI.Group> : noResultsMessage;
 
 		return (
 			<Container scrollable={scrollable}>
@@ -110,9 +108,7 @@ module.exports = React.createClass({
 					{ label: 'B', value: 'B' },
 					{ label: 'Starred', value: 'starred' }
 				]} />
-				<UI.Group>
-					{list}
-				</UI.Group>
+				{results}
 			</Container>
 		);
 	}

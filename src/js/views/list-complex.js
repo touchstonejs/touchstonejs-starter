@@ -89,17 +89,41 @@ module.exports = React.createClass({
 			people = people.filter(person => person.isStarred)
 		}
 
-		var noResultsMessage = (
-			<Container direction="column" align="center" justify="center" className="no-results">
-				<div className="no-results__icon ion-ios-star" />
-				<div className="no-results__text">Go star some people!</div>
-			</Container>
-		);
+		function sortByName (a, b) { return a.name.full.localeCompare(b.name.full) }
 
-		var list = people.sort((a, b) => a.name.full.localeCompare(b.name.full)).map((person, i) => {
-			return <ComplexLinkItem key={'person' + i} person={person} />
-		});
-		var results = people.length ? <UI.Group>{list}</UI.Group> : noResultsMessage;
+		var sortedPeople = people.sort(sortByName)
+		var results
+
+		if (sortedPeople.length) {
+			var aPeople = sortedPeople
+				.filter(person => person.category === 'A')
+				.map((person, i) => {
+					return <ComplexLinkItem key={'persona' + i} person={person} />
+				})
+
+			var bPeople = sortedPeople
+				.filter(person => person.category === 'B')
+				.map((person, i) => {
+					return <ComplexLinkItem key={'personb' + i} person={person} />
+				})
+
+			results = (
+				<UI.Group>
+					{aPeople.length > 0 ? <UI.ListHeader sticky>Category A</UI.ListHeader> : ''}
+					{aPeople}
+					{bPeople.length > 0 ? <UI.ListHeader sticky>Category B</UI.ListHeader> : ''}
+					{bPeople}
+				</UI.Group>
+			)
+
+		} else {
+			results = (
+				<Container direction="column" align="center" justify="center" className="no-results">
+					<div className="no-results__icon ion-ios-star" />
+					<div className="no-results__text">Go star some people!</div>
+				</Container>
+			)
+		}
 
 		return (
 			<Container scrollable={scrollable}>

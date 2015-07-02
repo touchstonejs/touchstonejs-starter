@@ -21,9 +21,11 @@ var Search = React.createClass({
 	handleChange (event) {
 		this.props.onChange(event.target.value);
 	},
+
 	reset () {
 		this.props.onChange('');
 	},
+
 	render () {
 		var clearIcon;
 
@@ -117,31 +119,29 @@ module.exports = React.createClass({
 			var aPeople = filteredPeople
 				.filter(person => person.category === 'A')
 				.map((person, i) => {
-					return <SimpleLinkItem key={'personm' + i} person={person} />
+					return <SimpleLinkItem key={'persona' + i} person={person} />
 				})
 
 			var bPeople = filteredPeople
 				.filter(person => person.category === 'B')
 				.map((person, i) => {
-					return <SimpleLinkItem key={'personf' + i} person={person} />
+					return <SimpleLinkItem key={'personb' + i} person={person} />
 				})
 
 			results = (
-				<div>
+				<UI.Group>
 					{aPeople.length > 0 ? <UI.ListHeader sticky>Category A</UI.ListHeader> : ''}
 					{aPeople}
 					{bPeople.length > 0 ? <UI.ListHeader sticky>Category B</UI.ListHeader> : ''}
 					{bPeople}
-				</div>
+				</UI.Group>
 			)
 		}
 
 		return (
 			<Container scrollable>
 				<Search searchString={this.state.searchString} onChange={this.updateSearch} />
-				<UI.Group>
-					{results}
-				</UI.Group>
+				{results}
 			</Container>
 		);
 	}

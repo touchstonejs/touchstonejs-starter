@@ -1,9 +1,9 @@
 var Container = require('react-container');
 var React = require('react');
 var Tappable = require('react-tappable');
-var { Link, UI } = require('touchstonejs');
+var Forget = require('react-forget');
 
-const PEOPLE = require('../../data/people');
+var { UI } = require('touchstonejs');
 
 var Search = React.createClass({
 	displayName: 'Search',
@@ -50,7 +50,7 @@ var SimpleLinkItem = React.createClass({
 		return (
 			<UI.LinkItem linkTo="tabs:list-details" transition="show-from-right" viewProps={{ person: this.props.person, prevView: 'list-simple' }} showDisclosureArrow>
 				<UI.ItemInner>
-					<UI.ItemTitle>{this.props.person.name}</UI.ItemTitle>
+					<UI.ItemTitle>{this.props.person.name.full}</UI.ItemTitle>
 				</UI.ItemInner>
 			</UI.LinkItem>
 		);
@@ -58,6 +58,9 @@ var SimpleLinkItem = React.createClass({
 });
 
 module.exports = React.createClass({
+	mixins: [Forget()],
+	contextTypes: { peopleStore: React.PropTypes.object.isRequired },
+
 	statics: {
 		navigationBar: 'main',
 		getNavigation (props, app) {
@@ -70,9 +73,18 @@ module.exports = React.createClass({
 		}
 	},
 
+	componentDidMount () {
+		var self = this
+
+		this.watch(this.context.peopleStore, 'people-updated', people => {
+			self.setState({ people })
+		})
+	},
+
 	getInitialState () {
 		return {
-			searchString: ''
+			searchString: '',
+			people: this.context.peopleStore.getPeople()
 		}
 	},
 
@@ -84,26 +96,16 @@ module.exports = React.createClass({
 		var { searchString } = this.state
 		var searchRegex = new RegExp(searchString)
 
-		function searchFilter (person) { return searchRegex.test(person.name.toLowerCase()) }
-		function sortByName (a, b) { return a.name.localeCompare(b.name) }
+		function searchFilter (person) { return searchRegex.test(person.name.full) }
+		function sortByName (a, b) { return a.name.full.localeCompare(b.name.full) }
 
-		var organizers = PEOPLE.filter(person => person.isOrganiser)
-			.filter(searchFilter)
+		var { people } = this.state
+		var filteredPeople = people.filter(searchFilter)
 			.sort(sortByName)
-			.map((person, i) => {
-				return <SimpleLinkItem key={'organizer' + i} person={person} />
-			})
-
-		var speakers = PEOPLE.filter(person => person.isSpeaker)
-			.filter(searchFilter)
-			.sort(sortByName)
-			.map((person, i) => {
-				return <SimpleLinkItem key={'speaker' + i} person={person} />
-			})
 
 		var results
 
-		if (searchString && !organizers.length && !speakers.length) {
+		if (searchString && !filteredPeople.length) {
 			results = (
 				<Container direction="column" align="center" justify="center" className="no-results">
 					<div className="no-results__icon ion-ios-search-strong" />
@@ -112,12 +114,24 @@ module.exports = React.createClass({
 			);
 
 		} else {
+			var aPeople = filteredPeople
+				.filter(person => person.category === 'A')
+				.map((person, i) => {
+					return <SimpleLinkItem key={'personm' + i} person={person} />
+				})
+
+			var bPeople = filteredPeople
+				.filter(person => person.category === 'B')
+				.map((person, i) => {
+					return <SimpleLinkItem key={'personf' + i} person={person} />
+				})
+
 			results = (
 				<div>
-					{organizers.length > 0 ? <UI.ListHeader sticky>Organisers</UI.ListHeader> : ''}
-					{organizers}
-					{speakers.length > 0 ? <UI.ListHeader sticky>Speakers</UI.ListHeader> : ''}
-					{speakers}
+					{aPeople.length > 0 ? <UI.ListHeader sticky>Category A</UI.ListHeader> : ''}
+					{aPeople}
+					{bPeople.length > 0 ? <UI.ListHeader sticky>Category B</UI.ListHeader> : ''}
+					{bPeople}
 				</div>
 			)
 		}

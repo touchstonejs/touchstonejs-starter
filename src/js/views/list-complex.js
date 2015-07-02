@@ -1,36 +1,43 @@
 var Container = require('react-container');
 var React = require('react');
 var Tappable = require('react-tappable');
-var { Link, UI } = require('touchstonejs');
+var Forget = require('react-forget');
 
-const PEOPLE = require('../../data/people');
+var { UI } = require('touchstonejs');
+
 const scrollable = Container.initScrollable();
 
 var ComplexLinkItem = React.createClass({
-	doThing () {
-		console.log('star this user')
+	contextTypes: { peopleStore: React.PropTypes.object.isRequired },
+
+	toggleStar () {
+		var person = this.props.person
+
+		this.context.peopleStore.star(person, !person.isStarred)
 	},
+
 	render () {
 		var person = this.props.person;
-		var firstName = person.name.split(' ').slice(0, -1).join(' ');
-		var lastName = person.name.split(' ').slice(-1).join(' ');
-		var initials = firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
-		// unstarred
-		// var starTap = 'item-note default';
-		// var starIcon = 'item-note-icon ion-lg ion-ios-star-outline';
-		// starred
-		var starTap = 'item-note text-' + ['warning', 'primary', 'error', 'success'][(Math.random() * 4) | 0];
-		var starIcon = 'item-note-icon ion-lg ion-ios-star';
+
+		var starIcon, starTap
+		if (person.isStarred) {
+			starTap = 'item-note text-warning';
+			starIcon = 'item-note-icon ion-lg ion-ios-star';
+
+		} else {
+			starTap = 'item-note default';
+			starIcon = 'item-note-icon ion-lg ion-ios-star-outline';
+		}
 
 		return (
 			<UI.LinkItem linkTo="tabs:list-details" transition="show-from-right" viewProps={{ person: person, prevView: 'list-complex' }}>
-				<UI.ItemMedia avatar={person.picture} avatarInitials={initials} />
+				<UI.ItemMedia avatar={person.picture} avatarInitials={person.initials} />
 				<UI.ItemInner>
 					<UI.ItemContent>
-						<UI.ItemTitle>{person.name}</UI.ItemTitle>
+						<UI.ItemTitle>{person.name.full}</UI.ItemTitle>
 						<UI.ItemSubTitle>{person.bio}</UI.ItemSubTitle>
 					</UI.ItemContent>
-					<Tappable onTap={this.doThing} stopPropagation className={starTap}>
+					<Tappable onTap={this.toggleStar} stopPropagation className={starTap}>
 						<div className={starIcon} />
 					</Tappable>
 				</UI.ItemInner>
@@ -40,6 +47,9 @@ var ComplexLinkItem = React.createClass({
 });
 
 module.exports = React.createClass({
+	mixins: [Forget()],
+	contextTypes: { peopleStore: React.PropTypes.object.isRequired },
+
 	statics: {
 		navigationBar: 'main',
 		getNavigation (props, app) {
@@ -51,49 +61,53 @@ module.exports = React.createClass({
 			}
 		}
 	},
+
 	getInitialState () {
-		return {}
+		return {
+			people: this.context.peopleStore.getPeople()
+		}
+	},
+
+	componentDidMount () {
+		var self = this
+
+		this.watch(this.context.peopleStore, 'people-updated', people => {
+			self.setState({ people })
+		})
 	},
 
 	handleModeChange (newMode) {
-		var selectedItem = newMode;
+		var selectedMode = newMode;
 
 		if (this.state.selectedMode === newMode) {
-			selectedItem = null;
+			selectedMode = null;
 		}
 
 		this.setState({
-			selectedMode: selectedItem
+			selectedMode: selectedMode
 		});
-
 	},
 
 	render () {
 		var selectedMode = this.state.selectedMode
-		var persons
+		var { people } = this.state
 
-		if (selectedMode === 'speakers') {
-			persons = PEOPLE.filter(person => person.isSpeaker)
-
-		} else if (selectedMode === 'organisers') {
-			persons = PEOPLE.filter(person => person.isOrganiser)
+		if (selectedMode === 'A' || selectedMode === 'B') {
+			people = people.filter(person => person.category === selectedMode)
 
 		} else if (selectedMode === 'starred') {
-			persons = PEOPLE.filter(person => person.isStarred)
-
-		} else {
-			persons = PEOPLE
+			people = people.filter(person => person.isStarred)
 		}
 
-		var list = persons.sort((a, b) => a.name.localeCompare(b.name)).map((person, i) => {
+		var list = people.sort((a, b) => a.name.full.localeCompare(b.name.full)).map((person, i) => {
 			return <ComplexLinkItem key={'person' + i} person={person} />
 		});
 
 		return (
 			<Container scrollable={scrollable}>
 				<UI.SegmentedControl value={this.state.selectedMode} onChange={this.handleModeChange} hasGutter options={[
-					{ label: 'Speakers', value: 'speakers' },
-					{ label: 'Organisers', value: 'organisers' },
+					{ label: 'A', value: 'A' },
+					{ label: 'B', value: 'B' },
 					{ label: 'Starred', value: 'starred' }
 				]} />
 				<UI.Group>

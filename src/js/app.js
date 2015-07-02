@@ -10,8 +10,21 @@ var {
 // App Config
 // ------------------------------
 
+var PeopleStore = require('./stores/people')
+var peopleStore = new PeopleStore()
+
 var App = React.createClass({
 	mixins: [createApp()],
+
+	childContextTypes: {
+		peopleStore: React.PropTypes.object
+	},
+
+	getChildContext () {
+		return {
+			peopleStore: peopleStore
+		};
+	},
 
 	render () {
 		var appWrapperClassName = 'app-wrapper device--' + (window.device || {}).platform
@@ -47,7 +60,7 @@ var MainViewController = React.createClass({
 // Tab Controller
 // ------------------------------
 
-var lastSelectedTab = 'transitions'
+var lastSelectedTab = 'lists'
 var TabViewController = React.createClass({
 	getInitialState () {
 		return {

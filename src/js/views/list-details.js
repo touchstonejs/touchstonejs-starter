@@ -1,9 +1,5 @@
 var Container = require('react-container');
 var React = require('react');
-var Tappable = require('react-tappable');
-var UI = require('touchstonejs').UI;
-
-var Timers = require('react-timers')
 
 module.exports = React.createClass({
 	statics: {
@@ -30,7 +26,7 @@ module.exports = React.createClass({
 			<Container direction="column">
 				<Container fill scrollable ref="scrollContainer" className="PersonDetails">
 					<img src={person.picture} className="PersonDetails__avatar" />
-					<div className="PersonDetails__heading">{person.name}</div>
+					<div className="PersonDetails__heading">{person.name.full}</div>
 					<div className="PersonDetails__text text-block">{person.bio}</div>
 					{(person.twitter || person.github) && <div className="PersonDetails__profiles">
 						{person.twitter && <div className="PersonDetails__profile">

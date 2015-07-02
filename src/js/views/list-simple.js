@@ -83,15 +83,12 @@ module.exports = React.createClass({
 	render () {
 		var { searchString } = this.state
 		var searchRegex = new RegExp(searchString)
-		var starredOnly = false;
 
 		function searchFilter (person) { return searchRegex.test(person.name.toLowerCase()) }
-		function starFilter (person) { return !starredOnly || person.isStarred }
 		function sortByName (a, b) { return a.name.localeCompare(b.name) }
 
 		var organizers = PEOPLE.filter(person => person.isOrganiser)
 			.filter(searchFilter)
-			.filter(starFilter)
 			.sort(sortByName)
 			.map((person, i) => {
 				return <SimpleLinkItem key={'organizer' + i} person={person} />
@@ -99,7 +96,6 @@ module.exports = React.createClass({
 
 		var speakers = PEOPLE.filter(person => person.isSpeaker)
 			.filter(searchFilter)
-			.filter(starFilter)
 			.sort(sortByName)
 			.map((person, i) => {
 				return <SimpleLinkItem key={'speaker' + i} person={person} />

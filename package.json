@@ -28,6 +28,7 @@
     "preinstall": "npm link touchstonejs",
     "prepare": "gulp clean && gulp prepare",
     "prepare:production": "gulp clean && NODE_ENV=production gulp prepare",
+    "test": "npm run lint",
     "start": "gulp clean && gulp dev",
     "watch": "gulp clean && gulp watch"
   },

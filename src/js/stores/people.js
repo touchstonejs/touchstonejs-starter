@@ -31,7 +31,7 @@ function PeopleStore () {
 		// update
 		httpify({
 			method: 'GET',
-			url: 'http://api.randomuser.me/?nat=au&results=10'
+			url: 'https://api.randomuser.me/?nat=au&results=10'
 		}, function (err, res) {
 			if (err) return callback(err)
 

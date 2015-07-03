@@ -14,7 +14,8 @@
     "react-container": "^0.2.2",
     "react-sentry": "^0.4.1",
     "react-tappable": "^0.5.2",
-    "react-timers": "^3.1.0"
+    "react-timers": "^3.1.0",
+    "touchstonejs": "^0.4.0"
   },
   "devDependencies": {
     "gulp": "^3.9.0",
@@ -25,7 +26,6 @@
     "build": "gulp clean && gulp build",
     "build:production": "gulp clean && NODE_ENV=production gulp build",
     "lint": "happiness",
-    "preinstall": "npm link touchstonejs",
     "prepare": "gulp clean && gulp prepare",
     "prepare:production": "gulp clean && NODE_ENV=production gulp prepare",
     "test": "npm run lint",

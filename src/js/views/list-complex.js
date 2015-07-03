@@ -3,7 +3,7 @@ var React = require('react');
 var Tappable = require('react-tappable');
 var Sentry = require('react-sentry');
 
-var { UI } = require('touchstonejs');
+var { Link, UI } = require('touchstonejs');
 
 const scrollable = Container.initScrollable();
 
@@ -20,18 +20,20 @@ var ComplexLinkItem = React.createClass({
 		var person = this.props.person;
 
 		return (
-			<UI.LinkItem linkTo="tabs:list-details" transition="show-from-right" viewProps={{ person: person, prevView: 'list-complex' }}>
-				<UI.ItemMedia avatar={person.picture} avatarInitials={person.initials} />
-				<UI.ItemInner>
-					<UI.ItemContent>
-						<UI.ItemTitle>{person.name.full}</UI.ItemTitle>
-						<UI.ItemSubTitle>{person.bio}</UI.ItemSubTitle>
-					</UI.ItemContent>
-					<Tappable onTap={this.toggleStar} stopPropagation>
-						<UI.ItemNote icon={person.isStarred ? 'ion-ios-star' : 'ion-ios-star-outline'} type={person.isStarred ? 'warning' : 'default'} className="ion-lg" />
-					</Tappable>
-				</UI.ItemInner>
-			</UI.LinkItem>
+			<Link to="tabs:list-details" transition="show-from-right" viewProps={{ person: person, prevView: 'list-complex' }}>
+				<UI.Item>
+					<UI.ItemMedia avatar={person.picture} avatarInitials={person.initials} />
+					<UI.ItemInner>
+						<UI.ItemContent>
+							<UI.ItemTitle>{person.name.full}</UI.ItemTitle>
+							<UI.ItemSubTitle>{person.bio}</UI.ItemSubTitle>
+						</UI.ItemContent>
+						<Tappable onTap={this.toggleStar} stopPropagation>
+							<UI.ItemNote icon={person.isStarred ? 'ion-ios-star' : 'ion-ios-star-outline'} type={person.isStarred ? 'warning' : 'default'} className="ion-lg" />
+						</Tappable>
+					</UI.ItemInner>
+				</UI.Item>
+			</Link>
 		);
 	}
 });

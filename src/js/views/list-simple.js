@@ -3,7 +3,7 @@ var React = require('react');
 var Tappable = require('react-tappable');
 var Sentry = require('react-sentry');
 
-var { UI } = require('touchstonejs');
+var { Link, UI } = require('touchstonejs');
 
 var Search = React.createClass({
 	displayName: 'Search',
@@ -50,11 +50,13 @@ var SimpleLinkItem = React.createClass({
 
 	render () {
 		return (
-			<UI.LinkItem linkTo="tabs:list-details" transition="show-from-right" viewProps={{ person: this.props.person, prevView: 'list-simple' }} showDisclosureArrow>
-				<UI.ItemInner>
-					<UI.ItemTitle>{this.props.person.name.full}</UI.ItemTitle>
-				</UI.ItemInner>
-			</UI.LinkItem>
+			<Link to="tabs:list-details" transition="show-from-right" viewProps={{ person: this.props.person, prevView: 'list-simple' }}>
+				<UI.Item showDisclosureArrow>
+					<UI.ItemInner>
+						<UI.ItemTitle>{this.props.person.name.full}</UI.ItemTitle>
+					</UI.ItemInner>
+				</UI.Item>
+			</Link>
 		);
 	}
 });

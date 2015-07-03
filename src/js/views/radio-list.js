@@ -27,7 +27,7 @@ module.exports = React.createClass({
 		return (
 			<UI.View>
 				<UI.Headerbar type="default" label="Favourite Icecream">
-					<UI.HeaderbarButton showView="details" viewTransition="reveal-from-right" viewProps={{ user: this.props.user, flavour: this.state.flavour }} label="Details" icon="ion-chevron-left" />
+					<UI.HeaderbarButton showView="details" transition="reveal-from-right" viewProps={{ user: this.props.user, flavour: this.state.flavour }} label="Details" icon="ion-chevron-left" />
 				</UI.Headerbar>
 				<UI.ViewContent grow scrollable>
 					<div className="panel panel--first">

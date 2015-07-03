@@ -27,7 +27,7 @@ module.exports = React.createClass({
 		return (
 			<UI.View>
 				<UI.Headerbar type={this.state.typeKey} label="Header Bar">
-					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" icon="ion-chevron-left" label="Back" />
+					<UI.HeaderbarButton showView="home" transition="reveal-from-right" icon="ion-chevron-left" label="Back" />
 				</UI.Headerbar>
 				<UI.ViewContent grow scrollable>
 					<div className="panel panel--first">

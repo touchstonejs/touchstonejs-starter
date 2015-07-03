@@ -1,3 +1,5 @@
+www
+
 # Logs
 logs
 *.log
@@ -20,7 +22,7 @@ build
 # Node.js
 node_modules
 
-# Xcode	
+# Xcode
 *.mode1v3
 *.mode2v3
 *.perspectivev3

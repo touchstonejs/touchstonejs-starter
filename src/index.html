@@ -1,36 +1,55 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>TouchstoneJS (Demo)</title>
-	<meta charset="utf-8" />
-	<meta name="format-detection" content="telephone=no" />
-	<meta name="msapplication-tap-highlight" content="no" />
-	<!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-	
-	<!-- full screen -->
-	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="mobile-web-app-capable" content="yes" />
-	
-	<!-- ios icon -->
-	<link href='img/ios-icon.png' rel='apple-touch-icon' />
-	
-	<!-- ios splash screen -->
-	<link href="img/splash-screen.png" rel="apple-touch-startup-image" />
-	
-	<!-- ios other -->
-	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-	<meta name="apple-mobile-web-app-title" content="TouchstoneJS (Demo)" />
-	
-	<!-- styles -->
-	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-	<link rel="stylesheet" type="text/css" href="css/app.css" />
-</head>
-<body>
-	<div id="app"></div>
-	<!-- <script src="http://maps.googleapis.com/maps/api/js"></script> -->
-	<script type="text/javascript" src="cordova.js"></script>
-	<script type="text/javascript" src="js/react.js"></script>
-	<script type="text/javascript" src="js/app.js"></script>
-</body>
+	<!--
+	Customize this policy to fit your own app's needs. For more guidance, see:
+		https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+		https://developer.chrome.com/extensions/contentSecurityPolicy
+
+	Some notes:
+		* gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+		* https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+		* Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+			* Enable inline JS: add 'unsafe-inline' to default-src
+	-->
+	<head>
+		<!--- Debug CSP -->
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' * 'unsafe-inline'; img-src * data:; connect-src *; style-src 'self' 'unsafe-inline';">
+
+		<!--- Production CSP
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src * data:; connect-src *; style-src 'self' 'unsafe-inline';">
+		-->
+
+		<link rel="stylesheet" type="text/css" href="css/app.css">
+		<title>Touchstonejs Demo</title>
+
+		<!-- Full screen -->
+		<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+		<!-- iOS mobile-web-app -->
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<meta name="apple-mobile-web-app-title" content="Touchstonejs Demo" />
+
+		<link href="img/ios-icon.png" rel="apple-touch-icon" />
+		<link href="img/splash-screen.png" rel="apple-touch-startup-image" />
+
+		<!-- Android mobile-web-app -->
+		<meta name="mobile-web-app-capable" content="yes" />
+
+		<!-- Windows mobile-web-app -->
+		<meta name="msapplication-tap-highlight" content="no">
+
+		<!-- Browser -->
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+		<!-- Other -->
+		<meta name="format-detection" content="telephone=no">
+	</head>
+	<body>
+		<div id="app"/>
+
+		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="js/react.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+	</body>
 </html>

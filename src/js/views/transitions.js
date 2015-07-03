@@ -1,46 +1,94 @@
-var React = require('react'),
-	SetClass = require('classnames'),
-	Navigation = require('touchstonejs').Navigation,
-	Link = require('touchstonejs').Link,
-	UI = require('touchstonejs').UI;
+var Container = require('react-container');
+var React = require('react');
+var { Link, UI } = require('touchstonejs');
+
+const scrollable = Container.initScrollable();
 
 module.exports = React.createClass({
-	mixins: [Navigation],
-
-	render: function () {
-
+	statics: {
+		navigationBar: 'main',
+		getNavigation () {
+			return {
+				title: 'Transitions'
+			}
+		}
+	},
+	render () {
 		return (
-			<UI.View>
-				<UI.Headerbar type="default" label="Transitions">
-					<UI.HeaderbarButton showView="home" viewTransition="reveal-from-right" icon="ion-chevron-left" label="Back" />
-				</UI.Headerbar>
-				<UI.ViewContent grow scrollable>
-					<div className="panel-header text-caps">Default</div>
-					<div className="panel">
-						<Link to="transitions-target" className="list-item is-tappable" component="div"><div className="item-inner">None</div></Link>
-					</div>
-					<div className="panel-header text-caps">Fade</div>
-					<div className="panel">
-						<Link to="transitions-target" viewTransition="fade" className="list-item is-tappable" component="div"><div className="item-inner">Fade</div></Link>
-						<Link to="transitions-target" viewTransition="fade-expand" className="list-item is-tappable" component="div"><div className="item-inner">Fade Expand</div></Link>
-						<Link to="transitions-target" viewTransition="fade-contract" className="list-item is-tappable" component="div"><div className="item-inner">Fade Contract</div></Link>
-					</div>
-					<div className="panel-header text-caps">Show</div>
-					<div className="panel">
-						<Link to="transitions-target" viewTransition="show-from-left" className="list-item is-tappable" component="div"><div className="item-inner">Show from Left</div></Link>
-						<Link to="transitions-target" viewTransition="show-from-right" className="list-item is-tappable" component="div"><div className="item-inner">Show from Right</div></Link>
-						<Link to="transitions-target" viewTransition="show-from-top" className="list-item is-tappable" component="div"><div className="item-inner">Show from Top</div></Link>
-						<Link to="transitions-target" viewTransition="show-from-bottom" className="list-item is-tappable" component="div"><div className="item-inner">Show from Bottom</div></Link>
-					</div>
-					<div className="panel-header text-caps">Reveal</div>
-					<div className="panel">
-						<Link to="transitions-target" viewTransition="reveal-from-left" className="list-item is-tappable" component="div"><div className="item-inner">Reveal from Left</div></Link>
-						<Link to="transitions-target" viewTransition="reveal-from-right" className="list-item is-tappable" component="div"><div className="item-inner">Reveal from Right</div></Link>
-						<Link to="transitions-target" viewTransition="reveal-from-top" className="list-item is-tappable" component="div"><div className="item-inner">Reveal from Top</div></Link>
-						<Link to="transitions-target" viewTransition="reveal-from-bottom" className="list-item is-tappable" component="div"><div className="item-inner">Reveal from Bottom</div></Link>
-					</div>
-				</UI.ViewContent>
-			</UI.View>
+			<Container scrollable={scrollable}>
+				<UI.GroupHeader>Default</UI.GroupHeader>
+				<UI.Group>
+					<Link to="tabs:transitions-target" viewProps={{ navbarTitle: 'Instant' }}>
+						<UI.Item showDisclosureArrow>
+							<UI.ItemInner>Instant</UI.ItemInner>
+						</UI.Item>
+					</Link>
+				</UI.Group>
+				<UI.GroupHeader>Fade</UI.GroupHeader>
+				<UI.Group>
+					<Link to="tabs:transitions-target" transition="fade" viewProps={{ navbarTitle: 'Fade' }}>
+						<UI.Item showDisclosureArrow>
+							<UI.ItemInner>Fade</UI.ItemInner>
+						</UI.Item>
+					</Link>
+					<Link to="tabs:transitions-target" transition="fade-expand" viewProps={{ navbarTitle: 'Fade Expand' }}>
+						<UI.Item showDisclosureArrow>
+							<UI.ItemInner><span>Fade Expand <span className="text-muted">(non-standard)</span></span></UI.ItemInner>
+						</UI.Item>
+					</Link>
+					<Link to="tabs:transitions-target" transition="fade-contract" viewProps={{ navbarTitle: 'Fade Contract' }}>
+						<UI.Item showDisclosureArrow>
+							<UI.ItemInner><span>Fade Contract <span className="text-muted">(non-standard)</span></span></UI.ItemInner>
+						</UI.Item>
+					</Link>
+				</UI.Group>
+				<UI.GroupHeader>Show</UI.GroupHeader>
+				<UI.Group>
+					<Link to="tabs:transitions-target" transition="show-from-left" viewProps={{ navbarTitle: 'Show from Left' }}>
+						<UI.Item showDisclosureArrow>
+							<UI.ItemInner><span>Show from Left <span className="text-muted">(non-standard)</span></span></UI.ItemInner>
+						</UI.Item>
+					</Link>
+					<Link to="tabs:transitions-target" transition="show-from-right" viewProps={{ navbarTitle: 'Show from Right' }}>
+						<UI.Item showDisclosureArrow>
+							<UI.ItemInner>Show from Right</UI.ItemInner>
+						</UI.Item>
+					</Link>
+					<Link to="app:transitions-target-over" transition="show-from-top" viewProps={{ navbarTitle: 'Show from Top' }}>
+						<UI.Item showDisclosureArrow>
+							<UI.ItemInner><span>Show from Top <span className="text-muted">(non-standard)</span></span></UI.ItemInner>
+						</UI.Item>
+					</Link>
+					<Link to="app:transitions-target-over" transition="show-from-bottom" viewProps={{ navbarTitle: 'Show from Bottom' }}>
+						<UI.Item showDisclosureArrow>
+							<UI.ItemInner>Show from Bottom</UI.ItemInner>
+						</UI.Item>
+					</Link>
+				</UI.Group>
+				<UI.GroupHeader>Reveal</UI.GroupHeader>
+				<UI.Group>
+					<Link to="tabs:transitions-target" transition="reveal-from-left" viewProps={{ navbarTitle: 'Reveal from Left' }}>
+						<UI.Item showDisclosureArrow>
+							<UI.ItemInner><span>Reveal from Left <span className="text-muted">(non-standard)</span></span></UI.ItemInner>
+						</UI.Item>
+					</Link>
+					<Link to="tabs:transitions-target" transition="reveal-from-right" viewProps={{ navbarTitle: 'Reveal from Right' }}>
+						<UI.Item showDisclosureArrow>
+							<UI.ItemInner>Reveal from Right</UI.ItemInner>
+						</UI.Item>
+					</Link>
+					<Link to="app:transitions-target-over" transition="reveal-from-top" viewProps={{ navbarTitle: 'Reveal from Top' }}>
+						<UI.Item showDisclosureArrow>
+							<UI.ItemInner><span>Reveal from Top <span className="text-muted">(non-standard)</span></span></UI.ItemInner>
+						</UI.Item>
+					</Link>
+					<Link to="app:transitions-target-over" transition="reveal-from-bottom" viewProps={{ navbarTitle: 'Reveal from Bottom' }}>
+						<UI.Item showDisclosureArrow>
+							<UI.ItemInner>Reveal from Bottom</UI.ItemInner>
+						</UI.Item>
+					</Link>
+				</UI.Group>
+			</Container>
 		);
 	}
 });

@@ -17,7 +17,8 @@ module.exports = React.createClass({
 	},
 	getInitialState () {
 		return {
-			flavour: 'strawberry'
+			flavour: 'chocolate',
+			switchValue: true
 		}
 	},
 	handleFlavourChange (newFlavour) {

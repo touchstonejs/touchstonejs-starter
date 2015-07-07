@@ -36,12 +36,12 @@ function PeopleStore () {
 			if (err) return callback(err)
 
 			storage.people = res.body.results.map(p => p.user)
+			
+			// post process new data
 			storage.people.forEach((person, i) => {
+				person.id = i
 				person.name.first = person.name.first[0].toUpperCase() + person.name.first.slice(1)
 				person.name.last = person.name.last[0].toUpperCase() + person.name.last.slice(1)
-
-				// we need this too
-				person.id = i
 				person.name.initials = person.name.first[0] + person.name.last[0]
 				person.name.full = person.name.first + ' ' + person.name.last
 				person.category = Math.random() > 0.5 ? 'A' : 'B'

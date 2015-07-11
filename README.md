@@ -3,6 +3,8 @@ TouchstoneJS Starter
 
 Reference TouchstoneJS App with examples of all UI components.
 
+**See the demo [live here](https://touchstonejs.github.io/touchstonejs-starter/)**.
+
 To build and preview locally, run the `gulp dev` task. It will build the app with browserify, and start a preview server at [localhost:8000](http://localhost:8000).
 
 The source for the app is in the `/src` folder; `/www` and `/platforms` are managed by cordova.

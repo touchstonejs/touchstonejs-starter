@@ -95,7 +95,7 @@ module.exports = React.createClass({
 		let { alertbar } = this.state;
 		return (
 			<Container scrollable>
-				<UI.Alertbar type={alertbar.type} visible={alertbar.visible} animated>{alertbar.text}</UI.Alertbar>
+				<UI.Alertbar type={alertbar.type || 'default'} visible={alertbar.visible} animated>{alertbar.text || ''}</UI.Alertbar>
 				<UI.Group hasTopGutter>
 					<UI.GroupHeader>Segmented Control</UI.GroupHeader>
 					<UI.SegmentedControl value={this.state.selectedMode} onChange={this.handleModeChange} hasGutter options={[

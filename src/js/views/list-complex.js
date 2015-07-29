@@ -10,13 +10,13 @@ var ComplexLinkItem = React.createClass({
 	contextTypes: { peopleStore: React.PropTypes.object.isRequired },
 
 	toggleStar () {
-		var person = this.props.person
+		let person = this.props.person
 
 		this.context.peopleStore.star(person, !person.isStarred)
 	},
 
 	render () {
-		var person = this.props.person;
+		let person = this.props.person;
 
 		return (
 			<Link to="tabs:list-details" transition="show-from-right" viewProps={{ person: person, prevView: 'list-complex' }}>
@@ -72,23 +72,21 @@ module.exports = React.createClass({
 	},
 
 	componentDidMount () {
-		var self = this
-
 		this.watch(this.context.peopleStore, 'people-updated', people => {
-			self.setState({ people })
+			this.setState({ people })
 		})
 
 		this.watch(emitter, 'navigationBarRightAction', this.toggleStarred);
 	},
 
 	toggleStarred () {
-		var filterStarred = !this.state.filterStarred;
+		let filterStarred = !this.state.filterStarred;
 		this.setState({ filterStarred });
 		this.context.app.navigationBars.main.update(getNavigation({}, this.context.app, filterStarred));
 	},
 
 	handleModeChange (newMode) {
-		var selectedMode = newMode;
+		let selectedMode = newMode;
 
 		if (this.state.selectedMode === newMode) {
 			selectedMode = null;
@@ -98,7 +96,7 @@ module.exports = React.createClass({
 	},
 
 	render () {
-		var { people, filterStarred, selectedMode } = this.state
+		let { people, filterStarred, selectedMode } = this.state
 
 		if (filterStarred) {
 			people = people.filter(person => person.isStarred)
@@ -110,29 +108,29 @@ module.exports = React.createClass({
 
 		function sortByName (a, b) { return a.name.full.localeCompare(b.name.full) }
 
-		var sortedPeople = people.sort(sortByName)
-		var results
+		let sortedPeople = people.sort(sortByName)
+		let results
 
 		if (sortedPeople.length) {
-			var aPeople = sortedPeople
+			let aPeople = sortedPeople
 				.filter(person => person.category === 'A')
 				.map((person, i) => {
 					return <ComplexLinkItem key={'persona' + i} person={person} />
 				})
 
-			var bPeople = sortedPeople
+			let bPeople = sortedPeople
 				.filter(person => person.category === 'B')
 				.map((person, i) => {
 					return <ComplexLinkItem key={'personb' + i} person={person} />
 				})
 
 			results = (
-				<UI.Group>
+				<UI.GroupBody>
 					{aPeople.length > 0 ? <UI.ListHeader sticky>Category A</UI.ListHeader> : ''}
 					{aPeople}
 					{bPeople.length > 0 ? <UI.ListHeader sticky>Category B</UI.ListHeader> : ''}
 					{bPeople}
-				</UI.Group>
+				</UI.GroupBody>
 			)
 
 		} else {

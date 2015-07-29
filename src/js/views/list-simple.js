@@ -4,7 +4,7 @@ import Sentry from 'react-sentry';
 import Tappable from 'react-tappable';
 import { Link, UI } from 'touchstonejs';
 
-const SCROLL_POSITION = Container.initScrollable();
+var scrollable = Container.initScrollable({ left: 0, top: 44 });
 
 var SimpleLinkItem = React.createClass({
 	propTypes: {
@@ -43,7 +43,7 @@ module.exports = React.createClass({
 	componentDidMount () {
 		this.watch(this.context.peopleStore, 'people-updated', people => {
 			this.setState({ people })
-		})
+		});
 	},
 
 	getInitialState () {
@@ -95,8 +95,8 @@ module.exports = React.createClass({
 		}
 
 		return (
-			<Container scrollable={SCROLL_POSITION}>
-				<UI.SearchField value={this.state.searchString} onSubmit={this.submitSearch} onChange={this.updateSearch} onCancel={this.clearSearch} onClear={this.clearSearch} placeholder="Search..." />
+			<Container ref="scrollContainer" scrollable={scrollable}>
+				<UI.SearchField type="dark" value={this.state.searchString} onSubmit={this.submitSearch} onChange={this.updateSearch} onCancel={this.clearSearch} onClear={this.clearSearch} placeholder="Search..." />
 				{results}
 			</Container>
 		);

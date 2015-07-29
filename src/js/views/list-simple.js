@@ -1,47 +1,10 @@
-var Container = require('react-container');
-var React = require('react');
-var Tappable = require('react-tappable');
-var Sentry = require('react-sentry');
+import Container from 'react-container';
+import React from 'react';
+import Sentry from 'react-sentry';
+import Tappable from 'react-tappable';
+import { Link, UI } from 'touchstonejs';
 
-var { Link, UI } = require('touchstonejs');
-
-var Search = React.createClass({
-	displayName: 'Search',
-	propTypes: {
-		searchString: React.PropTypes.string,
-		onChange: React.PropTypes.func.isRequired
-	},
-
-	getDefaultProps () {
-		return {
-			searchString: ''
-		}
-	},
-
-	handleChange (event) {
-		this.props.onChange(event.target.value);
-	},
-
-	reset () {
-		this.props.onChange('');
-	},
-
-	render () {
-		var clearIcon;
-
-		if (this.props.searchString.length > 0) {
-			clearIcon = <Tappable className="SearchField__icon SearchField__icon--clear" onTap={this.reset} />;
-		}
-
-		return (
-			<div className="SearchField">
-				<span className="SearchField__icon SearchField__icon--search" />
-				<input ref="input" value={this.props.searchString} onChange={this.handleChange} className="SearchField__input" placeholder='Search...' />
-				{clearIcon}
-			</div>
-		);
-	}
-});
+const SCROLL_POSITION = Container.initScrollable();
 
 var SimpleLinkItem = React.createClass({
 	propTypes: {
@@ -78,10 +41,8 @@ module.exports = React.createClass({
 	},
 
 	componentDidMount () {
-		var self = this
-
 		this.watch(this.context.peopleStore, 'people-updated', people => {
-			self.setState({ people })
+			this.setState({ people })
 		})
 	},
 
@@ -92,22 +53,28 @@ module.exports = React.createClass({
 		}
 	},
 
+	clearSearch () {
+		this.setState({ searchString: '' });
+	},
+
 	updateSearch (str) {
 		this.setState({ searchString: str });
 	},
+	
+	submitSearch (str) {
+		console.log(str);
+	},
 
 	render () {
-		var { searchString } = this.state
-		var searchRegex = new RegExp(searchString)
+		let { people, searchString } = this.state
+		let searchRegex = new RegExp(searchString)
 
-		function searchFilter (person) { return searchRegex.test(person.name.full) }
-		function sortByName (a, b) { return a.name.full.localeCompare(b.name.full) }
+		function searchFilter (person) { return searchRegex.test(person.name.full.toLowerCase()) };
+		function sortByName (a, b) { return a.name.full.localeCompare(b.name.full) };
+		
+		let filteredPeople = people.filter(searchFilter).sort(sortByName);
 
-		var { people } = this.state
-		var filteredPeople = people.filter(searchFilter)
-			.sort(sortByName)
-
-		var results
+		let results
 
 		if (searchString && !filteredPeople.length) {
 			results = (
@@ -118,31 +85,18 @@ module.exports = React.createClass({
 			);
 
 		} else {
-			var aPeople = filteredPeople
-				.filter(person => person.category === 'A')
-				.map((person, i) => {
-					return <SimpleLinkItem key={'persona' + i} person={person} />
-				})
-
-			var bPeople = filteredPeople
-				.filter(person => person.category === 'B')
-				.map((person, i) => {
-					return <SimpleLinkItem key={'personb' + i} person={person} />
-				})
-
 			results = (
-				<UI.Group>
-					{aPeople.length > 0 ? <UI.ListHeader sticky>Category A</UI.ListHeader> : ''}
-					{aPeople}
-					{bPeople.length > 0 ? <UI.ListHeader sticky>Category B</UI.ListHeader> : ''}
-					{bPeople}
-				</UI.Group>
-			)
+				<UI.GroupBody>
+					{filteredPeople.map((person, i) => {
+						return <SimpleLinkItem key={'person' + i} person={person} />
+					})}
+				</UI.GroupBody>
+			);
 		}
 
 		return (
-			<Container scrollable>
-				<Search searchString={this.state.searchString} onChange={this.updateSearch} />
+			<Container scrollable={SCROLL_POSITION}>
+				<UI.SearchField value={this.state.searchString} onSubmit={this.submitSearch} onChange={this.updateSearch} onCancel={this.clearSearch} onClear={this.clearSearch} placeholder="Search..." />
 				{results}
 			</Container>
 		);

@@ -1,17 +1,17 @@
-var React = require('react/addons');
-var {
+import React from 'react/addons';
+import {
 	Container,
 	createApp,
 	UI,
 	View,
 	ViewManager
-} = require('touchstonejs');
+} from 'touchstonejs';
 
 // App Config
 // ------------------------------
 
-var PeopleStore = require('./stores/people')
-var peopleStore = new PeopleStore()
+const PeopleStore = require('./stores/people')
+const peopleStore = new PeopleStore()
 
 var App = React.createClass({
 	mixins: [createApp()],
@@ -27,7 +27,7 @@ var App = React.createClass({
 	},
 
 	render () {
-		var appWrapperClassName = 'app-wrapper device--' + (window.device || {}).platform
+		let appWrapperClassName = 'app-wrapper device--' + (window.device || {}).platform
 
 		return (
 			<div className={appWrapperClassName}>
@@ -61,7 +61,7 @@ var MainViewController = React.createClass({
 // Tab Controller
 // ------------------------------
 
-var lastSelectedTab = 'lists'
+var lastSelectedTab = 'transitions'
 var TabViewController = React.createClass({
 	getInitialState () {
 		return {
@@ -78,7 +78,7 @@ var TabViewController = React.createClass({
 	},
 
 	selectTab (value) {
-		var viewProps;
+		let viewProps;
 
 		this.refs.vm.transitionTo(value, {
 			transition: 'instant',
@@ -91,8 +91,8 @@ var TabViewController = React.createClass({
 	},
 
 	render () {
-		var selectedTab = this.state.selectedTab
-		var selectedTabSpan = selectedTab
+		let selectedTab = this.state.selectedTab
+		let selectedTabSpan = selectedTab
 
 		if (selectedTab === 'lists' || selectedTab === 'list-simple' || selectedTab === 'list-complex' || selectedTab === 'list-details') {
 			selectedTabSpan = 'lists';
@@ -147,7 +147,6 @@ function startApp () {
 
 if (!window.cordova) {
 	startApp();
-
 } else {
 	document.addEventListener('deviceready', startApp, false);
 }

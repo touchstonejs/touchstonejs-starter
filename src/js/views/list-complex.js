@@ -1,11 +1,10 @@
-var Container = require('react-container');
-var React = require('react');
-var Tappable = require('react-tappable');
-var Sentry = require('react-sentry');
+import Container from 'react-container';
+import React from 'react';
+import Sentry from 'react-sentry';
+import Tappable from 'react-tappable';
+import { Link, UI } from 'touchstonejs';
 
-var { Link, UI } = require('touchstonejs');
-
-const scrollable = Container.initScrollable();
+const SCROLL_POSITION = Container.initScrollable();
 
 var ComplexLinkItem = React.createClass({
 	contextTypes: { peopleStore: React.PropTypes.object.isRequired },
@@ -146,7 +145,7 @@ module.exports = React.createClass({
 		}
 
 		return (
-			<Container scrollable={scrollable}>
+			<Container scrollable={SCROLL_POSITION}>
 				<UI.SegmentedControl value={this.state.selectedMode} onChange={this.handleModeChange} hasGutter equalWidthSegments options={[
 					{ label: 'A', value: 'A' },
 					{ label: 'B', value: 'B' }

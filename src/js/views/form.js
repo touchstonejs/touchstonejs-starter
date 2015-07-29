@@ -1,10 +1,10 @@
-var Container = require('react-container');
-var dialogs = require('cordova-dialogs');
-var React = require('react');
-var Tappable = require('react-tappable');
-var { UI } = require('touchstonejs');
+import Container from 'react-container';
+import dialogs from 'cordova-dialogs';
+import React from 'react';
+import Tappable from 'react-tappable';
+import { UI } from 'touchstonejs';
 
-const scrollable = Container.initScrollable();
+const SCROLL_POSITION = Container.initScrollable();
 
 // html5 input types for testing
 // omitted: button, checkbox, radio, image, hidden, reset, submit
@@ -34,7 +34,7 @@ module.exports = React.createClass({
 	},
 	
 	handleSwitch (key, event) {
-		var newState = {};
+		let newState = {};
 		newState[key] = !this.state[key];
 
 		this.setState(newState);
@@ -53,7 +53,7 @@ module.exports = React.createClass({
 	render () {
 
 		return (
-			<Container scrollable={scrollable}>
+			<Container scrollable={SCROLL_POSITION}>
 				{/*<UI.Group>
 					<UI.GroupHeader>Input Type Experiment</UI.GroupHeader>
 					<UI.GroupBody>

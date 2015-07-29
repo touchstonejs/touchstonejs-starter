@@ -1,8 +1,8 @@
-var Container = require('react-container');
-var React = require('react');
-var Tappable = require('react-tappable');
-var Timers = require('react-timers');
-var { Link, UI } = require('touchstonejs');
+import Container from 'react-container';
+import React from 'react';
+import Tappable from 'react-tappable';
+import Timers from 'react-timers';
+import { Link, UI } from 'touchstonejs';
 
 module.exports = React.createClass({
 	mixins: [Timers()],
@@ -14,6 +14,7 @@ module.exports = React.createClass({
 			}
 		}
 	},
+	
 	getInitialState () {
 		return {
 			alertbar: {
@@ -26,6 +27,7 @@ module.exports = React.createClass({
 			}
 		}
 	},
+	
 	showLoadingPopup () {
 		this.setState({
 			popup: {
@@ -37,10 +39,8 @@ module.exports = React.createClass({
 			}
 		});
 
-		var self = this;
-
-		this.setTimeout(function () {
-			self.setState({
+		this.setTimeout(() => {
+			this.setState({
 				popup: {
 					visible: true,
 					loading: false,
@@ -51,17 +51,16 @@ module.exports = React.createClass({
 			});
 		}, 2000);
 
-		this.setTimeout(function () {
-			self.setState({
+		this.setTimeout(() => {
+			this.setState({
 				popup: {
 					visible: false
 				}
 			});
 		}, 3000);
 	},
+	
 	showAlertbar (type, text) {
-		var self = this;
-
 		this.setState({
 			alertbar: {
 				visible: true,
@@ -70,16 +69,17 @@ module.exports = React.createClass({
 			}
 		});
 
-		this.setTimeout(function () {
-			self.setState({
+		this.setTimeout(() => {
+			this.setState({
 				alertbar: {
 					visible: false
 				}
 			});
 		}, 2000);
 	},
+	
 	handleModeChange (newMode) {
-		var selectedItem = newMode;
+		let selectedItem = newMode;
 
 		if (this.state.selectedMode === newMode) {
 			selectedItem = null;
@@ -90,42 +90,51 @@ module.exports = React.createClass({
 		});
 
 	},
+	
 	render () {
-		var { alertbar } = this.state;
+		let { alertbar } = this.state;
 		return (
 			<Container scrollable>
-				<UI.Alertbar type={alertbar.type} visible={alertbar.visible}>{alertbar.text}</UI.Alertbar>
-				<UI.GroupHeader>Segmented Control</UI.GroupHeader>
-				<UI.SegmentedControl value={this.state.selectedMode} onChange={this.handleModeChange} hasGutter options={[
-					{ label: 'One', value: 'one' },
-					{ label: 'Two', value: 'two' },
-					{ label: 'Three', value: 'three' },
-					{ label: 'Four', value: 'four' }
-				]} />
+				<UI.Alertbar type={alertbar.type} visible={alertbar.visible} animated>{alertbar.text}</UI.Alertbar>
+				<UI.Group hasTopGutter>
+					<UI.GroupHeader>Segmented Control</UI.GroupHeader>
+					<UI.SegmentedControl value={this.state.selectedMode} onChange={this.handleModeChange} hasGutter options={[
+						{ label: 'One', value: 'one' },
+						{ label: 'Two', value: 'two' },
+						{ label: 'Three', value: 'three' },
+						{ label: 'Four', value: 'four' }
+					]} />
+				</UI.Group>
 
-				<UI.GroupHeader>Alert Bar</UI.GroupHeader>
-				<UI.ButtonGroup>
-					<UI.Button type="primary" onTap={this.showAlertbar.bind(this, 'danger', 'No Internet Connection')} disabled={this.state.alertbar.visible}>
-						Danger
-					</UI.Button>
-					<UI.Button type="primary" onTap={this.showAlertbar.bind(this, 'warning', 'Connecting...')} disabled={this.state.alertbar.visible}>
-						Warning
-					</UI.Button>
-					<UI.Button type="primary" onTap={this.showAlertbar.bind(this, 'success', 'Connected')} disabled={this.state.alertbar.visible}>
-						Success
-					</UI.Button>
-				</UI.ButtonGroup>
-				<UI.GroupHeader>Popup</UI.GroupHeader>
-				<UI.Button type="primary" onTap={this.showLoadingPopup} disabled={this.state.popup.visible}>
-					Show Popup
-				</UI.Button>
-				<UI.GroupHeader>Application State</UI.GroupHeader>
 				<UI.Group>
-					<Link linkTo="tabs:non-existent" transition="show-from-right">
-						<UI.Item showDisclosureArrow>
-							<UI.ItemInner>Invalid View</UI.ItemInner>
-						</UI.Item>
-					</Link>
+					<UI.GroupHeader>Alert Bar</UI.GroupHeader>
+					<UI.ButtonGroup>
+						<UI.Button type="primary" onTap={this.showAlertbar.bind(this, 'danger', 'No Internet Connection')} disabled={this.state.alertbar.visible}>
+							Danger
+						</UI.Button>
+						<UI.Button type="primary" onTap={this.showAlertbar.bind(this, 'warning', 'Connecting...')} disabled={this.state.alertbar.visible}>
+							Warning
+						</UI.Button>
+						<UI.Button type="primary" onTap={this.showAlertbar.bind(this, 'success', 'Connected')} disabled={this.state.alertbar.visible}>
+							Success
+						</UI.Button>
+					</UI.ButtonGroup>
+				</UI.Group>
+				<UI.Group>
+					<UI.GroupHeader>Popup</UI.GroupHeader>
+					<UI.Button type="primary" onTap={this.showLoadingPopup} disabled={this.state.popup.visible}>
+						Show Popup
+					</UI.Button>
+				</UI.Group>
+				<UI.Group>
+					<UI.GroupHeader>Application State</UI.GroupHeader>
+					<UI.GroupBody>
+						<Link to="tabs:non-existent" transition="show-from-right">
+							<UI.Item showDisclosureArrow>
+								<UI.ItemInner>Invalid View</UI.ItemInner>
+							</UI.Item>
+						</Link>
+					</UI.GroupBody>
 				</UI.Group>
 
 				<UI.Popup visible={this.state.popup.visible}>

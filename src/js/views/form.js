@@ -4,7 +4,7 @@ import React from 'react';
 import Tappable from 'react-tappable';
 import { UI } from 'touchstonejs';
 
-const SCROLL_POSITION = Container.initScrollable();
+const scrollable = Container.initScrollable();
 
 // html5 input types for testing
 // omitted: button, checkbox, radio, image, hidden, reset, submit
@@ -53,7 +53,7 @@ module.exports = React.createClass({
 	render () {
 
 		return (
-			<Container scrollable={SCROLL_POSITION}>
+			<Container scrollable={scrollable}>
 				{/*<UI.Group>
 					<UI.GroupHeader>Input Type Experiment</UI.GroupHeader>
 					<UI.GroupBody>

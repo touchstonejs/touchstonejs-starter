@@ -2,7 +2,7 @@ import Container from 'react-container';
 import React from 'react';
 import { Link, UI } from 'touchstonejs';
 
-const SCROLL_POSITION = Container.initScrollable();
+const scrollable = Container.initScrollable();
 
 module.exports = React.createClass({
 	statics: {
@@ -16,7 +16,7 @@ module.exports = React.createClass({
 	
 	render () {
 		return (
-			<Container scrollable={SCROLL_POSITION}>
+			<Container scrollable={scrollable}>
 				<UI.Group>
 					<UI.GroupHeader>Default</UI.GroupHeader>
 					<UI.GroupBody>

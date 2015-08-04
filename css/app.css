@@ -3115,7 +3115,7 @@ MIT License: https://github.com/driftyco/ionicons
   text-align: center;
   width: 100%;
 }
-.Passcode-input:after {
+.Passcode-input::after {
   width: 16px;
   height: 16px;
   position: absolute;
@@ -3144,7 +3144,7 @@ MIT License: https://github.com/driftyco/ionicons
 .Passcode-input.has-value {
   box-shadow: none;
 }
-.Passcode-input.has-value:after {
+.Passcode-input.has-value::after {
   display: block;
 }
 .Alertbar {
@@ -3160,7 +3160,6 @@ MIT License: https://github.com/driftyco/ionicons
   left: 0;
   line-height: 1.1;
   padding: 8px;
-  position: absolute;
   text-align: center;
   top: 0;
   width: 100%;
@@ -3180,6 +3179,10 @@ MIT License: https://github.com/driftyco/ionicons
   opacity: 0;
   z-index: 1;
 }
+.Alertbar__inner {
+  position: relative;
+  z-index: 2;
+}
 .Alertbar--danger {
   background-color: #ff3f34;
 }
@@ -3198,9 +3201,9 @@ MIT License: https://github.com/driftyco/ionicons
 .Alertbar--warning {
   background-color: #ff9d34;
 }
-.Alertbar__inner {
-  position: relative;
-  z-index: 2;
+.Alertbar--animated {
+  margin: 0;
+  position: absolute;
 }
 .Alertbar-enter {
   -webkit-animation: alertbarEnter 240ms cubic-bezier(0.36, 0.66, 0.04, 1);
@@ -3272,8 +3275,8 @@ MIT License: https://github.com/driftyco/ionicons
   width: 100%;
   -webkit-appearance: none;
 }
-.Button:after,
-.Button:before {
+.Button::after,
+.Button::before {
   width: 100%;
   height: 1px;
   background-color: rgba(0, 0, 0, 0.17);
@@ -3281,27 +3284,27 @@ MIT License: https://github.com/driftyco/ionicons
   left: 0;
   position: absolute;
 }
-.Button:before {
+.Button::before {
   top: -1px;
 }
-.Button:after {
+.Button::after {
   bottom: -1px;
 }
 @media (-webkit-min-device-pixel-ratio: 2) {
-  .Button:after,
-  .Button:before {
+  .Button::after,
+  .Button::before {
     -webkit-transform: scaleY(0.5);
     -ms-transform: scaleY(0.5);
     -o-transform: scaleY(0.5);
     transform: scaleY(0.5);
   }
-  .Button:before {
+  .Button::before {
     -webkit-transform-origin: 0 bottom;
     -moz-transform-origin: 0 bottom;
     -ms-transform-origin: 0 bottom;
     transform-origin: 0 bottom;
   }
-  .Button:after {
+  .Button::after {
     -webkit-transform-origin: 0 top;
     -moz-transform-origin: 0 top;
     -ms-transform-origin: 0 top;
@@ -3350,8 +3353,8 @@ MIT License: https://github.com/driftyco/ionicons
   position: relative;
   margin-bottom: 34px;
 }
-.ButtonGroup:after,
-.ButtonGroup:before {
+.ButtonGroup::after,
+.ButtonGroup::before {
   width: 100%;
   height: 1px;
   background-color: rgba(0, 0, 0, 0.17);
@@ -3359,27 +3362,27 @@ MIT License: https://github.com/driftyco/ionicons
   left: 0;
   position: absolute;
 }
-.ButtonGroup:before {
+.ButtonGroup::before {
   top: -1px;
 }
-.ButtonGroup:after {
+.ButtonGroup::after {
   bottom: -1px;
 }
 @media (-webkit-min-device-pixel-ratio: 2) {
-  .ButtonGroup:after,
-  .ButtonGroup:before {
+  .ButtonGroup::after,
+  .ButtonGroup::before {
     -webkit-transform: scaleY(0.5);
     -ms-transform: scaleY(0.5);
     -o-transform: scaleY(0.5);
     transform: scaleY(0.5);
   }
-  .ButtonGroup:before {
+  .ButtonGroup::before {
     -webkit-transform-origin: 0 bottom;
     -moz-transform-origin: 0 bottom;
     -ms-transform-origin: 0 bottom;
     transform-origin: 0 bottom;
   }
-  .ButtonGroup:after {
+  .ButtonGroup::after {
     -webkit-transform-origin: 0 top;
     -moz-transform-origin: 0 top;
     -ms-transform-origin: 0 top;
@@ -3398,14 +3401,36 @@ MIT License: https://github.com/driftyco/ionicons
   display: none;
 }
 .Group {
+  margin-bottom: 34px;
+}
+.Group--has-gutter-top,
+.Group:first-child {
+  margin-top: 34px;
+}
+.Group__header,
+.Group__footer {
+  color: #707075;
+  font-size: 13px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.Group__header {
+  line-height: 1;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+.Group__footer {
+  line-height: 1.1;
+  margin-top: 10px;
+}
+.Group__body {
   position: relative;
   background-color: white;
   color: black;
   display: block;
-  margin-bottom: 34px;
 }
-.Group:after,
-.Group:before {
+.Group__body::after,
+.Group__body::before {
   width: 100%;
   height: 1px;
   background-color: rgba(0, 0, 0, 0.17);
@@ -3413,72 +3438,47 @@ MIT License: https://github.com/driftyco/ionicons
   left: 0;
   position: absolute;
 }
-.Group:before {
+.Group__body::before {
   top: -1px;
 }
-.Group:after {
+.Group__body::after {
   bottom: -1px;
 }
 @media (-webkit-min-device-pixel-ratio: 2) {
-  .Group:after,
-  .Group:before {
+  .Group__body::after,
+  .Group__body::before {
     -webkit-transform: scaleY(0.5);
     -ms-transform: scaleY(0.5);
     -o-transform: scaleY(0.5);
     transform: scaleY(0.5);
   }
-  .Group:before {
+  .Group__body::before {
     -webkit-transform-origin: 0 bottom;
     -moz-transform-origin: 0 bottom;
     -ms-transform-origin: 0 bottom;
     transform-origin: 0 bottom;
   }
-  .Group:after {
+  .Group__body::after {
     -webkit-transform-origin: 0 top;
     -moz-transform-origin: 0 top;
     -ms-transform-origin: 0 top;
     transform-origin: 0 top;
   }
 }
-.Group:first-child {
-  margin-top: 34px;
-}
-.Group.Tappable-active {
+.Group__body.Tappable-active {
   -webkit-transition: background-color 10ms linear 10ms;
   -o-transition: background-color 10ms linear 10ms;
   transition: background-color 10ms linear 10ms;
   background-color: #d9d9d9;
 }
-.Group.Tappable-inactive {
+.Group__body.Tappable-inactive {
   -webkit-transition: background-color 200ms;
   -o-transition: background-color 200ms;
   transition: background-color 200ms;
 }
-.GroupHeader {
-  color: #4d4d4d;
-  font-size: 80%;
-  line-height: 1;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-  margin-top: 34px;
-  padding-left: 15px;
-  padding-right: 15px;
-}
-.GroupFooter {
-  color: #4d4d4d;
-  font-size: 80%;
-  line-height: 1.1;
-  margin-bottom: 34px;
-  margin-top: -17px;
-  padding-left: 15px;
-  padding-right: 15px;
-}
-.GroupBody {
-  line-height: 1.3;
+.Group__inner {
+  line-height: 1.2;
   padding: 12px 15px;
-}
-.GroupBody + .GroupBody {
-  box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1);
 }
 .Item {
   display: -webkit-flex;
@@ -3548,20 +3548,20 @@ MIT License: https://github.com/driftyco/ionicons
   justify-content: space-between;
   position: relative;
   min-height: 44px;
-  padding: 12px 15px 12px 0;
+  padding-right: 15px;
   width: 100%;
 }
-.Item__inner:after {
+.Item__inner::after {
   width: 100%;
   height: 1px;
-  background-color: #c5c5c6;
+  background-color: #cacacc;
   bottom: -1px;
   content: " ";
   left: 0;
   position: absolute;
 }
 @media (-webkit-min-device-pixel-ratio: 2) {
-  .Item__inner:after {
+  .Item__inner::after {
     -webkit-transform: scaleY(0.5);
     -ms-transform: scaleY(0.5);
     -o-transform: scaleY(0.5);
@@ -3571,79 +3571,24 @@ MIT License: https://github.com/driftyco/ionicons
     -ms-transform-origin: 0 0;
     transform-origin: 0 0;
   }
-}
-.align-children-top > .Item__inner {
-  -webkit-align-items: flex-start;
-  align-items: flex-start;
-}
-.align-children-bottom > .Item__inner {
-  -webkit-align-items: flex-end;
-  align-items: flex-end;
-}
-.Item:last-child .Item__inner {
-  border-bottom: none;
-}
-.Item.has-border-bottom .Item__inner {
-  border-bottom: 1px solid #c5c5c6;
-}
-.Item.has-border-top .Item__inner {
-  border-top: 1px solid #c5c5c6;
 }
 .Item__media + .Item__inner {
   margin-left: 15px;
 }
-.Item.has-border-bottom .Item__inner {
-  position: relative;
+.Item--align-top > .Item__inner {
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
 }
-.Item.has-border-bottom .Item__inner:after {
-  width: 100%;
-  height: 1px;
-  background-color: #c5c5c6;
-  bottom: -1px;
-  content: " ";
-  left: 0;
-  position: absolute;
-}
-@media (-webkit-min-device-pixel-ratio: 2) {
-  .Item.has-border-bottom .Item__inner:after {
-    -webkit-transform: scaleY(0.5);
-    -ms-transform: scaleY(0.5);
-    -o-transform: scaleY(0.5);
-    transform: scaleY(0.5);
-    -webkit-transform-origin: 0 0;
-    -moz-transform-origin: 0 0;
-    -ms-transform-origin: 0 0;
-    transform-origin: 0 0;
-  }
-}
-.Item.has-border-top .Item__inner {
-  position: relative;
-}
-.Item.has-border-top .Item__inner:after {
-  width: 100%;
-  height: 1px;
-  background-color: #c5c5c6;
-  top: -1px;
-  content: " ";
-  left: 0;
-  position: absolute;
-}
-@media (-webkit-min-device-pixel-ratio: 2) {
-  .Item.has-border-top .Item__inner:after {
-    -webkit-transform: scaleY(0.5);
-    -ms-transform: scaleY(0.5);
-    -o-transform: scaleY(0.5);
-    transform: scaleY(0.5);
-    -webkit-transform-origin: 0 0;
-    -moz-transform-origin: 0 0;
-    -ms-transform-origin: 0 0;
-    transform-origin: 0 0;
-  }
+.Item--align-bottom > .Item__inner {
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
 }
 .Item__content {
   -webkit-flex: 1 0 0;
   -ms-flex: 1 0 0;
   flex: 1 0 0;
+  padding-bottom: 6px;
+  padding-top: 6px;
 }
 .Item__title {
   display: block;
@@ -3659,7 +3604,7 @@ MIT License: https://github.com/driftyco/ionicons
   text-overflow: ellipsis;
   white-space: nowrap;
   color: #666666;
-  font-size: 85%;
+  font-size: 13px;
   font-weight: 300;
   margin-bottom: -1px;
   padding-bottom: 1px;
@@ -3832,36 +3777,36 @@ MIT License: https://github.com/driftyco/ionicons
   text-transform: uppercase;
   z-index: 2;
 }
-.list-header:after,
-.list-header:before {
+.list-header::after,
+.list-header::before {
   width: 100%;
   height: 1px;
-  background-color: #c5c5c6;
+  background-color: #cacacc;
   content: " ";
   left: 0;
   position: absolute;
 }
-.list-header:before {
+.list-header::before {
   top: -1px;
 }
-.list-header:after {
+.list-header::after {
   bottom: -1px;
 }
 @media (-webkit-min-device-pixel-ratio: 2) {
-  .list-header:after,
-  .list-header:before {
+  .list-header::after,
+  .list-header::before {
     -webkit-transform: scaleY(0.5);
     -ms-transform: scaleY(0.5);
     -o-transform: scaleY(0.5);
     transform: scaleY(0.5);
   }
-  .list-header:before {
+  .list-header::before {
     -webkit-transform-origin: 0 bottom;
     -moz-transform-origin: 0 bottom;
     -ms-transform-origin: 0 bottom;
     transform-origin: 0 bottom;
   }
-  .list-header:after {
+  .list-header::after {
     -webkit-transform-origin: 0 top;
     -moz-transform-origin: 0 top;
     -ms-transform-origin: 0 top;
@@ -3872,15 +3817,6 @@ MIT License: https://github.com/driftyco/ionicons
   position: -webkit-sticky;
   top: 0;
 }
-.no-results {
-  color: rgba(0, 0, 0, 0.6);
-}
-.no-results__icon {
-  font-size: 64px;
-}
-.no-results__text {
-  margin-top: 1em;
-}
 .NavigationBar {
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
@@ -3889,9 +3825,9 @@ MIT License: https://github.com/driftyco/ionicons
   line-height: 44px;
   height: 44px;
   position: relative;
-  z-index: 21;
+  z-index: 30;
 }
-.NavigationBar:after {
+.NavigationBar::after {
   width: 100%;
   height: 1px;
   background-color: rgba(0, 0, 0, 0.28);
@@ -3901,7 +3837,7 @@ MIT License: https://github.com/driftyco/ionicons
   position: absolute;
 }
 @media (-webkit-min-device-pixel-ratio: 2) {
-  .NavigationBar:after {
+  .NavigationBar::after {
     -webkit-transform: scaleY(0.5);
     -ms-transform: scaleY(0.5);
     -o-transform: scaleY(0.5);
@@ -3912,6 +3848,7 @@ MIT License: https://github.com/driftyco/ionicons
     transform-origin: 0 0;
   }
 }
+.device--iOS .NavigationBar,
 .device--iPhone .NavigationBar {
   padding-top: 20px;
 }
@@ -3987,7 +3924,7 @@ MIT License: https://github.com/driftyco/ionicons
   font-size: 24px;
   line-height: inherit;
 }
-.NavigationBarLeftArrow:before {
+.NavigationBarLeftArrow::before {
   content: "\f124";
 }
 .NavigationBarLeftIcon {
@@ -4007,6 +3944,8 @@ MIT License: https://github.com/driftyco/ionicons
   line-height: 44px;
   height: 44px;
   position: absolute;
+}
+.has-arrow .NavigationBarLeftLabel {
   left: 28px;
 }
 .NavigationBarTitle {
@@ -4218,7 +4157,7 @@ MIT License: https://github.com/driftyco/ionicons
   line-height: 46px;
   margin-bottom: 5px;
 }
-.PopupIcon:before {
+.PopupIcon::before {
   font-size: 46px;
 }
 .PopupIcon.muted {
@@ -4314,25 +4253,29 @@ MIT License: https://github.com/driftyco/ionicons
   }
 }
 .SearchField {
-  margin: 8px;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+.SearchField__field {
+  -webkit-flex: 1 1 0;
+  -ms-flex: 1 1 0;
+  flex: 1 1 0;
+  padding: 8px;
   position: relative;
 }
 .SearchField__input {
-  -webkit-transition: background-color 100ms linear;
-  -o-transition: background-color 100ms linear;
-  transition: background-color 100ms linear;
   background: rgba(0, 0, 0, 0.06);
   border-radius: 4px;
   border: 0;
-  color: inherit;
   font-size: 15px;
   height: 28px;
   line-height: normal;
   margin: 0;
   outline: none;
-  padding: 8px 24px;
+  padding: 8px 32px;
   width: 100%;
-  -webkit-appearance: none;
+  -webkit-appearance: none !important;
 }
 .SearchField__input::-moz-placeholder {
   color: #999999;
@@ -4344,8 +4287,31 @@ MIT License: https://github.com/driftyco/ionicons
 .SearchField__input::-webkit-input-placeholder {
   color: #999999;
 }
-.SearchField__input:active {
-  background: rgba(0, 0, 0, 0.12);
+.SearchField__placeholder {
+  -webkit-transition: all 500ms cubic-bezier(0.36, 0.66, 0.04, 1);
+  -o-transition: all 500ms cubic-bezier(0.36, 0.66, 0.04, 1);
+  transition: all 500ms cubic-bezier(0.36, 0.66, 0.04, 1);
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
+  font-size: 15px;
+  line-height: 28px;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  text-align: center;
+  white-space: nowrap;
+  width: 100%;
+}
+.is-focused .SearchField__placeholder {
+  width: 100px;
+}
+.has-value .SearchField__placeholder {
+  -webkit-transition: none;
+  -o-transition: none;
+  transition: none;
+  width: 32px;
 }
 .SearchField__icon {
   display: inline-block;
@@ -4359,31 +4325,86 @@ MIT License: https://github.com/driftyco/ionicons
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #999999;
   font-size: 16px;
   line-height: 28px;
   padding: 0 8px;
-  position: absolute;
-  top: 0;
+  width: 32px;
 }
 .SearchField__icon::before {
   color: inherit;
 }
 .SearchField__icon--search {
   left: 0;
+  margin-left: 8px;
   pointer-events: none;
 }
 .SearchField__icon--search::before {
-  content: "\f4a4";
+  content: "\f4a5";
 }
 .SearchField__icon--clear {
-  right: 0;
+  position: absolute;
+  padding: 8px;
+  top: 0;
+  right: 8px;
 }
 .SearchField__icon--clear::before {
   content: "\f128";
 }
-.SearchField__icon--clear.Tappable-active {
-  color: #999999;
+.SearchField__cancel {
+  -webkit-transition: all 500ms cubic-bezier(0.36, 0.66, 0.04, 1);
+  -o-transition: all 500ms cubic-bezier(0.36, 0.66, 0.04, 1);
+  transition: all 500ms cubic-bezier(0.36, 0.66, 0.04, 1);
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
+  line-height: 28px;
+  max-width: 0;
+  padding: 8px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.SearchField__cancel.is-visible {
+  margin-right: 8px;
+  max-width: 68px;
+}
+.SearchField--default {
+  background-color: transparent;
+}
+.SearchField--default .SearchField__input {
+  background-color: rgba(0, 0, 0, 0.06);
+  color: black;
+}
+.SearchField--default .SearchField__placeholder {
+  color: #8e8e93;
+}
+.SearchField--default .SearchField__icon {
+  color: #8e8e93;
+}
+.SearchField--default .SearchField__icon.Tappable-active {
+  color: #007aff;
+}
+.SearchField--default .SearchField__cancel {
+  color: #007aff;
+}
+.SearchField--dark {
+  background-color: #c9c9ce;
+}
+.SearchField--dark .SearchField__input {
+  background-color: white;
+  color: black;
+}
+.SearchField--dark .SearchField__placeholder {
+  color: #8e8e93;
+}
+.SearchField--dark .SearchField__icon {
+  color: #8e8e93;
+}
+.SearchField--dark .SearchField__icon.Tappable-active {
+  color: #007aff;
+}
+.SearchField--dark .SearchField__cancel {
+  color: #007aff;
 }
 .SegmentedControl {
   display: -webkit-flex;
@@ -4392,7 +4413,12 @@ MIT License: https://github.com/driftyco/ionicons
   font-size: 13px;
 }
 .SegmentedControl--has-gutter {
-  margin: 8px;
+  padding: 8px;
+}
+.SegmentedControl--inline {
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
 }
 .SegmentedControl--equal-widths > .SegmentedControl__item {
   -webkit-flex: 1 1 0;
@@ -4403,13 +4429,21 @@ MIT License: https://github.com/driftyco/ionicons
   -webkit-flex-grow: 1;
   -ms-flex-grow: 1;
   flex-grow: 1;
+  max-width: 100%;
+  /* 1 */
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  word-wrap: normal !important;
+  /* 2 */
   background-color: white;
   border: none;
   box-shadow: 0 0 0 1px #007aff;
   color: #007aff;
   cursor: pointer;
-  display: table-cell;
   line-height: 29px;
+  padding-left: 1em;
+  padding-right: 1em;
   text-align: center;
 }
 .SegmentedControl__item:first-child {
@@ -4491,7 +4525,7 @@ MIT License: https://github.com/driftyco/ionicons
   top: 7px;
   width: 27px;
 }
-.Switch__handle:before {
+.Switch__handle::before {
   content: " ";
   left: -21.5px;
   padding: 18.5px 34px;
@@ -4524,7 +4558,7 @@ MIT License: https://github.com/driftyco/ionicons
   position: relative;
   z-index: 20;
 }
-.Tabs-Navigator:after {
+.Tabs-Navigator::after {
   width: 100%;
   height: 1px;
   background-color: rgba(0, 0, 0, 0.28);
@@ -4534,7 +4568,7 @@ MIT License: https://github.com/driftyco/ionicons
   position: absolute;
 }
 @media (-webkit-min-device-pixel-ratio: 2) {
-  .Tabs-Navigator:after {
+  .Tabs-Navigator::after {
     -webkit-transform: scaleY(0.5);
     -ms-transform: scaleY(0.5);
     -o-transform: scaleY(0.5);
@@ -4924,6 +4958,15 @@ input::-webkit-input-placeholder {
 .FieldLabel {
   color: #666666;
   width: 35%;
+  position: relative;
+}
+.FieldLabel:after {
+  bottom: -12px;
+  content: "";
+  left: -15px;
+  position: absolute;
+  right: 0;
+  top: -12px;
 }
 .FieldControl {
   position: relative;
@@ -4964,7 +5007,7 @@ input::-webkit-input-placeholder {
 label.item-content {
   position: relative;
 }
-label.item-content:after {
+label.item-content::after {
   position: absolute;
   top: 0;
   right: 0;
@@ -4980,7 +5023,7 @@ label.item-content:after {
   position: relative;
   z-index: 2;
 }
-.field-note:after {
+.field-note::after {
   position: absolute;
   top: 0;
   right: 0;
@@ -5062,8 +5105,8 @@ label.item-content:after {
 .select-field-indicator-arrow {
   top: 50%;
 }
-.select-field-indicator-arrow:before,
-.select-field-indicator-arrow:after {
+.select-field-indicator-arrow::before,
+.select-field-indicator-arrow::after {
   width: 0;
   height: 0;
   border: 4px solid transparent;
@@ -5071,12 +5114,12 @@ label.item-content:after {
   position: absolute;
   right: 2px;
 }
-.select-field-indicator-arrow:before {
+.select-field-indicator-arrow::before {
   border-bottom-color: currentColor;
   border-top-width: 0;
   margin-top: -6px;
 }
-.select-field-indicator-arrow:after {
+.select-field-indicator-arrow::after {
   border-top-color: currentColor;
   border-bottom-width: 0;
   margin-bottom: -6px;
@@ -5584,17 +5627,17 @@ hr.dotted {
 .springy-scrolling {
   position: relative;
 }
-.springy-scrolling:before,
-.springy-scrolling:after {
+.springy-scrolling::before,
+.springy-scrolling::after {
   width: 1px;
   height: 1px;
   content: "";
   position: absolute;
 }
-.springy-scrolling:before {
+.springy-scrolling::before {
   bottom: -1px;
 }
-.springy-scrolling:after {
+.springy-scrolling::after {
   top: -1px;
 }
 .ErrorView {
@@ -5628,7 +5671,16 @@ hr.dotted {
   padding-left: 2em;
   padding-right: 2em;
 }
-.view-transition-instant-enter {
+.no-results {
+  color: rgba(0, 0, 0, 0.6);
+}
+.no-results__icon {
+  font-size: 64px;
+}
+.no-results__text {
+  margin-top: 1em;
+}
+.view-transition-instant-enter-active {
   -webkit-animation: artificial 10ms;
   -o-animation: artificial 10ms;
   animation: artificial 10ms;
@@ -5638,7 +5690,7 @@ hr.dotted {
   -o-animation: fadeOut 60ms;
   animation: fadeOut 60ms;
 }
-.view-transition-fade-enter {
+.view-transition-fade-enter-active {
   -webkit-animation: artificial 10ms;
   -o-animation: artificial 10ms;
   animation: artificial 10ms;
@@ -5648,7 +5700,7 @@ hr.dotted {
   -o-animation: fadeOut 380ms;
   animation: fadeOut 380ms;
 }
-.view-transition-fade-expand-enter {
+.view-transition-fade-expand-enter-active {
   -webkit-animation: artificial 10ms;
   -o-animation: artificial 10ms;
   animation: artificial 10ms;
@@ -5658,7 +5710,7 @@ hr.dotted {
   -o-animation: fadeExpand 320ms;
   animation: fadeExpand 320ms;
 }
-.view-transition-fade-contract-enter {
+.view-transition-fade-contract-enter-active {
   -webkit-animation: artificial 10ms;
   -o-animation: artificial 10ms;
   animation: artificial 10ms;
@@ -5668,10 +5720,10 @@ hr.dotted {
   -o-animation: fadeContract 320ms;
   animation: fadeContract 320ms;
 }
-.view-transition-show-from-top-enter,
-.view-transition-show-from-right-enter,
-.view-transition-show-from-bottom-enter,
-.view-transition-show-from-left-enter {
+.view-transition-show-from-top-enter-active,
+.view-transition-show-from-right-enter-active,
+.view-transition-show-from-bottom-enter-active,
+.view-transition-show-from-left-enter-active {
   pointer-events: none;
   z-index: 20;
 }
@@ -5682,18 +5734,18 @@ hr.dotted {
   pointer-events: none;
   z-index: 10;
 }
-.view-transition-show-from-top-enter,
+.view-transition-show-from-top-enter-active,
 .view-transition-show-from-top-leave,
-.view-transition-show-from-bottom-enter,
+.view-transition-show-from-bottom-enter-active,
 .view-transition-show-from-bottom-leave {
   -webkit-animation-duration: 500ms;
   animation-duration: 500ms;
   -webkit-animation-timing-function: cubic-bezier(0.36, 0.66, 0.04, 1);
   animation-timing-function: cubic-bezier(0.36, 0.66, 0.04, 1);
 }
-.view-transition-show-from-left-enter,
+.view-transition-show-from-left-enter-active,
 .view-transition-show-from-left-leave,
-.view-transition-show-from-right-enter,
+.view-transition-show-from-right-enter-active,
 .view-transition-show-from-right-leave {
   -webkit-animation-duration: 500ms;
   animation-duration: 500ms;
@@ -5705,19 +5757,19 @@ hr.dotted {
   -webkit-animation-name: artificial;
   animation-name: artificial;
 }
-.view-transition-show-from-top-enter {
+.view-transition-show-from-top-enter-active {
   -webkit-animation-name: viewShowFromTopEnter;
   animation-name: viewShowFromTopEnter;
 }
-.view-transition-show-from-right-enter {
+.view-transition-show-from-right-enter-active {
   -webkit-animation-name: viewShowFromRightEnter;
   animation-name: viewShowFromRightEnter;
 }
-.view-transition-show-from-bottom-enter {
+.view-transition-show-from-bottom-enter-active {
   -webkit-animation-name: viewShowFromBottomEnter;
   animation-name: viewShowFromBottomEnter;
 }
-.view-transition-show-from-left-enter {
+.view-transition-show-from-left-enter-active {
   -webkit-animation-name: viewShowFromLeftEnter;
   animation-name: viewShowFromLeftEnter;
 }
@@ -5729,10 +5781,10 @@ hr.dotted {
   -webkit-animation-name: viewShowFromRightLeave;
   animation-name: viewShowFromRightLeave;
 }
-.view-transition-reveal-from-top-enter,
-.view-transition-reveal-from-right-enter,
-.view-transition-reveal-from-bottom-enter,
-.view-transition-reveal-from-left-enter {
+.view-transition-reveal-from-top-enter-active,
+.view-transition-reveal-from-right-enter-active,
+.view-transition-reveal-from-bottom-enter-active,
+.view-transition-reveal-from-left-enter-active {
   pointer-events: none;
   z-index: 10;
 }
@@ -5743,26 +5795,26 @@ hr.dotted {
   pointer-events: none;
   z-index: 20;
 }
-.view-transition-reveal-from-top-enter,
+.view-transition-reveal-from-top-enter-active,
 .view-transition-reveal-from-top-leave,
-.view-transition-reveal-from-bottom-enter,
+.view-transition-reveal-from-bottom-enter-active,
 .view-transition-reveal-from-bottom-leave {
   -webkit-animation-duration: 500ms;
   animation-duration: 500ms;
   -webkit-animation-timing-function: cubic-bezier(0.36, 0.66, 0.04, 1);
   animation-timing-function: cubic-bezier(0.36, 0.66, 0.04, 1);
 }
-.view-transition-reveal-from-left-enter,
+.view-transition-reveal-from-left-enter-active,
 .view-transition-reveal-from-left-leave,
-.view-transition-reveal-from-right-enter,
+.view-transition-reveal-from-right-enter-active,
 .view-transition-reveal-from-right-leave {
   -webkit-animation-duration: 500ms;
   animation-duration: 500ms;
   -webkit-animation-timing-function: cubic-bezier(0.36, 0.66, 0.04, 1);
   animation-timing-function: cubic-bezier(0.36, 0.66, 0.04, 1);
 }
-.view-transition-reveal-from-top-enter,
-.view-transition-reveal-from-bottom-enter {
+.view-transition-reveal-from-top-enter-active,
+.view-transition-reveal-from-bottom-enter-active {
   -webkit-animation-name: artificial;
   animation-name: artificial;
 }
@@ -5782,11 +5834,11 @@ hr.dotted {
   -webkit-animation-name: viewRevealFromLeftLeave;
   animation-name: viewRevealFromLeftLeave;
 }
-.view-transition-reveal-from-left-enter {
+.view-transition-reveal-from-left-enter-active {
   -webkit-animation-name: viewRevealFromLeftEnter;
   animation-name: viewRevealFromLeftEnter;
 }
-.view-transition-reveal-from-right-enter {
+.view-transition-reveal-from-right-enter-active {
   -webkit-animation-name: viewRevealFromRightEnter;
   animation-name: viewRevealFromRightEnter;
 }
@@ -5863,12 +5915,12 @@ hr.dotted {
  * Contain floats
  * see ../mixins/clearfix for more information
  */
-.u-clearfix:before,
-.u-clearfix:after {
+.u-clearfix::before,
+.u-clearfix::after {
   content: " ";
   display: table;
 }
-.u-clearfix:after {
+.u-clearfix::after {
   clear: both;
 }
 /**

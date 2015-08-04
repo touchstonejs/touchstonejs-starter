@@ -9,6 +9,12 @@ const scrollable = Container.initScrollable();
 // html5 input types for testing
 // omitted: button, checkbox, radio, image, hidden, reset, submit
 const HTML5_INPUT_TYPES = ['color', 'date', 'datetime', 'datetime-local', 'email', 'file', 'month', 'number', 'password', 'range', 'search', 'tel', 'text', 'time', 'url', 'week'];
+const FLAVOURS = [
+	{ label: 'Vanilla',    value: 'vanilla' },
+	{ label: 'Chocolate',  value: 'chocolate' },
+	{ label: 'Caramel',    value: 'caramel' },
+	{ label: 'Strawberry', value: 'strawberry' }
+];
 
 module.exports = React.createClass({
 	statics: {
@@ -22,15 +28,26 @@ module.exports = React.createClass({
 	
 	getInitialState () {
 		return {
-			flavour: 'chocolate',
+			flavourLabelSelect: 'chocolate',
+			flavourRadioList: 'chocolate',
 			switchValue: true
 		}
 	},
 	
-	handleFlavourChange (newFlavour) {
-		this.setState({
-			flavour: newFlavour
-		});
+	handleRadioListChange (key, newValue) {
+		console.log('handleFlavourChange:', key, newValue);
+		let newState = {};
+		newState[key] = newValue;
+
+		this.setState(newState);
+	},
+	
+	handleLabelSelectChange (key, event) {
+		console.log('handleFlavourChange:', key, event.target.value);
+		let newState = {};
+		newState[key] = event.target.value;
+
+		this.setState(newState);
 	},
 	
 	handleSwitch (key, event) {
@@ -44,6 +61,7 @@ module.exports = React.createClass({
 		dialogs.alert(message, function() {}, null)
 	},
 	
+	// used for testing
 	renderInputTypes () {
 		return HTML5_INPUT_TYPES.map(type => {
 			return <UI.LabelInput key={type} type={type} label={type} placeholder={type} />;
@@ -80,12 +98,7 @@ module.exports = React.createClass({
 				<UI.Group>
 					<UI.GroupHeader>Radio</UI.GroupHeader>
 					<UI.GroupBody>
-						<UI.RadioList value={this.state.flavour} onChange={this.handleFlavourChange} options={[
-							{ label: 'Vanilla',    value: 'vanilla' },
-							{ label: 'Chocolate',  value: 'chocolate' },
-							{ label: 'Caramel',    value: 'caramel' },
-							{ label: 'Strawberry', value: 'strawberry' }
-						]} />
+						<UI.RadioList value={this.state.flavourRadioList} onChange={this.handleRadioListChange.bind(this, 'flavourRadioList')} options={FLAVOURS} />
 					</UI.GroupBody>
 				</UI.Group>
 				<UI.Group>
@@ -102,15 +115,7 @@ module.exports = React.createClass({
 						<UI.LabelInput type="email" label="Email"   placeholder="your.name@example.com" />
 						<UI.LabelInput type="url"   label="URL"     placeholder="http://www.yourwebsite.com" />
 						<UI.LabelInput noedit       label="No Edit" defaultValue="Un-editable, scrollable, selectable content" />
-						<UI.LabelSelect label="Flavour" value={this.state.flavour} onChange={this.handleFlavourChange} options={[
-							{ label: 'Vanilla',    value: 'vanilla' },
-							{ label: 'Chocolate',  value: 'chocolate' },
-							{ label: 'Caramel',    value: 'caramel' },
-							{ label: 'Strawberry', value: 'strawberry' },
-							{ label: 'Banana',     value: 'banana' },
-							{ label: 'Lemon',      value: 'lemon' },
-							{ label: 'Pastaccio',  value: 'pastaccio' }
-						]} />
+						<UI.LabelSelect label="Flavour" value={this.state.flavourLabelSelect} onChange={this.handleLabelSelectChange.bind(this, 'flavourLabelSelect')} options={FLAVOURS} />
 					</UI.GroupBody>
 				</UI.Group>
 				<UI.Button type="primary" onTap={this.alert.bind(this, 'You clicked the Primary Button')}>

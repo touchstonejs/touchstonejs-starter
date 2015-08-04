@@ -1,7 +1,7 @@
-var Container = require('react-container');
-var React = require('react');
-var Timers = require('react-timers');
-var { Mixins, UI } = require('touchstonejs');
+import Container from 'react-container';
+import React from 'react';
+import Timers from 'react-timers';
+import { Mixins, UI } from 'touchstonejs';
 
 module.exports = React.createClass({
 	mixins: [Mixins.Transitions, Timers()],

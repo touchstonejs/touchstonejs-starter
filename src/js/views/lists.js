@@ -1,6 +1,6 @@
-var Container = require('react-container');
-var React = require('react');
-var { Link, UI } = require('touchstonejs');
+import Container from 'react-container';
+import React from 'react';
+import { Link, UI } from 'touchstonejs';
 
 module.exports = React.createClass({
 	statics: {

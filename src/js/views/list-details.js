@@ -1,5 +1,5 @@
-var Container = require('react-container');
-var React = require('react');
+import Container from 'react-container';
+import React from 'react';
 
 module.exports = React.createClass({
 	statics: {

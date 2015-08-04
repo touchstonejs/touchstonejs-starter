@@ -2,7 +2,7 @@ import Container from 'react-container';
 import React from 'react';
 import { Link, UI } from 'touchstonejs';
 
-const scrollable = Container.initScrollable();
+var scrollable = Container.initScrollable();
 
 module.exports = React.createClass({
 	statics: {

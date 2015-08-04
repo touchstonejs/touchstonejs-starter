@@ -4,7 +4,7 @@ import Sentry from 'react-sentry';
 import Tappable from 'react-tappable';
 import { Link, UI } from 'touchstonejs';
 
-const scrollable = Container.initScrollable();
+var scrollable = Container.initScrollable();
 
 var ComplexLinkItem = React.createClass({
 	contextTypes: { peopleStore: React.PropTypes.object.isRequired },

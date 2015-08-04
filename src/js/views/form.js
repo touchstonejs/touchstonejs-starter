@@ -46,7 +46,7 @@ module.exports = React.createClass({
 	
 	renderInputTypes () {
 		return HTML5_INPUT_TYPES.map(type => {
-			return <UI.LabelInput type={type} label={type} placeholder={type} />;
+			return <UI.LabelInput key={type} type={type} label={type} placeholder={type} />;
 		});
 	},
 	

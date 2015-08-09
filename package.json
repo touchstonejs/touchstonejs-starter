@@ -19,7 +19,7 @@
     "react-container": "^0.2.2",
     "react-sentry": "^0.4.1",
     "react-tappable": "^0.5.2",
-    "react-timers": "^3.1.0",
+    "react-timers": "^4.0.0",
     "touchstonejs": "^0.5.0"
   },
   "devDependencies": {

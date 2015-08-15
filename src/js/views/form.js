@@ -73,7 +73,6 @@ module.exports = React.createClass({
 	},
 
 	handleDatePickerChange (d) {
-		console.log('onchange: ', d);
 		this.setState({datePicker: false, date: d});
 	},
 

@@ -5,7 +5,7 @@ import Timers from 'react-timers';
 import { Link, UI } from 'touchstonejs';
 
 module.exports = React.createClass({
-	mixins: [Timers()],
+	mixins: [Timers],
 	statics: {
 		navigationBar: 'main',
 		getNavigation () {

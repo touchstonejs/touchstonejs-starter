@@ -4,7 +4,7 @@ import Timers from 'react-timers';
 import { Mixins, UI } from 'touchstonejs';
 
 module.exports = React.createClass({
-	mixins: [Mixins.Transitions, Timers()],
+	mixins: [Mixins.Transitions, Timers],
 	componentDidMount () {
 		var self = this;
 		this.setTimeout(function () {

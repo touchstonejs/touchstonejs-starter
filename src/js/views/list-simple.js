@@ -25,7 +25,7 @@ var SimpleLinkItem = React.createClass({
 });
 
 module.exports = React.createClass({
-	mixins: [Sentry()],
+	mixins: [Sentry],
 	contextTypes: { peopleStore: React.PropTypes.object.isRequired },
 
 	statics: {

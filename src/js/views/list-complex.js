@@ -57,7 +57,7 @@ module.exports = React.createClass({
 		app: React.PropTypes.object,
 		peopleStore: React.PropTypes.object.isRequired
 	},
-	mixins: [Sentry()],
+	mixins: [Sentry],
 
 	statics: {
 		navigationBar: 'main',

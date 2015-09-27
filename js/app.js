@@ -64,6 +64,12 @@
         return _toString.call(obj) === '[object Array]';
     };
 
+    // Ported from underscore.js isObject
+    var _isObject = function(obj) {
+        var type = typeof obj;
+        return type === 'function' || type === 'object' && !!obj;
+    };
+
     function _isArrayLike(arr) {
         return _isArray(arr) || (
             // has a positive integer length property
@@ -167,7 +173,6 @@
             switch (startIndex) {
                 case 0: return func.call(this, rest);
                 case 1: return func.call(this, arguments[0], rest);
-                case 2: return func.call(this, arguments[0], arguments[1], rest);
             }
             // Currently unused but handle cases outside of the switch statement:
             // var args = Array(startIndex + 1);
@@ -464,6 +469,7 @@
     }
     async.detect = _createTester(async.eachOf, identity, _findGetResult);
     async.detectSeries = _createTester(async.eachOfSeries, identity, _findGetResult);
+    async.detectLimit = _createTester(async.eachOfLimit, identity, _findGetResult);
 
     async.sortBy = function (arr, iterator, callback) {
         async.map(arr, function (x, callback) {
@@ -595,7 +601,7 @@
                 acc.times = parseInt(t.times, 10) || DEFAULT_TIMES;
                 acc.interval = parseInt(t.interval, 10) || DEFAULT_INTERVAL;
             } else {
-                throw new Error('Unsupported argument type for \'times\': ' + typeof(t));
+                throw new Error('Unsupported argument type for \'times\': ' + typeof t);
             }
         }
 
@@ -1015,7 +1021,7 @@
     function _console_fn(name) {
         return _restParam(function (fn, args) {
             fn.apply(null, args.concat([_restParam(function (err, args) {
-                if (typeof console !== 'undefined') {
+                if (typeof console === 'object') {
                     if (err) {
                         if (console.error) {
                             console.error(err);
@@ -1188,10 +1194,10 @@
                 return callback(e);
             }
             // if result is Promise object
-            if (typeof result !== 'undefined' && typeof result.then === "function") {
+            if (_isObject(result) && typeof result.then === "function") {
                 result.then(function(value) {
                     callback(null, value);
-                }).catch(function(err) {
+                })["catch"](function(err) {
                     callback(err.message ? err : new Error(err));
                 });
             } else {
@@ -1201,11 +1207,11 @@
     };
 
     // Node.js
-    if (typeof module !== 'undefined' && module.exports) {
+    if (typeof module === 'object' && module.exports) {
         module.exports = async;
     }
     // AMD / RequireJS
-    else if (typeof define !== 'undefined' && define.amd) {
+    else if (typeof define === 'function' && define.amd) {
         define([], function () {
             return async;
         });
@@ -1218,7 +1224,7 @@
 }());
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":25}],2:[function(require,module,exports){
+},{"_process":34}],2:[function(require,module,exports){
 /*!
   Copyright (c) 2015 Jed Watson.
   Licensed under the MIT License (MIT), see
@@ -1385,93 +1391,172 @@ module.exports = function (options, callback) {
   
   return request(options, callback);
 };
-},{"xhr":12}],6:[function(require,module,exports){
+},{"xhr":16}],6:[function(require,module,exports){
 'use strict';
 
-module.exports = require('./lib/core.js')
-require('./lib/done.js')
-require('./lib/es6-extensions.js')
-require('./lib/node-extensions.js')
-},{"./lib/core.js":7,"./lib/done.js":8,"./lib/es6-extensions.js":9,"./lib/node-extensions.js":10}],7:[function(require,module,exports){
+module.exports = require('./lib')
+
+},{"./lib":11}],7:[function(require,module,exports){
 'use strict';
 
-var asap = require('asap')
+var asap = require('asap/raw');
 
-module.exports = Promise;
-function Promise(fn) {
-  if (typeof this !== 'object') throw new TypeError('Promises must be constructed via new')
-  if (typeof fn !== 'function') throw new TypeError('not a function')
-  var state = null
-  var value = null
-  var deferreds = []
-  var self = this
+function noop() {}
 
-  this.then = function(onFulfilled, onRejected) {
-    return new self.constructor(function(resolve, reject) {
-      handle(new Handler(onFulfilled, onRejected, resolve, reject))
-    })
+// States:
+//
+// 0 - pending
+// 1 - fulfilled with _value
+// 2 - rejected with _value
+// 3 - adopted the state of another promise, _value
+//
+// once the state is no longer pending (0) it is immutable
+
+// All `_` prefixed properties will be reduced to `_{random number}`
+// at build time to obfuscate them and discourage their use.
+// We don't use symbols or Object.defineProperty to fully hide them
+// because the performance isn't good enough.
+
+
+// to avoid using try/catch inside critical functions, we
+// extract them to here.
+var LAST_ERROR = null;
+var IS_ERROR = {};
+function getThen(obj) {
+  try {
+    return obj.then;
+  } catch (ex) {
+    LAST_ERROR = ex;
+    return IS_ERROR;
   }
-
-  function handle(deferred) {
-    if (state === null) {
-      deferreds.push(deferred)
-      return
-    }
-    asap(function() {
-      var cb = state ? deferred.onFulfilled : deferred.onRejected
-      if (cb === null) {
-        (state ? deferred.resolve : deferred.reject)(value)
-        return
-      }
-      var ret
-      try {
-        ret = cb(value)
-      }
-      catch (e) {
-        deferred.reject(e)
-        return
-      }
-      deferred.resolve(ret)
-    })
-  }
-
-  function resolve(newValue) {
-    try { //Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
-      if (newValue === self) throw new TypeError('A promise cannot be resolved with itself.')
-      if (newValue && (typeof newValue === 'object' || typeof newValue === 'function')) {
-        var then = newValue.then
-        if (typeof then === 'function') {
-          doResolve(then.bind(newValue), resolve, reject)
-          return
-        }
-      }
-      state = true
-      value = newValue
-      finale()
-    } catch (e) { reject(e) }
-  }
-
-  function reject(newValue) {
-    state = false
-    value = newValue
-    finale()
-  }
-
-  function finale() {
-    for (var i = 0, len = deferreds.length; i < len; i++)
-      handle(deferreds[i])
-    deferreds = null
-  }
-
-  doResolve(fn, resolve, reject)
 }
 
+function tryCallOne(fn, a) {
+  try {
+    return fn(a);
+  } catch (ex) {
+    LAST_ERROR = ex;
+    return IS_ERROR;
+  }
+}
+function tryCallTwo(fn, a, b) {
+  try {
+    fn(a, b);
+  } catch (ex) {
+    LAST_ERROR = ex;
+    return IS_ERROR;
+  }
+}
 
-function Handler(onFulfilled, onRejected, resolve, reject){
-  this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null
-  this.onRejected = typeof onRejected === 'function' ? onRejected : null
-  this.resolve = resolve
-  this.reject = reject
+module.exports = Promise;
+
+function Promise(fn) {
+  if (typeof this !== 'object') {
+    throw new TypeError('Promises must be constructed via new');
+  }
+  if (typeof fn !== 'function') {
+    throw new TypeError('not a function');
+  }
+  this._37 = 0;
+  this._12 = null;
+  this._59 = [];
+  if (fn === noop) return;
+  doResolve(fn, this);
+}
+Promise._99 = noop;
+
+Promise.prototype.then = function(onFulfilled, onRejected) {
+  if (this.constructor !== Promise) {
+    return safeThen(this, onFulfilled, onRejected);
+  }
+  var res = new Promise(noop);
+  handle(this, new Handler(onFulfilled, onRejected, res));
+  return res;
+};
+
+function safeThen(self, onFulfilled, onRejected) {
+  return new self.constructor(function (resolve, reject) {
+    var res = new Promise(noop);
+    res.then(resolve, reject);
+    handle(self, new Handler(onFulfilled, onRejected, res));
+  });
+};
+function handle(self, deferred) {
+  while (self._37 === 3) {
+    self = self._12;
+  }
+  if (self._37 === 0) {
+    self._59.push(deferred);
+    return;
+  }
+  asap(function() {
+    var cb = self._37 === 1 ? deferred.onFulfilled : deferred.onRejected;
+    if (cb === null) {
+      if (self._37 === 1) {
+        resolve(deferred.promise, self._12);
+      } else {
+        reject(deferred.promise, self._12);
+      }
+      return;
+    }
+    var ret = tryCallOne(cb, self._12);
+    if (ret === IS_ERROR) {
+      reject(deferred.promise, LAST_ERROR);
+    } else {
+      resolve(deferred.promise, ret);
+    }
+  });
+}
+function resolve(self, newValue) {
+  // Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
+  if (newValue === self) {
+    return reject(
+      self,
+      new TypeError('A promise cannot be resolved with itself.')
+    );
+  }
+  if (
+    newValue &&
+    (typeof newValue === 'object' || typeof newValue === 'function')
+  ) {
+    var then = getThen(newValue);
+    if (then === IS_ERROR) {
+      return reject(self, LAST_ERROR);
+    }
+    if (
+      then === self.then &&
+      newValue instanceof Promise
+    ) {
+      self._37 = 3;
+      self._12 = newValue;
+      finale(self);
+      return;
+    } else if (typeof then === 'function') {
+      doResolve(then.bind(newValue), self);
+      return;
+    }
+  }
+  self._37 = 1;
+  self._12 = newValue;
+  finale(self);
+}
+
+function reject(self, newValue) {
+  self._37 = 2;
+  self._12 = newValue;
+  finale(self);
+}
+function finale(self) {
+  for (var i = 0; i < self._59.length; i++) {
+    handle(self, self._59[i]);
+  }
+  self._59 = null;
+}
+
+function Handler(onFulfilled, onRejected, promise){
+  this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null;
+  this.onRejected = typeof onRejected === 'function' ? onRejected : null;
+  this.promise = promise;
 }
 
 /**
@@ -1480,195 +1565,227 @@ function Handler(onFulfilled, onRejected, resolve, reject){
  *
  * Makes no guarantees about asynchrony.
  */
-function doResolve(fn, onFulfilled, onRejected) {
+function doResolve(fn, promise) {
   var done = false;
-  try {
-    fn(function (value) {
-      if (done) return
-      done = true
-      onFulfilled(value)
-    }, function (reason) {
-      if (done) return
-      done = true
-      onRejected(reason)
-    })
-  } catch (ex) {
-    if (done) return
-    done = true
-    onRejected(ex)
+  var res = tryCallTwo(fn, function (value) {
+    if (done) return;
+    done = true;
+    resolve(promise, value);
+  }, function (reason) {
+    if (done) return;
+    done = true;
+    reject(promise, reason);
+  })
+  if (!done && res === IS_ERROR) {
+    done = true;
+    reject(promise, LAST_ERROR);
   }
 }
 
-},{"asap":11}],8:[function(require,module,exports){
+},{"asap/raw":15}],8:[function(require,module,exports){
 'use strict';
 
-var Promise = require('./core.js')
-var asap = require('asap')
+var Promise = require('./core.js');
 
-module.exports = Promise
+module.exports = Promise;
 Promise.prototype.done = function (onFulfilled, onRejected) {
-  var self = arguments.length ? this.then.apply(this, arguments) : this
+  var self = arguments.length ? this.then.apply(this, arguments) : this;
   self.then(null, function (err) {
-    asap(function () {
-      throw err
-    })
-  })
-}
-},{"./core.js":7,"asap":11}],9:[function(require,module,exports){
+    setTimeout(function () {
+      throw err;
+    }, 0);
+  });
+};
+
+},{"./core.js":7}],9:[function(require,module,exports){
 'use strict';
 
 //This file contains the ES6 extensions to the core Promises/A+ API
 
-var Promise = require('./core.js')
-var asap = require('asap')
+var Promise = require('./core.js');
 
-module.exports = Promise
+module.exports = Promise;
 
 /* Static Functions */
 
-function ValuePromise(value) {
-  this.then = function (onFulfilled) {
-    if (typeof onFulfilled !== 'function') return this
-    return new Promise(function (resolve, reject) {
-      asap(function () {
-        try {
-          resolve(onFulfilled(value))
-        } catch (ex) {
-          reject(ex);
-        }
-      })
-    })
-  }
+var TRUE = valuePromise(true);
+var FALSE = valuePromise(false);
+var NULL = valuePromise(null);
+var UNDEFINED = valuePromise(undefined);
+var ZERO = valuePromise(0);
+var EMPTYSTRING = valuePromise('');
+
+function valuePromise(value) {
+  var p = new Promise(Promise._99);
+  p._37 = 1;
+  p._12 = value;
+  return p;
 }
-ValuePromise.prototype = Promise.prototype
-
-var TRUE = new ValuePromise(true)
-var FALSE = new ValuePromise(false)
-var NULL = new ValuePromise(null)
-var UNDEFINED = new ValuePromise(undefined)
-var ZERO = new ValuePromise(0)
-var EMPTYSTRING = new ValuePromise('')
-
 Promise.resolve = function (value) {
-  if (value instanceof Promise) return value
+  if (value instanceof Promise) return value;
 
-  if (value === null) return NULL
-  if (value === undefined) return UNDEFINED
-  if (value === true) return TRUE
-  if (value === false) return FALSE
-  if (value === 0) return ZERO
-  if (value === '') return EMPTYSTRING
+  if (value === null) return NULL;
+  if (value === undefined) return UNDEFINED;
+  if (value === true) return TRUE;
+  if (value === false) return FALSE;
+  if (value === 0) return ZERO;
+  if (value === '') return EMPTYSTRING;
 
   if (typeof value === 'object' || typeof value === 'function') {
     try {
-      var then = value.then
+      var then = value.then;
       if (typeof then === 'function') {
-        return new Promise(then.bind(value))
+        return new Promise(then.bind(value));
       }
     } catch (ex) {
       return new Promise(function (resolve, reject) {
-        reject(ex)
-      })
+        reject(ex);
+      });
     }
   }
-
-  return new ValuePromise(value)
-}
+  return valuePromise(value);
+};
 
 Promise.all = function (arr) {
-  var args = Array.prototype.slice.call(arr)
+  var args = Array.prototype.slice.call(arr);
 
   return new Promise(function (resolve, reject) {
-    if (args.length === 0) return resolve([])
-    var remaining = args.length
+    if (args.length === 0) return resolve([]);
+    var remaining = args.length;
     function res(i, val) {
-      try {
-        if (val && (typeof val === 'object' || typeof val === 'function')) {
-          var then = val.then
+      if (val && (typeof val === 'object' || typeof val === 'function')) {
+        if (val instanceof Promise && val.then === Promise.prototype.then) {
+          while (val._37 === 3) {
+            val = val._12;
+          }
+          if (val._37 === 1) return res(i, val._12);
+          if (val._37 === 2) reject(val._12);
+          val.then(function (val) {
+            res(i, val);
+          }, reject);
+          return;
+        } else {
+          var then = val.then;
           if (typeof then === 'function') {
-            then.call(val, function (val) { res(i, val) }, reject)
-            return
+            var p = new Promise(then.bind(val));
+            p.then(function (val) {
+              res(i, val);
+            }, reject);
+            return;
           }
         }
-        args[i] = val
-        if (--remaining === 0) {
-          resolve(args);
-        }
-      } catch (ex) {
-        reject(ex)
+      }
+      args[i] = val;
+      if (--remaining === 0) {
+        resolve(args);
       }
     }
     for (var i = 0; i < args.length; i++) {
-      res(i, args[i])
+      res(i, args[i]);
     }
-  })
-}
+  });
+};
 
 Promise.reject = function (value) {
-  return new Promise(function (resolve, reject) { 
+  return new Promise(function (resolve, reject) {
     reject(value);
   });
-}
+};
 
 Promise.race = function (values) {
-  return new Promise(function (resolve, reject) { 
+  return new Promise(function (resolve, reject) {
     values.forEach(function(value){
       Promise.resolve(value).then(resolve, reject);
-    })
+    });
   });
-}
+};
 
 /* Prototype Methods */
 
 Promise.prototype['catch'] = function (onRejected) {
   return this.then(null, onRejected);
-}
+};
 
-},{"./core.js":7,"asap":11}],10:[function(require,module,exports){
+},{"./core.js":7}],10:[function(require,module,exports){
 'use strict';
 
-//This file contains then/promise specific extensions that are only useful for node.js interop
+var Promise = require('./core.js');
 
-var Promise = require('./core.js')
-var asap = require('asap')
+module.exports = Promise;
+Promise.prototype['finally'] = function (f) {
+  return this.then(function (value) {
+    return Promise.resolve(f()).then(function () {
+      return value;
+    });
+  }, function (err) {
+    return Promise.resolve(f()).then(function () {
+      throw err;
+    });
+  });
+};
 
-module.exports = Promise
+},{"./core.js":7}],11:[function(require,module,exports){
+'use strict';
+
+module.exports = require('./core.js');
+require('./done.js');
+require('./finally.js');
+require('./es6-extensions.js');
+require('./node-extensions.js');
+
+},{"./core.js":7,"./done.js":8,"./es6-extensions.js":9,"./finally.js":10,"./node-extensions.js":12}],12:[function(require,module,exports){
+'use strict';
+
+// This file contains then/promise specific extensions that are only useful
+// for node.js interop
+
+var Promise = require('./core.js');
+var asap = require('asap');
+
+module.exports = Promise;
 
 /* Static Functions */
 
 Promise.denodeify = function (fn, argumentCount) {
-  argumentCount = argumentCount || Infinity
+  argumentCount = argumentCount || Infinity;
   return function () {
-    var self = this
-    var args = Array.prototype.slice.call(arguments)
+    var self = this;
+    var args = Array.prototype.slice.call(arguments, 0,
+        argumentCount > 0 ? argumentCount : 0);
     return new Promise(function (resolve, reject) {
-      while (args.length && args.length > argumentCount) {
-        args.pop()
-      }
       args.push(function (err, res) {
-        if (err) reject(err)
-        else resolve(res)
+        if (err) reject(err);
+        else resolve(res);
       })
-      var res = fn.apply(self, args)
-      if (res && (typeof res === 'object' || typeof res === 'function') && typeof res.then === 'function') {
-        resolve(res)
+      var res = fn.apply(self, args);
+      if (res &&
+        (
+          typeof res === 'object' ||
+          typeof res === 'function'
+        ) &&
+        typeof res.then === 'function'
+      ) {
+        resolve(res);
       }
     })
   }
 }
 Promise.nodeify = function (fn) {
   return function () {
-    var args = Array.prototype.slice.call(arguments)
-    var callback = typeof args[args.length - 1] === 'function' ? args.pop() : null
-    var ctx = this
+    var args = Array.prototype.slice.call(arguments);
+    var callback =
+      typeof args[args.length - 1] === 'function' ? args.pop() : null;
+    var ctx = this;
     try {
-      return fn.apply(this, arguments).nodeify(callback, ctx)
+      return fn.apply(this, arguments).nodeify(callback, ctx);
     } catch (ex) {
       if (callback === null || typeof callback == 'undefined') {
-        return new Promise(function (resolve, reject) { reject(ex) })
+        return new Promise(function (resolve, reject) {
+          reject(ex);
+        });
       } else {
         asap(function () {
-          callback.call(ctx, ex)
+          callback.call(ctx, ex);
         })
       }
     }
@@ -1676,245 +1793,450 @@ Promise.nodeify = function (fn) {
 }
 
 Promise.prototype.nodeify = function (callback, ctx) {
-  if (typeof callback != 'function') return this
+  if (typeof callback != 'function') return this;
 
   this.then(function (value) {
     asap(function () {
-      callback.call(ctx, null, value)
-    })
+      callback.call(ctx, null, value);
+    });
   }, function (err) {
     asap(function () {
-      callback.call(ctx, err)
-    })
-  })
+      callback.call(ctx, err);
+    });
+  });
 }
 
-},{"./core.js":7,"asap":11}],11:[function(require,module,exports){
-(function (process){
+},{"./core.js":7,"asap":13}],13:[function(require,module,exports){
+"use strict";
 
-// Use the fastest possible means to execute a task in a future turn
-// of the event loop.
+// rawAsap provides everything we need except exception management.
+var rawAsap = require("./raw");
+// RawTasks are recycled to reduce GC churn.
+var freeTasks = [];
+// We queue errors to ensure they are thrown in right order (FIFO).
+// Array-as-queue is good enough here, since we are just dealing with exceptions.
+var pendingErrors = [];
+var requestErrorThrow = rawAsap.makeRequestCallFromTimer(throwFirstError);
 
-// linked list of tasks (single, with head node)
-var head = {task: void 0, next: null};
-var tail = head;
-var flushing = false;
-var requestFlush = void 0;
-var isNodeJS = false;
-
-function flush() {
-    /* jshint loopfunc: true */
-
-    while (head.next) {
-        head = head.next;
-        var task = head.task;
-        head.task = void 0;
-        var domain = head.domain;
-
-        if (domain) {
-            head.domain = void 0;
-            domain.enter();
-        }
-
-        try {
-            task();
-
-        } catch (e) {
-            if (isNodeJS) {
-                // In node, uncaught exceptions are considered fatal errors.
-                // Re-throw them synchronously to interrupt flushing!
-
-                // Ensure continuation if the uncaught exception is suppressed
-                // listening "uncaughtException" events (as domains does).
-                // Continue in next event to avoid tick recursion.
-                if (domain) {
-                    domain.exit();
-                }
-                setTimeout(flush, 0);
-                if (domain) {
-                    domain.enter();
-                }
-
-                throw e;
-
-            } else {
-                // In browsers, uncaught exceptions are not fatal.
-                // Re-throw them asynchronously to avoid slow-downs.
-                setTimeout(function() {
-                   throw e;
-                }, 0);
-            }
-        }
-
-        if (domain) {
-            domain.exit();
-        }
+function throwFirstError() {
+    if (pendingErrors.length) {
+        throw pendingErrors.shift();
     }
-
-    flushing = false;
 }
 
-if (typeof process !== "undefined" && process.nextTick) {
-    // Node.js before 0.9. Note that some fake-Node environments, like the
-    // Mocha test runner, introduce a `process` global without a `nextTick`.
-    isNodeJS = true;
-
-    requestFlush = function () {
-        process.nextTick(flush);
-    };
-
-} else if (typeof setImmediate === "function") {
-    // In IE10, Node.js 0.9+, or https://github.com/NobleJS/setImmediate
-    if (typeof window !== "undefined") {
-        requestFlush = setImmediate.bind(window, flush);
-    } else {
-        requestFlush = function () {
-            setImmediate(flush);
-        };
-    }
-
-} else if (typeof MessageChannel !== "undefined") {
-    // modern browsers
-    // http://www.nonblocking.io/2011/06/windownexttick.html
-    var channel = new MessageChannel();
-    channel.port1.onmessage = flush;
-    requestFlush = function () {
-        channel.port2.postMessage(0);
-    };
-
-} else {
-    // old browsers
-    requestFlush = function () {
-        setTimeout(flush, 0);
-    };
-}
-
+/**
+ * Calls a task as soon as possible after returning, in its own event, with priority
+ * over other events like animation, reflow, and repaint. An error thrown from an
+ * event will not interrupt, nor even substantially slow down the processing of
+ * other events, but will be rather postponed to a lower priority event.
+ * @param {{call}} task A callable object, typically a function that takes no
+ * arguments.
+ */
+module.exports = asap;
 function asap(task) {
-    tail = tail.next = {
-        task: task,
-        domain: isNodeJS && process.domain,
-        next: null
-    };
+    var rawTask;
+    if (freeTasks.length) {
+        rawTask = freeTasks.pop();
+    } else {
+        rawTask = new RawTask();
+    }
+    rawTask.task = task;
+    rawAsap(rawTask);
+}
 
-    if (!flushing) {
-        flushing = true;
-        requestFlush();
+// We wrap tasks with recyclable task objects.  A task object implements
+// `call`, just like a function.
+function RawTask() {
+    this.task = null;
+}
+
+// The sole purpose of wrapping the task is to catch the exception and recycle
+// the task object after its single use.
+RawTask.prototype.call = function () {
+    try {
+        this.task.call();
+    } catch (error) {
+        if (asap.onerror) {
+            // This hook exists purely for testing purposes.
+            // Its name will be periodically randomized to break any code that
+            // depends on its existence.
+            asap.onerror(error);
+        } else {
+            // In a web browser, exceptions are not fatal. However, to avoid
+            // slowing down the queue of pending tasks, we rethrow the error in a
+            // lower priority turn.
+            pendingErrors.push(error);
+            requestErrorThrow();
+        }
+    } finally {
+        this.task = null;
+        freeTasks[freeTasks.length] = this;
     }
 };
 
-module.exports = asap;
+},{"./raw":14}],14:[function(require,module,exports){
+(function (global){
+"use strict";
 
-
-}).call(this,require('_process'))
-},{"_process":25}],12:[function(require,module,exports){
-var window = require("global/window")
-var once = require("once")
-var parseHeaders = require('parse-headers')
-
-var messages = {
-    "0": "Internal XMLHttpRequest Error",
-    "4": "4xx Client Error",
-    "5": "5xx Server Error"
+// Use the fastest means possible to execute a task in its own turn, with
+// priority over other events including IO, animation, reflow, and redraw
+// events in browsers.
+//
+// An exception thrown by a task will permanently interrupt the processing of
+// subsequent tasks. The higher level `asap` function ensures that if an
+// exception is thrown by a task, that the task queue will continue flushing as
+// soon as possible, but if you use `rawAsap` directly, you are responsible to
+// either ensure that no exceptions are thrown from your task, or to manually
+// call `rawAsap.requestFlush` if an exception is thrown.
+module.exports = rawAsap;
+function rawAsap(task) {
+    if (!queue.length) {
+        requestFlush();
+        flushing = true;
+    }
+    // Equivalent to push, but avoids a function call.
+    queue[queue.length] = task;
 }
 
-var XHR = window.XMLHttpRequest || noop
-var XDR = "withCredentials" in (new XHR()) ? XHR : window.XDomainRequest
+var queue = [];
+// Once a flush has been requested, no further calls to `requestFlush` are
+// necessary until the next `flush` completes.
+var flushing = false;
+// `requestFlush` is an implementation-specific method that attempts to kick
+// off a `flush` event as quickly as possible. `flush` will attempt to exhaust
+// the event queue before yielding to the browser's own event loop.
+var requestFlush;
+// The position of the next task to execute in the task queue. This is
+// preserved between calls to `flush` so that it can be resumed if
+// a task throws an exception.
+var index = 0;
+// If a task schedules additional tasks recursively, the task queue can grow
+// unbounded. To prevent memory exhaustion, the task queue will periodically
+// truncate already-completed tasks.
+var capacity = 1024;
+
+// The flush function processes all tasks that have been scheduled with
+// `rawAsap` unless and until one of those tasks throws an exception.
+// If a task throws an exception, `flush` ensures that its state will remain
+// consistent and will resume where it left off when called again.
+// However, `flush` does not make any arrangements to be called again if an
+// exception is thrown.
+function flush() {
+    while (index < queue.length) {
+        var currentIndex = index;
+        // Advance the index before calling the task. This ensures that we will
+        // begin flushing on the next task the task throws an error.
+        index = index + 1;
+        queue[currentIndex].call();
+        // Prevent leaking memory for long chains of recursive calls to `asap`.
+        // If we call `asap` within tasks scheduled by `asap`, the queue will
+        // grow, but to avoid an O(n) walk for every task we execute, we don't
+        // shift tasks off the queue after they have been executed.
+        // Instead, we periodically shift 1024 tasks off the queue.
+        if (index > capacity) {
+            // Manually shift all values starting at the index back to the
+            // beginning of the queue.
+            for (var scan = 0, newLength = queue.length - index; scan < newLength; scan++) {
+                queue[scan] = queue[scan + index];
+            }
+            queue.length -= index;
+            index = 0;
+        }
+    }
+    queue.length = 0;
+    index = 0;
+    flushing = false;
+}
+
+// `requestFlush` is implemented using a strategy based on data collected from
+// every available SauceLabs Selenium web driver worker at time of writing.
+// https://docs.google.com/spreadsheets/d/1mG-5UYGup5qxGdEMWkhP6BWCz053NUb2E1QoUTU16uA/edit#gid=783724593
+
+// Safari 6 and 6.1 for desktop, iPad, and iPhone are the only browsers that
+// have WebKitMutationObserver but not un-prefixed MutationObserver.
+// Must use `global` instead of `window` to work in both frames and web
+// workers. `global` is a provision of Browserify, Mr, Mrs, or Mop.
+var BrowserMutationObserver = global.MutationObserver || global.WebKitMutationObserver;
+
+// MutationObservers are desirable because they have high priority and work
+// reliably everywhere they are implemented.
+// They are implemented in all modern browsers.
+//
+// - Android 4-4.3
+// - Chrome 26-34
+// - Firefox 14-29
+// - Internet Explorer 11
+// - iPad Safari 6-7.1
+// - iPhone Safari 7-7.1
+// - Safari 6-7
+if (typeof BrowserMutationObserver === "function") {
+    requestFlush = makeRequestCallFromMutationObserver(flush);
+
+// MessageChannels are desirable because they give direct access to the HTML
+// task queue, are implemented in Internet Explorer 10, Safari 5.0-1, and Opera
+// 11-12, and in web workers in many engines.
+// Although message channels yield to any queued rendering and IO tasks, they
+// would be better than imposing the 4ms delay of timers.
+// However, they do not work reliably in Internet Explorer or Safari.
+
+// Internet Explorer 10 is the only browser that has setImmediate but does
+// not have MutationObservers.
+// Although setImmediate yields to the browser's renderer, it would be
+// preferrable to falling back to setTimeout since it does not have
+// the minimum 4ms penalty.
+// Unfortunately there appears to be a bug in Internet Explorer 10 Mobile (and
+// Desktop to a lesser extent) that renders both setImmediate and
+// MessageChannel useless for the purposes of ASAP.
+// https://github.com/kriskowal/q/issues/396
+
+// Timers are implemented universally.
+// We fall back to timers in workers in most engines, and in foreground
+// contexts in the following browsers.
+// However, note that even this simple case requires nuances to operate in a
+// broad spectrum of browsers.
+//
+// - Firefox 3-13
+// - Internet Explorer 6-9
+// - iPad Safari 4.3
+// - Lynx 2.8.7
+} else {
+    requestFlush = makeRequestCallFromTimer(flush);
+}
+
+// `requestFlush` requests that the high priority event queue be flushed as
+// soon as possible.
+// This is useful to prevent an error thrown in a task from stalling the event
+// queue if the exception handled by Node.js’s
+// `process.on("uncaughtException")` or by a domain.
+rawAsap.requestFlush = requestFlush;
+
+// To request a high priority event, we induce a mutation observer by toggling
+// the text of a text node between "1" and "-1".
+function makeRequestCallFromMutationObserver(callback) {
+    var toggle = 1;
+    var observer = new BrowserMutationObserver(callback);
+    var node = document.createTextNode("");
+    observer.observe(node, {characterData: true});
+    return function requestCall() {
+        toggle = -toggle;
+        node.data = toggle;
+    };
+}
+
+// The message channel technique was discovered by Malte Ubl and was the
+// original foundation for this library.
+// http://www.nonblocking.io/2011/06/windownexttick.html
+
+// Safari 6.0.5 (at least) intermittently fails to create message ports on a
+// page's first load. Thankfully, this version of Safari supports
+// MutationObservers, so we don't need to fall back in that case.
+
+// function makeRequestCallFromMessageChannel(callback) {
+//     var channel = new MessageChannel();
+//     channel.port1.onmessage = callback;
+//     return function requestCall() {
+//         channel.port2.postMessage(0);
+//     };
+// }
+
+// For reasons explained above, we are also unable to use `setImmediate`
+// under any circumstances.
+// Even if we were, there is another bug in Internet Explorer 10.
+// It is not sufficient to assign `setImmediate` to `requestFlush` because
+// `setImmediate` must be called *by name* and therefore must be wrapped in a
+// closure.
+// Never forget.
+
+// function makeRequestCallFromSetImmediate(callback) {
+//     return function requestCall() {
+//         setImmediate(callback);
+//     };
+// }
+
+// Safari 6.0 has a problem where timers will get lost while the user is
+// scrolling. This problem does not impact ASAP because Safari 6.0 supports
+// mutation observers, so that implementation is used instead.
+// However, if we ever elect to use timers in Safari, the prevalent work-around
+// is to add a scroll event listener that calls for a flush.
+
+// `setTimeout` does not call the passed callback if the delay is less than
+// approximately 7 in web workers in Firefox 8 through 18, and sometimes not
+// even then.
+
+function makeRequestCallFromTimer(callback) {
+    return function requestCall() {
+        // We dispatch a timeout with a specified delay of 0 for engines that
+        // can reliably accommodate that request. This will usually be snapped
+        // to a 4 milisecond delay, but once we're flushing, there's no delay
+        // between events.
+        var timeoutHandle = setTimeout(handleTimer, 0);
+        // However, since this timer gets frequently dropped in Firefox
+        // workers, we enlist an interval handle that will try to fire
+        // an event 20 times per second until it succeeds.
+        var intervalHandle = setInterval(handleTimer, 50);
+
+        function handleTimer() {
+            // Whichever timer succeeds will cancel both timers and
+            // execute the callback.
+            clearTimeout(timeoutHandle);
+            clearInterval(intervalHandle);
+            callback();
+        }
+    };
+}
+
+// This is for `asap.js` only.
+// Its name will be periodically randomized to break any code that depends on
+// its existence.
+rawAsap.makeRequestCallFromTimer = makeRequestCallFromTimer;
+
+// ASAP was originally a nextTick shim included in Q. This was factored out
+// into this ASAP package. It was later adapted to RSVP which made further
+// amendments. These decisions, particularly to marginalize MessageChannel and
+// to capture the MutationObserver implementation in a closure, were integrated
+// back into ASAP proper.
+// https://github.com/tildeio/rsvp.js/blob/cddf7232546a9cf858524b75cde6f9edf72620a7/lib/rsvp/asap.js
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],15:[function(require,module,exports){
+(function (process){
+"use strict";
+
+var domain; // The domain module is executed on demand
+var hasSetImmediate = typeof setImmediate === "function";
+
+// Use the fastest means possible to execute a task in its own turn, with
+// priority over other events including network IO events in Node.js.
+//
+// An exception thrown by a task will permanently interrupt the processing of
+// subsequent tasks. The higher level `asap` function ensures that if an
+// exception is thrown by a task, that the task queue will continue flushing as
+// soon as possible, but if you use `rawAsap` directly, you are responsible to
+// either ensure that no exceptions are thrown from your task, or to manually
+// call `rawAsap.requestFlush` if an exception is thrown.
+module.exports = rawAsap;
+function rawAsap(task) {
+    if (!queue.length) {
+        requestFlush();
+        flushing = true;
+    }
+    // Avoids a function call
+    queue[queue.length] = task;
+}
+
+var queue = [];
+// Once a flush has been requested, no further calls to `requestFlush` are
+// necessary until the next `flush` completes.
+var flushing = false;
+// The position of the next task to execute in the task queue. This is
+// preserved between calls to `flush` so that it can be resumed if
+// a task throws an exception.
+var index = 0;
+// If a task schedules additional tasks recursively, the task queue can grow
+// unbounded. To prevent memory excaustion, the task queue will periodically
+// truncate already-completed tasks.
+var capacity = 1024;
+
+// The flush function processes all tasks that have been scheduled with
+// `rawAsap` unless and until one of those tasks throws an exception.
+// If a task throws an exception, `flush` ensures that its state will remain
+// consistent and will resume where it left off when called again.
+// However, `flush` does not make any arrangements to be called again if an
+// exception is thrown.
+function flush() {
+    while (index < queue.length) {
+        var currentIndex = index;
+        // Advance the index before calling the task. This ensures that we will
+        // begin flushing on the next task the task throws an error.
+        index = index + 1;
+        queue[currentIndex].call();
+        // Prevent leaking memory for long chains of recursive calls to `asap`.
+        // If we call `asap` within tasks scheduled by `asap`, the queue will
+        // grow, but to avoid an O(n) walk for every task we execute, we don't
+        // shift tasks off the queue after they have been executed.
+        // Instead, we periodically shift 1024 tasks off the queue.
+        if (index > capacity) {
+            // Manually shift all values starting at the index back to the
+            // beginning of the queue.
+            for (var scan = 0, newLength = queue.length - index; scan < newLength; scan++) {
+                queue[scan] = queue[scan + index];
+            }
+            queue.length -= index;
+            index = 0;
+        }
+    }
+    queue.length = 0;
+    index = 0;
+    flushing = false;
+}
+
+rawAsap.requestFlush = requestFlush;
+function requestFlush() {
+    // Ensure flushing is not bound to any domain.
+    // It is not sufficient to exit the domain, because domains exist on a stack.
+    // To execute code outside of any domain, the following dance is necessary.
+    var parentDomain = process.domain;
+    if (parentDomain) {
+        if (!domain) {
+            // Lazy execute the domain module.
+            // Only employed if the user elects to use domains.
+            domain = require("domain");
+        }
+        domain.active = process.domain = null;
+    }
+
+    // `setImmediate` is slower that `process.nextTick`, but `process.nextTick`
+    // cannot handle recursion.
+    // `requestFlush` will only be called recursively from `asap.js`, to resume
+    // flushing after an error is thrown into a domain.
+    // Conveniently, `setImmediate` was introduced in the same version
+    // `process.nextTick` started throwing recursion errors.
+    if (flushing && hasSetImmediate) {
+        setImmediate(flush);
+    } else {
+        process.nextTick(flush);
+    }
+
+    if (parentDomain) {
+        domain.active = process.domain = parentDomain;
+    }
+}
+
+}).call(this,require('_process'))
+},{"_process":34,"domain":32}],16:[function(require,module,exports){
+"use strict";
+var window = require("global/window")
+var once = require("once")
+var parseHeaders = require("parse-headers")
+
+
 
 module.exports = createXHR
+createXHR.XMLHttpRequest = window.XMLHttpRequest || noop
+createXHR.XDomainRequest = "withCredentials" in (new createXHR.XMLHttpRequest()) ? createXHR.XMLHttpRequest : window.XDomainRequest
+
+
+function isEmpty(obj){
+    for(var i in obj){
+        if(obj.hasOwnProperty(i)) return false
+    }
+    return true
+}
 
 function createXHR(options, callback) {
-    if (typeof options === "string") {
-        options = { uri: options }
-    }
-
-    options = options || {}
-    callback = once(callback)
-
-    var xhr = options.xhr || null
-
-    if (!xhr) {
-        if (options.cors || options.useXDR) {
-            xhr = new XDR()
-        }else{
-            xhr = new XHR()
-        }
-    }
-
-    var uri = xhr.url = options.uri || options.url
-    var method = xhr.method = options.method || "GET"
-    var body = options.body || options.data
-    var headers = xhr.headers = options.headers || {}
-    var sync = !!options.sync
-    var isJson = false
-    var key
-    var load = options.response ? loadResponse : loadXhr
-
-    if ("json" in options) {
-        isJson = true
-        headers["Accept"] = "application/json"
-        if (method !== "GET" && method !== "HEAD") {
-            headers["Content-Type"] = "application/json"
-            body = JSON.stringify(options.json)
-        }
-    }
-
-    xhr.onreadystatechange = readystatechange
-    xhr.onload = load
-    xhr.onerror = error
-    // IE9 must have onprogress be set to a unique function.
-    xhr.onprogress = function () {
-        // IE must die
-    }
-    // hate IE
-    xhr.ontimeout = noop
-    xhr.open(method, uri, !sync)
-                                    //backward compatibility
-    if (options.withCredentials || (options.cors && options.withCredentials !== false)) {
-        xhr.withCredentials = true
-    }
-
-    // Cannot set timeout with sync request
-    if (!sync) {
-        xhr.timeout = "timeout" in options ? options.timeout : 5000
-    }
-
-    if (xhr.setRequestHeader) {
-        for(key in headers){
-            if(headers.hasOwnProperty(key)){
-                xhr.setRequestHeader(key, headers[key])
-            }
-        }
-    } else if (options.headers) {
-        throw new Error("Headers cannot be set on an XDomainRequest object")
-    }
-
-    if ("responseType" in options) {
-        xhr.responseType = options.responseType
-    }
-    
-    if ("beforeSend" in options && 
-        typeof options.beforeSend === "function"
-    ) {
-        options.beforeSend(xhr)
-    }
-
-    xhr.send(body)
-
-    return xhr
-
     function readystatechange() {
         if (xhr.readyState === 4) {
-            load()
+            loadFunc()
         }
     }
 
     function getBody() {
         // Chrome with requestType=blob throws errors arround when even testing access to responseText
-        var body = null
+        var body = undefined
 
         if (xhr.response) {
             body = xhr.response
-        } else if (xhr.responseType === 'text' || !xhr.responseType) {
+        } else if (xhr.responseType === "text" || !xhr.responseType) {
             body = xhr.responseText || xhr.responseXML
         }
 
@@ -1927,65 +2249,152 @@ function createXHR(options, callback) {
         return body
     }
 
-    function getStatusCode() {
-        return xhr.status === 1223 ? 204 : xhr.status
-    }
+    var failureResponse = {
+                body: undefined,
+                headers: {},
+                statusCode: 0,
+                method: method,
+                url: uri,
+                rawRequest: xhr
+            }
 
-    // if we're getting a none-ok statusCode, build & return an error
-    function errorFromStatusCode(status, body) {
-        var error = null
-        if (status === 0 || (status >= 400 && status < 600)) {
-            var message = (typeof body === "string" ? body : false) ||
-                messages[String(status).charAt(0)]
-            error = new Error(message)
-            error.statusCode = status
+    function errorFunc(evt) {
+        clearTimeout(timeoutTimer)
+        if(!(evt instanceof Error)){
+            evt = new Error("" + (evt || "Unknown XMLHttpRequest Error") )
         }
-
-        return error
+        evt.statusCode = 0
+        callback(evt, failureResponse)
     }
 
     // will load the data & process the response in a special response object
-    function loadResponse() {
-        var status = getStatusCode()
-        var body = getBody()
-        var error = errorFromStatusCode(status, body)
-        var response = {
-            body: body,
-            statusCode: status,
-            statusText: xhr.statusText,
-            raw: xhr
-        }
-        if(xhr.getAllResponseHeaders){ //remember xhr can in fact be XDR for CORS in IE
-            response.headers = parseHeaders(xhr.getAllResponseHeaders())
+    function loadFunc() {
+        if (aborted) return
+        var status
+        clearTimeout(timeoutTimer)
+        if(options.useXDR && xhr.status===undefined) {
+            //IE8 CORS GET successful response doesn't have a status field, but body is fine
+            status = 200
         } else {
-            response.headers = {}
+            status = (xhr.status === 1223 ? 204 : xhr.status)
         }
+        var response = failureResponse
+        var err = null
 
-        callback(error, response, response.body)
+        if (status !== 0){
+            response = {
+                body: getBody(),
+                statusCode: status,
+                method: method,
+                headers: {},
+                url: uri,
+                rawRequest: xhr
+            }
+            if(xhr.getAllResponseHeaders){ //remember xhr can in fact be XDR for CORS in IE
+                response.headers = parseHeaders(xhr.getAllResponseHeaders())
+            }
+        } else {
+            err = new Error("Internal XMLHttpRequest Error")
+        }
+        callback(err, response, response.body)
+
     }
 
-    // will load the data and add some response properties to the source xhr
-    // and then respond with that
-    function loadXhr() {
-        var status = getStatusCode()
-        var error = errorFromStatusCode(status)
-
-        xhr.status = xhr.statusCode = status
-        xhr.body = getBody()
-        xhr.headers = parseHeaders(xhr.getAllResponseHeaders())
-
-        callback(error, xhr, xhr.body)
+    if (typeof options === "string") {
+        options = { uri: options }
     }
 
-    function error(evt) {
-        callback(evt, xhr)
+    options = options || {}
+    if(typeof callback === "undefined"){
+        throw new Error("callback argument missing")
     }
+    callback = once(callback)
+
+    var xhr = options.xhr || null
+
+    if (!xhr) {
+        if (options.cors || options.useXDR) {
+            xhr = new createXHR.XDomainRequest()
+        }else{
+            xhr = new createXHR.XMLHttpRequest()
+        }
+    }
+
+    var key
+    var aborted
+    var uri = xhr.url = options.uri || options.url
+    var method = xhr.method = options.method || "GET"
+    var body = options.body || options.data
+    var headers = xhr.headers = options.headers || {}
+    var sync = !!options.sync
+    var isJson = false
+    var timeoutTimer
+
+    if ("json" in options) {
+        isJson = true
+        headers["accept"] || headers["Accept"] || (headers["Accept"] = "application/json") //Don't override existing accept header declared by user
+        if (method !== "GET" && method !== "HEAD") {
+            headers["content-type"] || headers["Content-Type"] || (headers["Content-Type"] = "application/json") //Don't override existing accept header declared by user
+            body = JSON.stringify(options.json)
+        }
+    }
+
+    xhr.onreadystatechange = readystatechange
+    xhr.onload = loadFunc
+    xhr.onerror = errorFunc
+    // IE9 must have onprogress be set to a unique function.
+    xhr.onprogress = function () {
+        // IE must die
+    }
+    xhr.ontimeout = errorFunc
+    xhr.open(method, uri, !sync, options.username, options.password)
+    //has to be after open
+    if(!sync) {
+        xhr.withCredentials = !!options.withCredentials
+    }
+    // Cannot set timeout with sync request
+    // not setting timeout on the xhr object, because of old webkits etc. not handling that correctly
+    // both npm's request and jquery 1.x use this kind of timeout, so this is being consistent
+    if (!sync && options.timeout > 0 ) {
+        timeoutTimer = setTimeout(function(){
+            aborted=true//IE9 may still call readystatechange
+            xhr.abort("timeout")
+            var e = new Error("XMLHttpRequest timeout")
+            e.code = "ETIMEDOUT"
+            errorFunc(e)
+        }, options.timeout )
+    }
+
+    if (xhr.setRequestHeader) {
+        for(key in headers){
+            if(headers.hasOwnProperty(key)){
+                xhr.setRequestHeader(key, headers[key])
+            }
+        }
+    } else if (options.headers && !isEmpty(options.headers)) {
+        throw new Error("Headers cannot be set on an XDomainRequest object")
+    }
+
+    if ("responseType" in options) {
+        xhr.responseType = options.responseType
+    }
+
+    if ("beforeSend" in options &&
+        typeof options.beforeSend === "function"
+    ) {
+        options.beforeSend(xhr)
+    }
+
+    xhr.send(body)
+
+    return xhr
+
+
 }
-
 
 function noop() {}
 
-},{"global/window":13,"once":14,"parse-headers":18}],13:[function(require,module,exports){
+},{"global/window":17,"once":18,"parse-headers":22}],17:[function(require,module,exports){
 (function (global){
 if (typeof window !== "undefined") {
     module.exports = window;
@@ -1998,7 +2407,7 @@ if (typeof window !== "undefined") {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],14:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = once
 
 once.proto = once(function () {
@@ -2019,7 +2428,7 @@ function once (fn) {
   }
 }
 
-},{}],15:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 var isFunction = require('is-function')
 
 module.exports = forEach
@@ -2067,7 +2476,7 @@ function forEachObject(object, iterator, context) {
     }
 }
 
-},{"is-function":16}],16:[function(require,module,exports){
+},{"is-function":20}],20:[function(require,module,exports){
 module.exports = isFunction
 
 var toString = Object.prototype.toString
@@ -2084,7 +2493,7 @@ function isFunction (fn) {
       fn === window.prompt))
 };
 
-},{}],17:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 
 exports = module.exports = trim;
 
@@ -2100,7 +2509,7 @@ exports.right = function(str){
   return str.replace(/\s*$/, '');
 };
 
-},{}],18:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 var trim = require('trim')
   , forEach = require('for-each')
   , isArray = function(arg) {
@@ -2132,7 +2541,7 @@ module.exports = function (headers) {
 
   return result
 }
-},{"for-each":15,"trim":17}],19:[function(require,module,exports){
+},{"for-each":19,"trim":21}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2254,7 +2663,7 @@ Container.initScrollable = initScrollable;
 
 exports['default'] = Container;
 module.exports = exports['default'];
-},{"blacklist":20,"classnames":2,"react":undefined}],20:[function(require,module,exports){
+},{"blacklist":24,"classnames":2,"react":undefined}],24:[function(require,module,exports){
 module.exports = function blacklist (src) {
   var copy = {}, filter = arguments[1]
 
@@ -2275,65 +2684,51 @@ module.exports = function blacklist (src) {
   return copy
 }
 
-},{}],21:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 "use strict";
 
-module.exports = function () {
-  var listeners = [];
+module.exports = {
+  componentWillMount: function componentWillMount() {
+    this.__rs_listeners = [];
+  },
 
-  return {
-    componentWillUnmount: function componentWillUnmount() {
-      listeners.forEach(function (listener) {
-        var emitter = listener.emitter;
-        var eventName = listener.eventName;
-        var callback = listener.callback;
-
-        var removeListener = emitter.removeListener || emitter.removeEventListener;
-        removeListener.call(emitter, eventName, callback);
-      });
-    },
-
-    watch: function watch(emitter, eventName, callback) {
-      listeners.push({
-        emitter: emitter,
-        eventName: eventName,
-        callback: callback
-      });
-
-      var addListener = emitter.addListener || emitter.addEventListener;
-      addListener.call(emitter, eventName, callback);
-    },
-
-    unwatch: function unwatch(emitter, eventName, callback) {
-      listeners = listeners.filter(function (listener) {
-        return listener.emitter === emitter && listener.eventName === eventName && listener.callback === callback;
-      });
+  componentWillUnmount: function componentWillUnmount() {
+    this.__rs_listeners.forEach(function (listener) {
+      var emitter = listener.emitter;
+      var eventName = listener.eventName;
+      var callback = listener.callback;
 
       var removeListener = emitter.removeListener || emitter.removeEventListener;
       removeListener.call(emitter, eventName, callback);
-    }
-  };
+    });
+  },
+
+  watch: function watch(emitter, eventName, callback) {
+    this.__rs_listeners.push({
+      emitter: emitter,
+      eventName: eventName,
+      callback: callback
+    });
+
+    var addListener = emitter.addListener || emitter.addEventListener;
+    addListener.call(emitter, eventName, callback);
+  },
+
+  unwatch: function unwatch(emitter, eventName, callback) {
+    this.__rs_listeners = this.__rs_listeners.filter(function (listener) {
+      return listener.emitter === emitter && listener.eventName === eventName && listener.callback === callback;
+    });
+
+    var removeListener = emitter.removeListener || emitter.removeEventListener;
+    removeListener.call(emitter, eventName, callback);
+  }
 };
-},{}],22:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var React = require('react');
-
-function getTouchProps(touch) {
-	if (!touch) return {};
-	return {
-		pageX: touch.pageX,
-		pageY: touch.pageY,
-		clientX: touch.clientX,
-		clientY: touch.clientY
-	};
-}
-
-function isDataOrAriaProp(key) {
-	return key.indexOf('data-') === 0 || key.indexOf('aria-') === 0;
-}
 
 function getPinchProps(touches) {
 	return {
@@ -2346,99 +2741,11 @@ function getPinchProps(touches) {
 	};
 }
 
-var TOUCH_STYLES = {
-	WebkitTapHighlightColor: 'rgba(0,0,0,0)',
-	WebkitTouchCallout: 'none',
-	WebkitUserSelect: 'none',
-	KhtmlUserSelect: 'none',
-	MozUserSelect: 'none',
-	msUserSelect: 'none',
-	userSelect: 'none',
-	cursor: 'pointer'
-};
-
-/**
- * Tappable Mixin
- * ==============
- */
-
 var Mixin = {
 	propTypes: {
-		moveThreshold: React.PropTypes.number, // pixels to move before cancelling tap
-		activeDelay: React.PropTypes.number, // ms to wait before adding the `-active` class
-		pressDelay: React.PropTypes.number, // ms to wait before detecting a press
-		pressMoveThreshold: React.PropTypes.number, // pixels to move before cancelling press
-		preventDefault: React.PropTypes.bool, // whether to preventDefault on all events
-		stopPropagation: React.PropTypes.bool, // whether to stopPropagation on all events
-
-		onTap: React.PropTypes.func, // fires when a tap is detected
-		onPress: React.PropTypes.func, // fires when a press is detected
-		onTouchStart: React.PropTypes.func, // pass-through touch event
-		onTouchMove: React.PropTypes.func, // pass-through touch event
-		onTouchEnd: React.PropTypes.func, // pass-through touch event
-		onMouseDown: React.PropTypes.func, // pass-through mouse event
-		onMouseUp: React.PropTypes.func, // pass-through mouse event
-		onMouseMove: React.PropTypes.func, // pass-through mouse event
-		onMouseOut: React.PropTypes.func, // pass-through mouse event
-
 		onPinchStart: React.PropTypes.func, // fires when a pinch gesture is started
 		onPinchMove: React.PropTypes.func, // fires on every touch-move when a pinch action is active
 		onPinchEnd: React.PropTypes.func // fires when a pinch action ends
-	},
-
-	getDefaultProps: function getDefaultProps() {
-		return {
-			activeDelay: 0,
-			moveThreshold: 100,
-			pressDelay: 1000,
-			pressMoveThreshold: 5
-		};
-	},
-
-	getInitialState: function getInitialState() {
-		return {
-			isActive: false,
-			touchActive: false,
-			pinchActive: false
-		};
-	},
-
-	componentWillUnmount: function componentWillUnmount() {
-		this.cleanupScrollDetection();
-		this.cancelPressDetection();
-		this.clearActiveTimeout();
-	},
-
-	processEvent: function processEvent(event) {
-		if (this.props.preventDefault) event.preventDefault();
-		if (this.props.stopPropagation) event.stopPropagation();
-	},
-
-	onTouchStart: function onTouchStart(event) {
-		if (this.props.onTouchStart && this.props.onTouchStart(event) === false) return;
-		this.processEvent(event);
-		window._blockMouseEvents = true;
-		if (event.touches.length === 1) {
-			this._initialTouch = this._lastTouch = getTouchProps(event.touches[0]);
-			this.initScrollDetection();
-			this.initPressDetection(event, this.endTouch);
-			this._activeTimeout = setTimeout(this.makeActive, this.props.activeDelay);
-		} else if ((this.props.onPinchStart || this.props.onPinchMove || this.props.onPinchEnd) && event.touches.length === 2) {
-			this.onPinchStart(event);
-		}
-	},
-
-	makeActive: function makeActive() {
-		if (!this.isMounted()) return;
-		this.clearActiveTimeout();
-		this.setState({
-			isActive: true
-		});
-	},
-
-	clearActiveTimeout: function clearActiveTimeout() {
-		clearTimeout(this._activeTimeout);
-		this._activeTimeout = false;
 	},
 
 	onPinchStart: function onPinchStart(event) {
@@ -2467,8 +2774,7 @@ var Mixin = {
 		}
 		var touches = event.touches;
 		if (touches.length !== 2) {
-			return this.onPinchEnd(event) // bail out before disaster
-			;
+			return this.onPinchEnd(event); // bail out before disaster
 		}
 
 		var currentPinch = touches[0].identifier === this._initialPinch.touches[0].identifier && touches[1].identifier === this._initialPinch.touches[1].identifier ? getPinchProps(touches) // the touches are in the correct order
@@ -2520,6 +2826,117 @@ var Mixin = {
 		// if (event.touches.length === 1) {
 		// 	this.onTouchStart(event);
 		// }
+	}
+};
+
+module.exports = Mixin;
+},{"react":undefined}],27:[function(require,module,exports){
+'use strict';
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var TappableMixin = require('./TappableMixin');
+var PinchableMixin = require('./PinchableMixin');
+var getComponent = require('./getComponent');
+var touchStyles = require('./touchStyles');
+
+var Component = getComponent([TappableMixin, PinchableMixin]);
+
+module.exports = Component;
+module.exports.touchStyles = touchStyles;
+module.exports.Mixin = _extends({}, TappableMixin, {
+  onPinchStart: PinchableMixin.onPinchStart,
+  onPinchMove: PinchableMixin.onPinchMove,
+  onPinchEnd: PinchableMixin.onPinchEnd
+});
+},{"./PinchableMixin":26,"./TappableMixin":28,"./getComponent":29,"./touchStyles":30}],28:[function(require,module,exports){
+'use strict';
+
+var React = require('react');
+
+function getTouchProps(touch) {
+	if (!touch) return {};
+	return {
+		pageX: touch.pageX,
+		pageY: touch.pageY,
+		clientX: touch.clientX,
+		clientY: touch.clientY
+	};
+}
+
+var Mixin = {
+	propTypes: {
+		moveThreshold: React.PropTypes.number, // pixels to move before cancelling tap
+		activeDelay: React.PropTypes.number, // ms to wait before adding the `-active` class
+		pressDelay: React.PropTypes.number, // ms to wait before detecting a press
+		pressMoveThreshold: React.PropTypes.number, // pixels to move before cancelling press
+		preventDefault: React.PropTypes.bool, // whether to preventDefault on all events
+		stopPropagation: React.PropTypes.bool, // whether to stopPropagation on all events
+
+		onTap: React.PropTypes.func, // fires when a tap is detected
+		onPress: React.PropTypes.func, // fires when a press is detected
+		onTouchStart: React.PropTypes.func, // pass-through touch event
+		onTouchMove: React.PropTypes.func, // pass-through touch event
+		onTouchEnd: React.PropTypes.func, // pass-through touch event
+		onMouseDown: React.PropTypes.func, // pass-through mouse event
+		onMouseUp: React.PropTypes.func, // pass-through mouse event
+		onMouseMove: React.PropTypes.func, // pass-through mouse event
+		onMouseOut: React.PropTypes.func // pass-through mouse event
+	},
+
+	getDefaultProps: function getDefaultProps() {
+		return {
+			activeDelay: 0,
+			moveThreshold: 100,
+			pressDelay: 1000,
+			pressMoveThreshold: 5
+		};
+	},
+
+	getInitialState: function getInitialState() {
+		return {
+			isActive: false,
+			touchActive: false,
+			pinchActive: false
+		};
+	},
+
+	componentWillUnmount: function componentWillUnmount() {
+		this.cleanupScrollDetection();
+		this.cancelPressDetection();
+		this.clearActiveTimeout();
+	},
+
+	processEvent: function processEvent(event) {
+		if (this.props.preventDefault) event.preventDefault();
+		if (this.props.stopPropagation) event.stopPropagation();
+	},
+
+	onTouchStart: function onTouchStart(event) {
+		if (this.props.onTouchStart && this.props.onTouchStart(event) === false) return;
+		this.processEvent(event);
+		window._blockMouseEvents = true;
+		if (event.touches.length === 1) {
+			this._initialTouch = this._lastTouch = getTouchProps(event.touches[0]);
+			this.initScrollDetection();
+			this.initPressDetection(event, this.endTouch);
+			this._activeTimeout = setTimeout(this.makeActive, this.props.activeDelay);
+		} else if (this.onPinchStart && (this.props.onPinchStart || this.props.onPinchMove || this.props.onPinchEnd) && event.touches.length === 2) {
+			this.onPinchStart(event);
+		}
+	},
+
+	makeActive: function makeActive() {
+		if (!this.isMounted()) return;
+		this.clearActiveTimeout();
+		this.setState({
+			isActive: true
+		});
+	},
+
+	clearActiveTimeout: function clearActiveTimeout() {
+		clearTimeout(this._activeTimeout);
+		this._activeTimeout = false;
 	},
 
 	initScrollDetection: function initScrollDetection() {
@@ -2598,7 +3015,7 @@ var Mixin = {
 					});
 				}
 			}
-		} else if (this._initialPinch && event.touches.length === 2) {
+		} else if (this._initialPinch && event.touches.length === 2 && this.onPinchMove) {
 			this.onPinchMove(event);
 			event.preventDefault();
 		}
@@ -2626,7 +3043,7 @@ var Mixin = {
 				};
 			}
 			this.endTouch(event, afterEndTouch);
-		} else if (this._initialPinch && event.touches.length + event.changedTouches.length === 2) {
+		} else if (this.onPinchEnd && this._initialPinch && event.touches.length + event.changedTouches.length === 2) {
 			this.onPinchEnd(event);
 			event.preventDefault();
 		}
@@ -2698,10 +3115,6 @@ var Mixin = {
 		this._mouseDown = false;
 	},
 
-	touchStyles: function touchStyles() {
-		return TOUCH_STYLES;
-	},
-
 	handlers: function handlers() {
 		return {
 			onTouchStart: this.onTouchStart,
@@ -2715,135 +3128,222 @@ var Mixin = {
 	}
 };
 
+module.exports = Mixin;
+},{"react":undefined}],29:[function(require,module,exports){
+'use strict';
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var React = require('react');
+var touchStyles = require('./touchStyles');
+
 /**
  * Tappable Component
  * ==================
  */
+module.exports = function (mixins) {
+	return React.createClass({
+		displayName: 'Tappable',
 
-var Component = React.createClass({
+		mixins: mixins,
 
-	displayName: 'Tappable',
+		propTypes: {
+			component: React.PropTypes.any, // component to create
+			className: React.PropTypes.string, // optional className
+			classBase: React.PropTypes.string, // base for generated classNames
+			style: React.PropTypes.object, // additional style properties for the component
+			disabled: React.PropTypes.bool // only applies to buttons
+		},
 
-	mixins: [Mixin],
+		getDefaultProps: function getDefaultProps() {
+			return {
+				component: 'span',
+				classBase: 'Tappable'
+			};
+		},
 
-	propTypes: {
-		component: React.PropTypes.any, // component to create
-		className: React.PropTypes.string, // optional className
-		classBase: React.PropTypes.string, // base for generated classNames
-		style: React.PropTypes.object, // additional style properties for the component
-		disabled: React.PropTypes.bool // only applies to buttons
-	},
+		render: function render() {
+			var props = this.props;
+			var className = props.classBase + (this.state.isActive ? '-active' : '-inactive');
 
-	getDefaultProps: function getDefaultProps() {
-		return {
-			component: 'span',
-			classBase: 'Tappable'
-		};
-	},
+			if (props.className) {
+				className += ' ' + props.className;
+			}
 
-	render: function render() {
-		var props = this.props;
-		var className = props.classBase + (this.state.isActive ? '-active' : '-inactive');
+			var style = {};
+			_extends(style, touchStyles, props.style);
 
-		if (props.className) {
-			className += ' ' + props.className;
+			var newComponentProps = _extends({}, props, {
+				style: style,
+				className: className,
+				disabled: props.disabled,
+				handlers: this.handlers
+			}, this.handlers());
+
+			delete newComponentProps.onTap;
+			delete newComponentProps.onPress;
+			delete newComponentProps.onPinchStart;
+			delete newComponentProps.onPinchMove;
+			delete newComponentProps.onPinchEnd;
+			delete newComponentProps.moveThreshold;
+			delete newComponentProps.pressDelay;
+			delete newComponentProps.pressMoveThreshold;
+			delete newComponentProps.preventDefault;
+			delete newComponentProps.stopPropagation;
+			delete newComponentProps.component;
+
+			return React.createElement(props.component, newComponentProps, props.children);
 		}
+	});
+};
+},{"./touchStyles":30,"react":undefined}],30:[function(require,module,exports){
+'use strict';
 
-		var style = {};
-		_extends(style, this.touchStyles(), props.style);
+var touchStyles = {
+  WebkitTapHighlightColor: 'rgba(0,0,0,0)',
+  WebkitTouchCallout: 'none',
+  WebkitUserSelect: 'none',
+  KhtmlUserSelect: 'none',
+  MozUserSelect: 'none',
+  msUserSelect: 'none',
+  userSelect: 'none',
+  cursor: 'pointer'
+};
 
-		var newComponentProps = _extends({}, props, {
-			style: style,
-			className: className,
-			disabled: props.disabled,
-			handlers: this.handlers
-		}, this.handlers());
+module.exports = touchStyles;
+},{}],31:[function(require,module,exports){
+(function (global){
+"use strict";
 
-		delete newComponentProps.onTap;
-		delete newComponentProps.onPress;
-		delete newComponentProps.onPinchStart;
-		delete newComponentProps.onPinchMove;
-		delete newComponentProps.onPinchEnd;
-		delete newComponentProps.moveThreshold;
-		delete newComponentProps.pressDelay;
-		delete newComponentProps.pressMoveThreshold;
-		delete newComponentProps.preventDefault;
-		delete newComponentProps.stopPropagation;
-		delete newComponentProps.component;
+var GLOBAL = global || window;
 
-		return React.createElement(props.component, newComponentProps, props.children);
-	}
-});
-
-Component.Mixin = Mixin;
-Component.touchStyles = TOUCH_STYLES;
-module.exports = Component;
-},{"react":undefined}],23:[function(require,module,exports){
-module.exports = function Timers () {
-  var intervals = []
-  var timeouts = []
-
-  return {
-    clearIntervals: function () {
-      intervals.forEach(clearInterval)
-    },
-
-    clearTimeouts: function () {
-      timeouts.forEach(clearTimeout)
-    },
-
-    clearTimers: function () {
-      this.clearInterval()
-      this.clearTimeouts()
-    },
-
-    componentWillMount: function () {
-      intervals = []
-      timeouts = []
-    },
-
-    componentWillUnmount: function () {
-      this.clearIntervals()
-      this.clearTimeouts()
-    },
-
-    countDown: function (callback, timeout, interval) {
-      var self = this
-      var sleep = Math.min(timeout, interval)
-
-      this.setTimeout(function () {
-        var remaining = timeout - sleep
-
-        callback(remaining)
-        if (remaining <= 0) return
-
-        self.countDown(callback, remaining, interval)
-      }, sleep)
-    },
-
-    setInterval: function (callback, interval) {
-      var self = this
-
-      intervals.push(setInterval(function () {
-        if (!self.isMounted()) return
-
-        callback.call(self)
-      }, interval))
-    },
-
-    setTimeout: function (callback, timeout) {
-      var self = this
-
-      timeouts.push(setTimeout(function () {
-        if (!self.isMounted()) return
-
-        callback.call(self)
-      }, timeout))
-    }
-  }
+function clearTimers() {
+  this.clearIntervals();
+  this.clearTimeouts();
 }
 
-},{}],24:[function(require,module,exports){
+module.exports = {
+  clearIntervals: function clearIntervals() {
+    this.__rt_intervals.forEach(GLOBAL.clearInterval);
+  },
+  clearTimeouts: function clearTimeouts() {
+    this.__rt_timeouts.forEach(GLOBAL.clearTimeout);
+  },
+  clearInterval: function clearInterval() {
+    return GLOBAL.clearInterval.apply(GLOBAL, arguments);
+  },
+  clearTimeout: function clearTimeout() {
+    return GLOBAL.clearTimeout.apply(GLOBAL, arguments);
+  },
+  clearTimers: clearTimers,
+
+  componentWillMount: function componentWillMount() {
+    this.__rt_intervals = [];
+    this.__rt_timeouts = [];
+  },
+  componentWillUnmount: clearTimers,
+
+  setInterval: function setInterval(callback) {
+    var _this = this;
+
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    return this.__rt_intervals[this.__rt_intervals.push(GLOBAL.setInterval.apply(GLOBAL, [function () {
+      for (var _len2 = arguments.length, params = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        params[_key2] = arguments[_key2];
+      }
+
+      callback.call.apply(callback, [_this].concat(params));
+    }].concat(args))) - 1];
+  },
+  setTimeout: function setTimeout(callback) {
+    var _this2 = this;
+
+    for (var _len3 = arguments.length, args = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+      args[_key3 - 1] = arguments[_key3];
+    }
+
+    return this.__rt_timeouts[this.__rt_timeouts.push(GLOBAL.setTimeout.apply(GLOBAL, [function () {
+      for (var _len4 = arguments.length, params = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+        params[_key4] = arguments[_key4];
+      }
+
+      callback.call.apply(callback, [_this2].concat(params));
+    }].concat(args))) - 1];
+  }
+};
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],32:[function(require,module,exports){
+/*global define:false require:false */
+module.exports = (function(){
+	// Import Events
+	var events = require('events')
+
+	// Export Domain
+	var domain = {}
+	domain.createDomain = domain.create = function(){
+		var d = new events.EventEmitter()
+
+		function emitError(e) {
+			d.emit('error', e)
+		}
+
+		d.add = function(emitter){
+			emitter.on('error', emitError)
+		}
+		d.remove = function(emitter){
+			emitter.removeListener('error', emitError)
+		}
+		d.bind = function(fn){
+			return function(){
+				var args = Array.prototype.slice.call(arguments)
+				try {
+					fn.apply(null, args)
+				}
+				catch (err){
+					emitError(err)
+				}
+			}
+		}
+		d.intercept = function(fn){
+			return function(err){
+				if ( err ) {
+					emitError(err)
+				}
+				else {
+					var args = Array.prototype.slice.call(arguments, 1)
+					try {
+						fn.apply(null, args)
+					}
+					catch (err){
+						emitError(err)
+					}
+				}
+			}
+		}
+		d.run = function(fn){
+			try {
+				fn()
+			}
+			catch (err) {
+				emitError(err)
+			}
+			return this
+		};
+		d.dispose = function(){
+			this.removeAllListeners()
+			return this
+		};
+		d.enter = d.exit = function(){
+			return this
+		}
+		return d
+	};
+	return domain
+}).call(this)
+},{"events":33}],33:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3146,7 +3646,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],25:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3179,7 +3679,9 @@ function drainQueue() {
         currentQueue = queue;
         queue = [];
         while (++queueIndex < len) {
-            currentQueue[queueIndex].run();
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
         }
         queueIndex = -1;
         len = queue.length;
@@ -3231,1660 +3733,13 @@ process.binding = function (name) {
     throw new Error('process.binding is not supported');
 };
 
-// TODO(shtylman)
 process.cwd = function () { return '/' };
 process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 process.umask = function() { return 0; };
 
-},{}],26:[function(require,module,exports){
-'use strict';
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _reactAddons = require('react/addons');
-
-var _reactAddons2 = _interopRequireDefault(_reactAddons);
-
-var _touchstonejs = require('touchstonejs');
-
-// App Config
-// ------------------------------
-
-var PeopleStore = require('./stores/people');
-var peopleStore = new PeopleStore();
-
-var App = _reactAddons2['default'].createClass({
-	displayName: 'App',
-
-	mixins: [(0, _touchstonejs.createApp)()],
-
-	childContextTypes: {
-		peopleStore: _reactAddons2['default'].PropTypes.object
-	},
-
-	getChildContext: function getChildContext() {
-		return {
-			peopleStore: peopleStore
-		};
-	},
-
-	render: function render() {
-		var appWrapperClassName = 'app-wrapper device--' + (window.device || {}).platform;
-
-		return _reactAddons2['default'].createElement(
-			'div',
-			{ className: appWrapperClassName },
-			_reactAddons2['default'].createElement(
-				'div',
-				{ className: 'device-silhouette' },
-				_reactAddons2['default'].createElement(
-					_touchstonejs.ViewManager,
-					{ name: 'app', defaultView: 'main' },
-					_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'main', component: MainViewController }),
-					_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'transitions-target-over', component: require('./views/transitions-target-over') })
-				)
-			)
-		);
-	}
-});
-
-// Main Controller
-// ------------------------------
-
-var MainViewController = _reactAddons2['default'].createClass({
-	displayName: 'MainViewController',
-
-	render: function render() {
-		return _reactAddons2['default'].createElement(
-			_touchstonejs.Container,
-			null,
-			_reactAddons2['default'].createElement(_touchstonejs.UI.NavigationBar, { name: 'main' }),
-			_reactAddons2['default'].createElement(
-				_touchstonejs.ViewManager,
-				{ name: 'main', defaultView: 'tabs' },
-				_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'tabs', component: TabViewController })
-			)
-		);
-	}
-});
-
-// Tab Controller
-// ------------------------------
-
-var lastSelectedTab = 'lists';
-var TabViewController = _reactAddons2['default'].createClass({
-	displayName: 'TabViewController',
-
-	getInitialState: function getInitialState() {
-		return {
-			selectedTab: lastSelectedTab
-		};
-	},
-
-	onViewChange: function onViewChange(nextView) {
-		lastSelectedTab = nextView;
-
-		this.setState({
-			selectedTab: nextView
-		});
-	},
-
-	selectTab: function selectTab(value) {
-		var viewProps = undefined;
-
-		this.refs.vm.transitionTo(value, {
-			transition: 'instant',
-			viewProps: viewProps
-		});
-
-		this.setState({
-			selectedTab: value
-		});
-	},
-
-	render: function render() {
-		var selectedTab = this.state.selectedTab;
-		var selectedTabSpan = selectedTab;
-
-		if (selectedTab === 'lists' || selectedTab === 'list-simple' || selectedTab === 'list-complex' || selectedTab === 'list-details') {
-			selectedTabSpan = 'lists';
-		}
-
-		if (selectedTab === 'transitions' || selectedTab === 'transitions-target') {
-			selectedTabSpan = 'transitions';
-		}
-
-		return _reactAddons2['default'].createElement(
-			_touchstonejs.Container,
-			null,
-			_reactAddons2['default'].createElement(
-				_touchstonejs.ViewManager,
-				{ ref: 'vm', name: 'tabs', defaultView: selectedTab, onViewChange: this.onViewChange },
-				_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'lists', component: require('./views/lists') }),
-				_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'list-simple', component: require('./views/list-simple') }),
-				_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'list-complex', component: require('./views/list-complex') }),
-				_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'list-details', component: require('./views/list-details') }),
-				_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'form', component: require('./views/form') }),
-				_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'controls', component: require('./views/controls') }),
-				_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'transitions', component: require('./views/transitions') }),
-				_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'transitions-target', component: require('./views/transitions-target') })
-			),
-			_reactAddons2['default'].createElement(
-				_touchstonejs.UI.Tabs.Navigator,
-				null,
-				_reactAddons2['default'].createElement(
-					_touchstonejs.UI.Tabs.Tab,
-					{ onTap: this.selectTab.bind(this, 'lists'), selected: selectedTabSpan === 'lists' },
-					_reactAddons2['default'].createElement('span', { className: 'Tabs-Icon Tabs-Icon--lists' }),
-					_reactAddons2['default'].createElement(
-						_touchstonejs.UI.Tabs.Label,
-						null,
-						'Lists'
-					)
-				),
-				_reactAddons2['default'].createElement(
-					_touchstonejs.UI.Tabs.Tab,
-					{ onTap: this.selectTab.bind(this, 'form'), selected: selectedTabSpan === 'form' },
-					_reactAddons2['default'].createElement('span', { className: 'Tabs-Icon Tabs-Icon--forms' }),
-					_reactAddons2['default'].createElement(
-						_touchstonejs.UI.Tabs.Label,
-						null,
-						'Forms'
-					)
-				),
-				_reactAddons2['default'].createElement(
-					_touchstonejs.UI.Tabs.Tab,
-					{ onTap: this.selectTab.bind(this, 'controls'), selected: selectedTabSpan === 'controls' },
-					_reactAddons2['default'].createElement('span', { className: 'Tabs-Icon Tabs-Icon--controls' }),
-					_reactAddons2['default'].createElement(
-						_touchstonejs.UI.Tabs.Label,
-						null,
-						'Controls'
-					)
-				),
-				_reactAddons2['default'].createElement(
-					_touchstonejs.UI.Tabs.Tab,
-					{ onTap: this.selectTab.bind(this, 'transitions'), selected: selectedTabSpan === 'transitions' },
-					_reactAddons2['default'].createElement('span', { className: 'Tabs-Icon Tabs-Icon--transitions' }),
-					_reactAddons2['default'].createElement(
-						_touchstonejs.UI.Tabs.Label,
-						null,
-						'Transitions'
-					)
-				)
-			)
-		);
-	}
-});
-
-function startApp() {
-	if (window.StatusBar) {
-		window.StatusBar.styleDefault();
-	}
-
-	_reactAddons2['default'].render(_reactAddons2['default'].createElement(App, null), document.getElementById('app'));
-}
-
-if (!window.cordova) {
-	startApp();
-} else {
-	document.addEventListener('deviceready', startApp, false);
-}
-
-},{"./stores/people":27,"./views/controls":28,"./views/form":29,"./views/list-complex":30,"./views/list-details":31,"./views/list-simple":32,"./views/lists":33,"./views/transitions":36,"./views/transitions-target":35,"./views/transitions-target-over":34,"react/addons":undefined,"touchstonejs":42}],27:[function(require,module,exports){
-'use strict';
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var EventEmitter = require('events').EventEmitter;
-
-var async = require('async');
-var httpify = require('httpify');
-
-var apiUrl = window.location.protocol === 'https:' ? 'https://randomuser.me/api?nat=au&results=16' : 'http://api.randomuser.me/?nat=au&results=16';
-
-function PeopleStore() {
-	EventEmitter.call(this);
-
-	// initialize internal cache
-	var storage = this.cache = {
-		people: []
-	};
-	var self = this;
-
-	// Dispatchers
-	this.starQueue = async.queue(function (data, callback) {
-		var id = data.id;
-
-		// update internal data
-		var starred = data.starred;
-		self.cache.people.filter(function (person) {
-			return person.id === id;
-		}).forEach(function (person) {
-			return person.isStarred = starred;
-		});
-
-		// emit events
-		self.emit('people-updated', storage.people);
-
-		callback();
-	}, 1);
-
-	this.refreshQueue = async.queue(function (_, callback) {
-		// update
-		httpify({
-			method: 'GET',
-			url: apiUrl
-		}, function (err, res) {
-			if (err) return callback(err);
-
-			storage.people = res.body.results.map(function (p) {
-				return p.user;
-			});
-
-			// post process new data
-			storage.people.forEach(function (person, i) {
-				person.id = i;
-				person.name.first = person.name.first[0].toUpperCase() + person.name.first.slice(1);
-				person.name.last = person.name.last[0].toUpperCase() + person.name.last.slice(1);
-				person.name.initials = person.name.first[0] + person.name.last[0];
-				person.name.full = person.name.first + ' ' + person.name.last;
-				person.category = Math.random() > 0.5 ? 'A' : 'B';
-				person.github = person.name.first.toLowerCase() + person.name.last.toLowerCase();
-				person.picture = person.picture.medium;
-				person.twitter = '@' + person.name.first.toLowerCase() + Math.random().toString(32).slice(2, 5);
-			});
-
-			// emit events
-			self.emit('people-updated', storage.people);
-			self.emit('refresh');
-
-			callback(null, storage.people);
-		});
-	}, 1);
-
-	// refresh immediately
-	this.refresh();
-}
-
-_extends(PeopleStore.prototype, EventEmitter.prototype);
-
-// Intents
-PeopleStore.prototype.refresh = function (callback) {
-	this.refreshQueue.push(null, callback);
-};
-
-PeopleStore.prototype.star = function (_ref, starred, callback) {
-	var id = _ref.id;
-
-	this.starQueue.push({ id: id, starred: starred }, callback);
-};
-
-// Getters
-PeopleStore.prototype.getPeople = function () {
-	return this.cache.people;
-};
-
-module.exports = PeopleStore;
-
-},{"async":1,"events":24,"httpify":4}],28:[function(require,module,exports){
-'use strict';
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _reactContainer = require('react-container');
-
-var _reactContainer2 = _interopRequireDefault(_reactContainer);
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactTappable = require('react-tappable');
-
-var _reactTappable2 = _interopRequireDefault(_reactTappable);
-
-var _reactTimers = require('react-timers');
-
-var _reactTimers2 = _interopRequireDefault(_reactTimers);
-
-var _touchstonejs = require('touchstonejs');
-
-module.exports = _react2['default'].createClass({
-	displayName: 'exports',
-
-	mixins: [(0, _reactTimers2['default'])()],
-	statics: {
-		navigationBar: 'main',
-		getNavigation: function getNavigation() {
-			return {
-				title: 'Controls'
-			};
-		}
-	},
-
-	getInitialState: function getInitialState() {
-		return {
-			alertbar: {
-				visible: false,
-				type: '',
-				text: ''
-			},
-			popup: {
-				visible: false
-			}
-		};
-	},
-
-	showLoadingPopup: function showLoadingPopup() {
-		var _this = this;
-
-		this.setState({
-			popup: {
-				visible: true,
-				loading: true,
-				header: 'Loading',
-				iconName: 'ion-load-c',
-				iconType: 'default'
-			}
-		});
-
-		this.setTimeout(function () {
-			_this.setState({
-				popup: {
-					visible: true,
-					loading: false,
-					header: 'Done!',
-					iconName: 'ion-ios-checkmark',
-					iconType: 'success'
-				}
-			});
-		}, 2000);
-
-		this.setTimeout(function () {
-			_this.setState({
-				popup: {
-					visible: false
-				}
-			});
-		}, 3000);
-	},
-
-	showAlertbar: function showAlertbar(type, text) {
-		var _this2 = this;
-
-		this.setState({
-			alertbar: {
-				visible: true,
-				type: type,
-				text: text
-			}
-		});
-
-		this.setTimeout(function () {
-			_this2.setState({
-				alertbar: {
-					visible: false
-				}
-			});
-		}, 2000);
-	},
-
-	handleModeChange: function handleModeChange(newMode) {
-		var selectedItem = newMode;
-
-		if (this.state.selectedMode === newMode) {
-			selectedItem = null;
-		}
-
-		this.setState({
-			selectedMode: selectedItem
-		});
-	},
-
-	render: function render() {
-		var alertbar = this.state.alertbar;
-
-		return _react2['default'].createElement(
-			_reactContainer2['default'],
-			{ scrollable: true },
-			_react2['default'].createElement(
-				_touchstonejs.UI.Alertbar,
-				{ type: alertbar.type || 'default', visible: alertbar.visible, animated: true },
-				alertbar.text || ''
-			),
-			_react2['default'].createElement(
-				_touchstonejs.UI.Group,
-				{ hasTopGutter: true },
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupHeader,
-					null,
-					'Segmented Control'
-				),
-				_react2['default'].createElement(_touchstonejs.UI.SegmentedControl, { value: this.state.selectedMode, onChange: this.handleModeChange, hasGutter: true, options: [{ label: 'One', value: 'one' }, { label: 'Two', value: 'two' }, { label: 'Three', value: 'three' }, { label: 'Four', value: 'four' }] })
-			),
-			_react2['default'].createElement(
-				_touchstonejs.UI.Group,
-				null,
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupHeader,
-					null,
-					'Alert Bar'
-				),
-				_react2['default'].createElement(
-					_touchstonejs.UI.ButtonGroup,
-					null,
-					_react2['default'].createElement(
-						_touchstonejs.UI.Button,
-						{ type: 'primary', onTap: this.showAlertbar.bind(this, 'danger', 'No Internet Connection'), disabled: this.state.alertbar.visible },
-						'Danger'
-					),
-					_react2['default'].createElement(
-						_touchstonejs.UI.Button,
-						{ type: 'primary', onTap: this.showAlertbar.bind(this, 'warning', 'Connecting...'), disabled: this.state.alertbar.visible },
-						'Warning'
-					),
-					_react2['default'].createElement(
-						_touchstonejs.UI.Button,
-						{ type: 'primary', onTap: this.showAlertbar.bind(this, 'success', 'Connected'), disabled: this.state.alertbar.visible },
-						'Success'
-					)
-				)
-			),
-			_react2['default'].createElement(
-				_touchstonejs.UI.Group,
-				null,
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupHeader,
-					null,
-					'Popup'
-				),
-				_react2['default'].createElement(
-					_touchstonejs.UI.Button,
-					{ type: 'primary', onTap: this.showLoadingPopup, disabled: this.state.popup.visible },
-					'Show Popup'
-				)
-			),
-			_react2['default'].createElement(
-				_touchstonejs.UI.Group,
-				null,
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupHeader,
-					null,
-					'Application State'
-				),
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupBody,
-					null,
-					_react2['default'].createElement(
-						_touchstonejs.Link,
-						{ to: 'tabs:non-existent', transition: 'show-from-right' },
-						_react2['default'].createElement(
-							_touchstonejs.UI.Item,
-							{ showDisclosureArrow: true },
-							_react2['default'].createElement(
-								_touchstonejs.UI.ItemInner,
-								null,
-								'Invalid View'
-							)
-						)
-					)
-				)
-			),
-			_react2['default'].createElement(
-				_touchstonejs.UI.Popup,
-				{ visible: this.state.popup.visible },
-				_react2['default'].createElement(_touchstonejs.UI.PopupIcon, { name: this.state.popup.iconName, type: this.state.popup.iconType, spinning: this.state.popup.loading }),
-				_react2['default'].createElement(
-					'div',
-					null,
-					_react2['default'].createElement(
-						'strong',
-						null,
-						this.state.popup.header
-					)
-				)
-			)
-		);
-	}
-});
-
-},{"react":undefined,"react-container":19,"react-tappable":22,"react-timers":23,"touchstonejs":42}],29:[function(require,module,exports){
-'use strict';
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _reactContainer = require('react-container');
-
-var _reactContainer2 = _interopRequireDefault(_reactContainer);
-
-var _cordovaDialogs = require('cordova-dialogs');
-
-var _cordovaDialogs2 = _interopRequireDefault(_cordovaDialogs);
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactTappable = require('react-tappable');
-
-var _reactTappable2 = _interopRequireDefault(_reactTappable);
-
-var _touchstonejs = require('touchstonejs');
-
-var scrollable = _reactContainer2['default'].initScrollable();
-
-// html5 input types for testing
-// omitted: button, checkbox, radio, image, hidden, reset, submit
-var HTML5_INPUT_TYPES = ['color', 'date', 'datetime', 'datetime-local', 'email', 'file', 'month', 'number', 'password', 'range', 'search', 'tel', 'text', 'time', 'url', 'week'];
-
-module.exports = _react2['default'].createClass({
-	displayName: 'exports',
-
-	statics: {
-		navigationBar: 'main',
-		getNavigation: function getNavigation() {
-			return {
-				title: 'Forms'
-			};
-		}
-	},
-
-	getInitialState: function getInitialState() {
-		return {
-			flavour: 'chocolate',
-			switchValue: true
-		};
-	},
-
-	handleFlavourChange: function handleFlavourChange(newFlavour) {
-		this.setState({
-			flavour: newFlavour
-		});
-	},
-
-	handleSwitch: function handleSwitch(key, event) {
-		var newState = {};
-		newState[key] = !this.state[key];
-
-		this.setState(newState);
-	},
-
-	alert: function alert(message) {
-		_cordovaDialogs2['default'].alert(message, function () {}, null);
-	},
-
-	renderInputTypes: function renderInputTypes() {
-		return HTML5_INPUT_TYPES.map(function (type) {
-			return _react2['default'].createElement(_touchstonejs.UI.LabelInput, { key: type, type: type, label: type, placeholder: type });
-		});
-	},
-
-	render: function render() {
-
-		return _react2['default'].createElement(
-			_reactContainer2['default'],
-			{ scrollable: scrollable },
-			_react2['default'].createElement(
-				_touchstonejs.UI.Group,
-				null,
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupHeader,
-					null,
-					'Checkbox'
-				),
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupBody,
-					null,
-					_react2['default'].createElement(
-						_touchstonejs.UI.Item,
-						null,
-						_react2['default'].createElement(
-							_touchstonejs.UI.ItemInner,
-							null,
-							_react2['default'].createElement(
-								_touchstonejs.UI.FieldLabel,
-								null,
-								'Switch'
-							),
-							_react2['default'].createElement(_touchstonejs.UI.Switch, { onTap: this.handleSwitch.bind(this, 'switchValue'), on: this.state.switchValue })
-						)
-					),
-					_react2['default'].createElement(
-						_touchstonejs.UI.Item,
-						null,
-						_react2['default'].createElement(
-							_touchstonejs.UI.ItemInner,
-							null,
-							_react2['default'].createElement(
-								_touchstonejs.UI.FieldLabel,
-								null,
-								'Disabled'
-							),
-							_react2['default'].createElement(_touchstonejs.UI.Switch, { disabled: true })
-						)
-					)
-				)
-			),
-			_react2['default'].createElement(
-				_touchstonejs.UI.Group,
-				null,
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupHeader,
-					null,
-					'Radio'
-				),
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupBody,
-					null,
-					_react2['default'].createElement(_touchstonejs.UI.RadioList, { value: this.state.flavour, onChange: this.handleFlavourChange, options: [{ label: 'Vanilla', value: 'vanilla' }, { label: 'Chocolate', value: 'chocolate' }, { label: 'Caramel', value: 'caramel' }, { label: 'Strawberry', value: 'strawberry' }] })
-				)
-			),
-			_react2['default'].createElement(
-				_touchstonejs.UI.Group,
-				null,
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupHeader,
-					null,
-					'Inputs'
-				),
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupBody,
-					null,
-					_react2['default'].createElement(_touchstonejs.UI.Input, { placeholder: 'Default' }),
-					_react2['default'].createElement(_touchstonejs.UI.Input, { defaultValue: 'With Value', placeholder: 'Placeholder' }),
-					_react2['default'].createElement(_touchstonejs.UI.Textarea, { defaultValue: 'Longtext is good for bios etc.', placeholder: 'Longtext' })
-				)
-			),
-			_react2['default'].createElement(
-				_touchstonejs.UI.Group,
-				null,
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupHeader,
-					null,
-					'Labelled Inputs'
-				),
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupBody,
-					null,
-					_react2['default'].createElement(_touchstonejs.UI.LabelInput, { type: 'email', label: 'Email', placeholder: 'your.name@example.com' }),
-					_react2['default'].createElement(_touchstonejs.UI.LabelInput, { type: 'url', label: 'URL', placeholder: 'http://www.yourwebsite.com' }),
-					_react2['default'].createElement(_touchstonejs.UI.LabelInput, { noedit: true, label: 'No Edit', defaultValue: 'Un-editable, scrollable, selectable content' }),
-					_react2['default'].createElement(_touchstonejs.UI.LabelSelect, { label: 'Flavour', value: this.state.flavour, onChange: this.handleFlavourChange, options: [{ label: 'Vanilla', value: 'vanilla' }, { label: 'Chocolate', value: 'chocolate' }, { label: 'Caramel', value: 'caramel' }, { label: 'Strawberry', value: 'strawberry' }, { label: 'Banana', value: 'banana' }, { label: 'Lemon', value: 'lemon' }, { label: 'Pastaccio', value: 'pastaccio' }] })
-				)
-			),
-			_react2['default'].createElement(
-				_touchstonejs.UI.Button,
-				{ type: 'primary', onTap: this.alert.bind(this, 'You clicked the Primary Button') },
-				'Primary Button'
-			),
-			_react2['default'].createElement(
-				_touchstonejs.UI.Button,
-				{ onTap: this.alert.bind(this, 'You clicked the Default Button') },
-				'Default Button'
-			),
-			_react2['default'].createElement(
-				_touchstonejs.UI.Button,
-				{ type: 'danger', onTap: this.alert.bind(this, 'You clicked the Danger Button') },
-				'Danger Button'
-			),
-			_react2['default'].createElement(
-				_touchstonejs.UI.Button,
-				{ type: 'danger', onTap: this.alert.bind(this, 'You clicked the Danger Button'), disabled: true },
-				'Disabled Button'
-			)
-		);
-	}
-});
-/*<UI.Group>
-<UI.GroupHeader>Input Type Experiment</UI.GroupHeader>
-<UI.GroupBody>
-	{this.renderInputTypes()}
-</UI.GroupBody>
-</UI.Group>*/
-
-},{"cordova-dialogs":3,"react":undefined,"react-container":19,"react-tappable":22,"touchstonejs":42}],30:[function(require,module,exports){
-'use strict';
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _reactContainer = require('react-container');
-
-var _reactContainer2 = _interopRequireDefault(_reactContainer);
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactSentry = require('react-sentry');
-
-var _reactSentry2 = _interopRequireDefault(_reactSentry);
-
-var _reactTappable = require('react-tappable');
-
-var _reactTappable2 = _interopRequireDefault(_reactTappable);
-
-var _touchstonejs = require('touchstonejs');
-
-var scrollable = _reactContainer2['default'].initScrollable();
-
-var ComplexLinkItem = _react2['default'].createClass({
-	displayName: 'ComplexLinkItem',
-
-	contextTypes: { peopleStore: _react2['default'].PropTypes.object.isRequired },
-
-	toggleStar: function toggleStar() {
-		var person = this.props.person;
-
-		this.context.peopleStore.star(person, !person.isStarred);
-	},
-
-	render: function render() {
-		var person = this.props.person;
-
-		return _react2['default'].createElement(
-			_touchstonejs.Link,
-			{ to: 'tabs:list-details', transition: 'show-from-right', viewProps: { person: person, prevView: 'list-complex' } },
-			_react2['default'].createElement(
-				_touchstonejs.UI.Item,
-				null,
-				_react2['default'].createElement(_touchstonejs.UI.ItemMedia, { avatar: person.picture, avatarInitials: person.initials }),
-				_react2['default'].createElement(
-					_touchstonejs.UI.ItemInner,
-					null,
-					_react2['default'].createElement(
-						_touchstonejs.UI.ItemContent,
-						null,
-						_react2['default'].createElement(
-							_touchstonejs.UI.ItemTitle,
-							null,
-							person.name.full
-						),
-						_react2['default'].createElement(
-							_touchstonejs.UI.ItemSubTitle,
-							null,
-							person.bio
-						)
-					),
-					_react2['default'].createElement(
-						_reactTappable2['default'],
-						{ onTap: this.toggleStar, stopPropagation: true },
-						_react2['default'].createElement(_touchstonejs.UI.ItemNote, { icon: person.isStarred ? 'ion-ios-star' : 'ion-ios-star-outline', type: person.isStarred ? 'warning' : 'default', className: 'ion-lg' })
-					)
-				)
-			)
-		);
-	}
-});
-
-// FIXME: this bit is global and hacky, expect it to change
-var EventEmitter = require('events').EventEmitter;
-var emitter = new EventEmitter();
-
-function getNavigation(props, app, filterStarred) {
-	return {
-		leftLabel: 'Lists',
-		leftArrow: true,
-		leftAction: function leftAction() {
-			app.transitionTo('tabs:lists', { transition: 'reveal-from-right' });
-		},
-		rightLabel: filterStarred ? 'All' : 'Starred',
-		rightAction: emitter.emit.bind(emitter, 'navigationBarRightAction'),
-		title: 'Complex'
-	};
-}
-
-module.exports = _react2['default'].createClass({
-	displayName: 'exports',
-
-	contextTypes: {
-		app: _react2['default'].PropTypes.object,
-		peopleStore: _react2['default'].PropTypes.object.isRequired
-	},
-	mixins: [(0, _reactSentry2['default'])()],
-
-	statics: {
-		navigationBar: 'main',
-		getNavigation: getNavigation
-	},
-
-	getInitialState: function getInitialState() {
-		return {
-			filterStarred: false,
-			people: this.context.peopleStore.getPeople()
-		};
-	},
-
-	componentDidMount: function componentDidMount() {
-		var _this = this;
-
-		this.watch(this.context.peopleStore, 'people-updated', function (people) {
-			_this.setState({ people: people });
-		});
-
-		this.watch(emitter, 'navigationBarRightAction', this.toggleStarred);
-	},
-
-	toggleStarred: function toggleStarred() {
-		var filterStarred = !this.state.filterStarred;
-		this.setState({ filterStarred: filterStarred });
-		this.context.app.navigationBars.main.update(getNavigation({}, this.context.app, filterStarred));
-	},
-
-	handleModeChange: function handleModeChange(newMode) {
-		var selectedMode = newMode;
-
-		if (this.state.selectedMode === newMode) {
-			selectedMode = null;
-		}
-
-		this.setState({ selectedMode: selectedMode });
-	},
-
-	render: function render() {
-		var _state = this.state;
-		var people = _state.people;
-		var filterStarred = _state.filterStarred;
-		var selectedMode = _state.selectedMode;
-
-		if (filterStarred) {
-			people = people.filter(function (person) {
-				return person.isStarred;
-			});
-		}
-
-		if (selectedMode === 'A' || selectedMode === 'B') {
-			people = people.filter(function (person) {
-				return person.category === selectedMode;
-			});
-		}
-
-		function sortByName(a, b) {
-			return a.name.full.localeCompare(b.name.full);
-		}
-
-		var sortedPeople = people.sort(sortByName);
-		var results = undefined;
-
-		if (sortedPeople.length) {
-			var aPeople = sortedPeople.filter(function (person) {
-				return person.category === 'A';
-			}).map(function (person, i) {
-				return _react2['default'].createElement(ComplexLinkItem, { key: 'persona' + i, person: person });
-			});
-
-			var bPeople = sortedPeople.filter(function (person) {
-				return person.category === 'B';
-			}).map(function (person, i) {
-				return _react2['default'].createElement(ComplexLinkItem, { key: 'personb' + i, person: person });
-			});
-
-			results = _react2['default'].createElement(
-				_touchstonejs.UI.GroupBody,
-				null,
-				aPeople.length > 0 ? _react2['default'].createElement(
-					_touchstonejs.UI.ListHeader,
-					{ sticky: true },
-					'Category A'
-				) : '',
-				aPeople,
-				bPeople.length > 0 ? _react2['default'].createElement(
-					_touchstonejs.UI.ListHeader,
-					{ sticky: true },
-					'Category B'
-				) : '',
-				bPeople
-			);
-		} else {
-			results = _react2['default'].createElement(
-				_reactContainer2['default'],
-				{ direction: 'column', align: 'center', justify: 'center', className: 'no-results' },
-				_react2['default'].createElement('div', { className: 'no-results__icon ion-ios-star' }),
-				_react2['default'].createElement(
-					'div',
-					{ className: 'no-results__text' },
-					'Go star some people!'
-				)
-			);
-		}
-
-		return _react2['default'].createElement(
-			_reactContainer2['default'],
-			{ scrollable: scrollable },
-			_react2['default'].createElement(_touchstonejs.UI.SegmentedControl, { value: this.state.selectedMode, onChange: this.handleModeChange, hasGutter: true, equalWidthSegments: true, options: [{ label: 'A', value: 'A' }, { label: 'B', value: 'B' }] }),
-			results
-		);
-	}
-});
-
-},{"events":24,"react":undefined,"react-container":19,"react-sentry":21,"react-tappable":22,"touchstonejs":42}],31:[function(require,module,exports){
-'use strict';
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _reactContainer = require('react-container');
-
-var _reactContainer2 = _interopRequireDefault(_reactContainer);
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-module.exports = _react2['default'].createClass({
-	displayName: 'exports',
-
-	statics: {
-		navigationBar: 'main',
-		getNavigation: function getNavigation(props, app) {
-			var leftLabel = props.prevView === 'list-simple' ? 'Simple' : 'Complex';
-			return {
-				leftArrow: true,
-				leftLabel: leftLabel,
-				leftAction: function leftAction() {
-					app.transitionTo('tabs:' + props.prevView, { transition: 'reveal-from-right' });
-				},
-				title: 'Person'
-			};
-		}
-	},
-	getDefaultProps: function getDefaultProps() {
-		return {
-			prevView: 'home'
-		};
-	},
-	render: function render() {
-		var person = this.props.person;
-
-		return _react2['default'].createElement(
-			_reactContainer2['default'],
-			{ direction: 'column' },
-			_react2['default'].createElement(
-				_reactContainer2['default'],
-				{ fill: true, scrollable: true, ref: 'scrollContainer', className: 'PersonDetails' },
-				_react2['default'].createElement('img', { src: person.picture, className: 'PersonDetails__avatar' }),
-				_react2['default'].createElement(
-					'div',
-					{ className: 'PersonDetails__heading' },
-					person.name.full
-				),
-				_react2['default'].createElement(
-					'div',
-					{ className: 'PersonDetails__text text-block' },
-					person.bio
-				),
-				(person.twitter || person.github) && _react2['default'].createElement(
-					'div',
-					{ className: 'PersonDetails__profiles' },
-					person.twitter && _react2['default'].createElement(
-						'div',
-						{ className: 'PersonDetails__profile' },
-						_react2['default'].createElement('span', { className: 'PersonDetails__profile__icon ion-social-twitter' }),
-						person.twitter
-					),
-					person.github && _react2['default'].createElement(
-						'div',
-						{ className: 'PersonDetails__profile' },
-						_react2['default'].createElement('span', { className: 'PersonDetails__profile__icon ion-social-github' }),
-						person.github
-					)
-				)
-			)
-		);
-	}
-});
-
-},{"react":undefined,"react-container":19}],32:[function(require,module,exports){
-'use strict';
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _reactContainer = require('react-container');
-
-var _reactContainer2 = _interopRequireDefault(_reactContainer);
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactSentry = require('react-sentry');
-
-var _reactSentry2 = _interopRequireDefault(_reactSentry);
-
-var _reactTappable = require('react-tappable');
-
-var _reactTappable2 = _interopRequireDefault(_reactTappable);
-
-var _touchstonejs = require('touchstonejs');
-
-var scrollable = _reactContainer2['default'].initScrollable({ left: 0, top: 44 });
-
-var SimpleLinkItem = _react2['default'].createClass({
-	displayName: 'SimpleLinkItem',
-
-	propTypes: {
-		person: _react2['default'].PropTypes.object.isRequired
-	},
-
-	render: function render() {
-		return _react2['default'].createElement(
-			_touchstonejs.Link,
-			{ to: 'tabs:list-details', transition: 'show-from-right', viewProps: { person: this.props.person, prevView: 'list-simple' } },
-			_react2['default'].createElement(
-				_touchstonejs.UI.Item,
-				{ showDisclosureArrow: true },
-				_react2['default'].createElement(
-					_touchstonejs.UI.ItemInner,
-					null,
-					_react2['default'].createElement(
-						_touchstonejs.UI.ItemTitle,
-						null,
-						this.props.person.name.full
-					)
-				)
-			)
-		);
-	}
-});
-
-module.exports = _react2['default'].createClass({
-	displayName: 'exports',
-
-	mixins: [(0, _reactSentry2['default'])()],
-	contextTypes: { peopleStore: _react2['default'].PropTypes.object.isRequired },
-
-	statics: {
-		navigationBar: 'main',
-		getNavigation: function getNavigation(props, app) {
-			return {
-				leftArrow: true,
-				leftLabel: 'Lists',
-				leftAction: function leftAction() {
-					app.transitionTo('tabs:lists', { transition: 'reveal-from-right' });
-				},
-				title: 'Simple'
-			};
-		}
-	},
-
-	componentDidMount: function componentDidMount() {
-		var _this = this;
-
-		this.watch(this.context.peopleStore, 'people-updated', function (people) {
-			_this.setState({ people: people });
-		});
-	},
-
-	getInitialState: function getInitialState() {
-		return {
-			searchString: '',
-			people: this.context.peopleStore.getPeople()
-		};
-	},
-
-	clearSearch: function clearSearch() {
-		this.setState({ searchString: '' });
-	},
-
-	updateSearch: function updateSearch(str) {
-		this.setState({ searchString: str });
-	},
-
-	submitSearch: function submitSearch(str) {
-		console.log(str);
-	},
-
-	render: function render() {
-		var _state = this.state;
-		var people = _state.people;
-		var searchString = _state.searchString;
-
-		var searchRegex = new RegExp(searchString);
-
-		function searchFilter(person) {
-			return searchRegex.test(person.name.full.toLowerCase());
-		};
-		function sortByName(a, b) {
-			return a.name.full.localeCompare(b.name.full);
-		};
-
-		var filteredPeople = people.filter(searchFilter).sort(sortByName);
-
-		var results = undefined;
-
-		if (searchString && !filteredPeople.length) {
-			results = _react2['default'].createElement(
-				_reactContainer2['default'],
-				{ direction: 'column', align: 'center', justify: 'center', className: 'no-results' },
-				_react2['default'].createElement('div', { className: 'no-results__icon ion-ios-search-strong' }),
-				_react2['default'].createElement(
-					'div',
-					{ className: 'no-results__text' },
-					'No results for "' + searchString + '"'
-				)
-			);
-		} else {
-			results = _react2['default'].createElement(
-				_touchstonejs.UI.GroupBody,
-				null,
-				filteredPeople.map(function (person, i) {
-					return _react2['default'].createElement(SimpleLinkItem, { key: 'person' + i, person: person });
-				})
-			);
-		}
-
-		return _react2['default'].createElement(
-			_reactContainer2['default'],
-			{ ref: 'scrollContainer', scrollable: scrollable },
-			_react2['default'].createElement(_touchstonejs.UI.SearchField, { type: 'dark', value: this.state.searchString, onSubmit: this.submitSearch, onChange: this.updateSearch, onCancel: this.clearSearch, onClear: this.clearSearch, placeholder: 'Search...' }),
-			results
-		);
-	}
-});
-
-},{"react":undefined,"react-container":19,"react-sentry":21,"react-tappable":22,"touchstonejs":42}],33:[function(require,module,exports){
-'use strict';
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _reactContainer = require('react-container');
-
-var _reactContainer2 = _interopRequireDefault(_reactContainer);
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _touchstonejs = require('touchstonejs');
-
-module.exports = _react2['default'].createClass({
-	displayName: 'exports',
-
-	statics: {
-		navigationBar: 'main',
-		getNavigation: function getNavigation() {
-			return {
-				title: 'Lists'
-			};
-		}
-	},
-
-	render: function render() {
-		return _react2['default'].createElement(
-			_reactContainer2['default'],
-			{ scrollable: true },
-			_react2['default'].createElement(
-				_touchstonejs.UI.Group,
-				null,
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupHeader,
-					null,
-					'Lists'
-				),
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupBody,
-					null,
-					_react2['default'].createElement(
-						_touchstonejs.Link,
-						{ to: 'tabs:list-simple', transition: 'show-from-right' },
-						_react2['default'].createElement(
-							_touchstonejs.UI.Item,
-							{ showDisclosureArrow: true },
-							_react2['default'].createElement(
-								_touchstonejs.UI.ItemInner,
-								null,
-								'Simple List'
-							)
-						)
-					),
-					_react2['default'].createElement(
-						_touchstonejs.Link,
-						{ to: 'tabs:list-complex', transition: 'show-from-right' },
-						_react2['default'].createElement(
-							_touchstonejs.UI.Item,
-							{ showDisclosureArrow: true },
-							_react2['default'].createElement(
-								_touchstonejs.UI.ItemInner,
-								null,
-								'Complex List'
-							)
-						)
-					)
-				)
-			),
-			_react2['default'].createElement(
-				_touchstonejs.UI.Group,
-				null,
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupHeader,
-					null,
-					'GroupHeader'
-				),
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupBody,
-					null,
-					_react2['default'].createElement(
-						_touchstonejs.UI.GroupInner,
-						null,
-						_react2['default'].createElement(
-							'p',
-							null,
-							'Use groups to contain content or lists. Where appropriate a Group should be accompanied by a GroupHeading and optionally a GroupFooter.'
-						),
-						'GroupBody will apply the background for content inside groups.'
-					)
-				),
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupFooter,
-					null,
-					'GroupFooter: useful for a detailed explaination to express the intentions of the Group. Try to be concise - remember that users are likely to read the text in your UI many times.'
-				)
-			)
-		);
-	}
-});
-
-},{"react":undefined,"react-container":19,"touchstonejs":42}],34:[function(require,module,exports){
-'use strict';
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _reactContainer = require('react-container');
-
-var _reactContainer2 = _interopRequireDefault(_reactContainer);
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactTimers = require('react-timers');
-
-var _reactTimers2 = _interopRequireDefault(_reactTimers);
-
-var _touchstonejs = require('touchstonejs');
-
-module.exports = _react2['default'].createClass({
-	displayName: 'exports',
-
-	mixins: [_touchstonejs.Mixins.Transitions, (0, _reactTimers2['default'])()],
-	componentDidMount: function componentDidMount() {
-		var self = this;
-		this.setTimeout(function () {
-			self.transitionTo('app:main', { transition: 'fade' });
-		}, 1000);
-	},
-	render: function render() {
-		return _react2['default'].createElement(
-			_reactContainer2['default'],
-			{ direction: 'column' },
-			_react2['default'].createElement(_touchstonejs.UI.NavigationBar, { name: 'over', title: this.props.navbarTitle }),
-			_react2['default'].createElement(
-				_reactContainer2['default'],
-				{ direction: 'column', align: 'center', justify: 'center', className: 'no-results' },
-				_react2['default'].createElement('div', { className: 'no-results__icon ion-ios-photos' }),
-				_react2['default'].createElement(
-					'div',
-					{ className: 'no-results__text' },
-					'Hold on a sec...'
-				)
-			)
-		);
-	}
-});
-
-},{"react":undefined,"react-container":19,"react-timers":23,"touchstonejs":42}],35:[function(require,module,exports){
-'use strict';
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _reactContainer = require('react-container');
-
-var _reactContainer2 = _interopRequireDefault(_reactContainer);
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactTimers = require('react-timers');
-
-var _reactTimers2 = _interopRequireDefault(_reactTimers);
-
-var _touchstonejs = require('touchstonejs');
-
-module.exports = _react2['default'].createClass({
-	displayName: 'exports',
-
-	mixins: [_touchstonejs.Mixins.Transitions, (0, _reactTimers2['default'])()],
-	statics: {
-		navigationBar: 'main',
-		getNavigation: function getNavigation(props) {
-			return {
-				title: props.navbarTitle
-			};
-		}
-	},
-	componentDidMount: function componentDidMount() {
-		var self = this;
-
-		this.setTimeout(function () {
-			self.transitionTo('tabs:transitions', { transition: 'fade' });
-		}, 1000);
-	},
-	render: function render() {
-		return _react2['default'].createElement(
-			_reactContainer2['default'],
-			{ direction: 'column', align: 'center', justify: 'center', className: 'no-results' },
-			_react2['default'].createElement('div', { className: 'no-results__icon ion-ios-photos' }),
-			_react2['default'].createElement(
-				'div',
-				{ className: 'no-results__text' },
-				'Hold on a sec...'
-			)
-		);
-	}
-});
-
-},{"react":undefined,"react-container":19,"react-timers":23,"touchstonejs":42}],36:[function(require,module,exports){
-'use strict';
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _reactContainer = require('react-container');
-
-var _reactContainer2 = _interopRequireDefault(_reactContainer);
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _touchstonejs = require('touchstonejs');
-
-var scrollable = _reactContainer2['default'].initScrollable();
-
-module.exports = _react2['default'].createClass({
-	displayName: 'exports',
-
-	statics: {
-		navigationBar: 'main',
-		getNavigation: function getNavigation() {
-			return {
-				title: 'Transitions'
-			};
-		}
-	},
-
-	render: function render() {
-		return _react2['default'].createElement(
-			_reactContainer2['default'],
-			{ scrollable: scrollable },
-			_react2['default'].createElement(
-				_touchstonejs.UI.Group,
-				null,
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupHeader,
-					null,
-					'Default'
-				),
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupBody,
-					null,
-					_react2['default'].createElement(
-						_touchstonejs.Link,
-						{ to: 'tabs:transitions-target', viewProps: { navbarTitle: 'Instant' } },
-						_react2['default'].createElement(
-							_touchstonejs.UI.Item,
-							{ showDisclosureArrow: true },
-							_react2['default'].createElement(
-								_touchstonejs.UI.ItemInner,
-								null,
-								'Instant'
-							)
-						)
-					)
-				)
-			),
-			_react2['default'].createElement(
-				_touchstonejs.UI.Group,
-				null,
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupHeader,
-					null,
-					'Fade'
-				),
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupBody,
-					null,
-					_react2['default'].createElement(
-						_touchstonejs.Link,
-						{ to: 'tabs:transitions-target', transition: 'fade', viewProps: { navbarTitle: 'Fade' } },
-						_react2['default'].createElement(
-							_touchstonejs.UI.Item,
-							{ showDisclosureArrow: true },
-							_react2['default'].createElement(
-								_touchstonejs.UI.ItemInner,
-								null,
-								'Fade'
-							)
-						)
-					),
-					_react2['default'].createElement(
-						_touchstonejs.Link,
-						{ to: 'tabs:transitions-target', transition: 'fade-expand', viewProps: { navbarTitle: 'Fade Expand' } },
-						_react2['default'].createElement(
-							_touchstonejs.UI.Item,
-							{ showDisclosureArrow: true },
-							_react2['default'].createElement(
-								_touchstonejs.UI.ItemInner,
-								null,
-								_react2['default'].createElement(
-									'span',
-									null,
-									'Fade Expand ',
-									_react2['default'].createElement(
-										'span',
-										{ className: 'text-muted' },
-										'(non-standard)'
-									)
-								)
-							)
-						)
-					),
-					_react2['default'].createElement(
-						_touchstonejs.Link,
-						{ to: 'tabs:transitions-target', transition: 'fade-contract', viewProps: { navbarTitle: 'Fade Contract' } },
-						_react2['default'].createElement(
-							_touchstonejs.UI.Item,
-							{ showDisclosureArrow: true },
-							_react2['default'].createElement(
-								_touchstonejs.UI.ItemInner,
-								null,
-								_react2['default'].createElement(
-									'span',
-									null,
-									'Fade Contract ',
-									_react2['default'].createElement(
-										'span',
-										{ className: 'text-muted' },
-										'(non-standard)'
-									)
-								)
-							)
-						)
-					)
-				)
-			),
-			_react2['default'].createElement(
-				_touchstonejs.UI.Group,
-				null,
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupHeader,
-					null,
-					'Show'
-				),
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupBody,
-					null,
-					_react2['default'].createElement(
-						_touchstonejs.Link,
-						{ to: 'tabs:transitions-target', transition: 'show-from-left', viewProps: { navbarTitle: 'Show from Left' } },
-						_react2['default'].createElement(
-							_touchstonejs.UI.Item,
-							{ showDisclosureArrow: true },
-							_react2['default'].createElement(
-								_touchstonejs.UI.ItemInner,
-								null,
-								_react2['default'].createElement(
-									'span',
-									null,
-									'Show from Left ',
-									_react2['default'].createElement(
-										'span',
-										{ className: 'text-muted' },
-										'(non-standard)'
-									)
-								)
-							)
-						)
-					),
-					_react2['default'].createElement(
-						_touchstonejs.Link,
-						{ to: 'tabs:transitions-target', transition: 'show-from-right', viewProps: { navbarTitle: 'Show from Right' } },
-						_react2['default'].createElement(
-							_touchstonejs.UI.Item,
-							{ showDisclosureArrow: true },
-							_react2['default'].createElement(
-								_touchstonejs.UI.ItemInner,
-								null,
-								'Show from Right'
-							)
-						)
-					),
-					_react2['default'].createElement(
-						_touchstonejs.Link,
-						{ to: 'app:transitions-target-over', transition: 'show-from-top', viewProps: { navbarTitle: 'Show from Top' } },
-						_react2['default'].createElement(
-							_touchstonejs.UI.Item,
-							{ showDisclosureArrow: true },
-							_react2['default'].createElement(
-								_touchstonejs.UI.ItemInner,
-								null,
-								_react2['default'].createElement(
-									'span',
-									null,
-									'Show from Top ',
-									_react2['default'].createElement(
-										'span',
-										{ className: 'text-muted' },
-										'(non-standard)'
-									)
-								)
-							)
-						)
-					),
-					_react2['default'].createElement(
-						_touchstonejs.Link,
-						{ to: 'app:transitions-target-over', transition: 'show-from-bottom', viewProps: { navbarTitle: 'Show from Bottom' } },
-						_react2['default'].createElement(
-							_touchstonejs.UI.Item,
-							{ showDisclosureArrow: true },
-							_react2['default'].createElement(
-								_touchstonejs.UI.ItemInner,
-								null,
-								'Show from Bottom'
-							)
-						)
-					)
-				)
-			),
-			_react2['default'].createElement(
-				_touchstonejs.UI.Group,
-				null,
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupHeader,
-					null,
-					'Reveal'
-				),
-				_react2['default'].createElement(
-					_touchstonejs.UI.GroupBody,
-					null,
-					_react2['default'].createElement(
-						_touchstonejs.Link,
-						{ to: 'tabs:transitions-target', transition: 'reveal-from-left', viewProps: { navbarTitle: 'Reveal from Left' } },
-						_react2['default'].createElement(
-							_touchstonejs.UI.Item,
-							{ showDisclosureArrow: true },
-							_react2['default'].createElement(
-								_touchstonejs.UI.ItemInner,
-								null,
-								_react2['default'].createElement(
-									'span',
-									null,
-									'Reveal from Left ',
-									_react2['default'].createElement(
-										'span',
-										{ className: 'text-muted' },
-										'(non-standard)'
-									)
-								)
-							)
-						)
-					),
-					_react2['default'].createElement(
-						_touchstonejs.Link,
-						{ to: 'tabs:transitions-target', transition: 'reveal-from-right', viewProps: { navbarTitle: 'Reveal from Right' } },
-						_react2['default'].createElement(
-							_touchstonejs.UI.Item,
-							{ showDisclosureArrow: true },
-							_react2['default'].createElement(
-								_touchstonejs.UI.ItemInner,
-								null,
-								'Reveal from Right'
-							)
-						)
-					),
-					_react2['default'].createElement(
-						_touchstonejs.Link,
-						{ to: 'app:transitions-target-over', transition: 'reveal-from-top', viewProps: { navbarTitle: 'Reveal from Top' } },
-						_react2['default'].createElement(
-							_touchstonejs.UI.Item,
-							{ showDisclosureArrow: true },
-							_react2['default'].createElement(
-								_touchstonejs.UI.ItemInner,
-								null,
-								_react2['default'].createElement(
-									'span',
-									null,
-									'Reveal from Top ',
-									_react2['default'].createElement(
-										'span',
-										{ className: 'text-muted' },
-										'(non-standard)'
-									)
-								)
-							)
-						)
-					),
-					_react2['default'].createElement(
-						_touchstonejs.Link,
-						{ to: 'app:transitions-target-over', transition: 'reveal-from-bottom', viewProps: { navbarTitle: 'Reveal from Bottom' } },
-						_react2['default'].createElement(
-							_touchstonejs.UI.Item,
-							{ showDisclosureArrow: true },
-							_react2['default'].createElement(
-								_touchstonejs.UI.ItemInner,
-								null,
-								'Reveal from Bottom'
-							)
-						)
-					)
-				)
-			)
-		);
-	}
-});
-
-},{"react":undefined,"react-container":19,"touchstonejs":42}],37:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4901,29 +3756,24 @@ var ErrorView = React.createClass({
 	},
 
 	render: function render() {
-		return React.createElement(Container, { fill: true, className: "View ErrorView" }, this.props.children);
+		return React.createElement(
+			Container,
+			{ fill: true, className: 'View ErrorView' },
+			this.props.children
+		);
 	}
 });
 
 exports['default'] = ErrorView;
 module.exports = exports['default'];
-
-},{"react":undefined,"react-container":79}],38:[function(require,module,exports){
+},{"react":undefined,"react-container":23}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var blacklist = require('blacklist');
 var React = require('react');
@@ -4951,14 +3801,17 @@ var Link = React.createClass({
 	render: function render() {
 		var tappableProps = blacklist(this.props, 'children', 'options', 'transition', 'viewProps');
 
-		return React.createElement(Tappable, _extends({ onTap: this.doTransition }, tappableProps), this.props.children);
+		return React.createElement(
+			Tappable,
+			_extends({ onTap: this.doTransition }, tappableProps),
+			this.props.children
+		);
 	}
 });
 
 exports['default'] = Link;
 module.exports = exports['default'];
-
-},{"../mixins/Transitions":43,"blacklist":77,"react":undefined,"react-tappable":80}],39:[function(require,module,exports){
+},{"../mixins/Transitions":41,"blacklist":78,"react":undefined,"react-tappable":27}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4980,23 +3833,14 @@ var View = React.createClass({
 
 exports['default'] = View;
 module.exports = exports['default'];
-
-},{"react":undefined}],40:[function(require,module,exports){
+},{"react":undefined}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var blacklist = require('blacklist');
 var classNames = require('classnames');
@@ -5023,7 +3867,11 @@ var ViewContainer = React.createClass({
 	},
 	render: function render() {
 		var props = blacklist(this.props, 'children');
-		return React.createElement('div', props, this.props.children);
+		return React.createElement(
+			'div',
+			props,
+			this.props.children
+		);
 	}
 });
 
@@ -5094,11 +3942,42 @@ var ViewManager = React.createClass({
 	renderViewContainer: function renderViewContainer() {
 		var viewKey = this.state.currentView;
 		if (!viewKey) {
-			return React.createElement(ErrorView, null, React.createElement('span', { className: "ErrorView__heading" }, 'ViewManager: ', this.props.name), React.createElement('span', { className: "ErrorView__text" }, 'Error: There is no current View.'));
+			return React.createElement(
+				ErrorView,
+				null,
+				React.createElement(
+					'span',
+					{ className: 'ErrorView__heading' },
+					'ViewManager: ',
+					this.props.name
+				),
+				React.createElement(
+					'span',
+					{ className: 'ErrorView__text' },
+					'Error: There is no current View.'
+				)
+			);
 		}
 		var view = this.state.views[viewKey];
 		if (!view || !view.props.component) {
-			return React.createElement(ErrorView, null, React.createElement('span', { className: "ErrorView__heading" }, 'ViewManager: "', this.props.name, '"'), React.createElement('span', { className: "ErrorView__text" }, 'The View "', viewKey, '" is invalid.'));
+			return React.createElement(
+				ErrorView,
+				null,
+				React.createElement(
+					'span',
+					{ className: 'ErrorView__heading' },
+					'ViewManager: "',
+					this.props.name,
+					'"'
+				),
+				React.createElement(
+					'span',
+					{ className: 'ErrorView__text' },
+					'The View "',
+					viewKey,
+					'" is invalid.'
+				)
+			);
 		}
 		var options = this.state.options || {};
 		var viewClassName = classNames('View View--' + viewKey, view.props.className);
@@ -5122,7 +4001,11 @@ var ViewManager = React.createClass({
 			this.__lastRenderedView = viewKey;
 		}
 
-		return React.createElement(ViewContainer, { className: viewClassName, key: viewKey }, viewElement);
+		return React.createElement(
+			ViewContainer,
+			{ className: viewClassName, key: viewKey },
+			viewElement
+		);
 	},
 	render: function render() {
 		var className = classNames('ViewManager', this.props.className);
@@ -5133,14 +4016,17 @@ var ViewManager = React.createClass({
 			// console.log('applying view transition: ' + this.state.options.transition + ' to view ' + this.state.currentView);
 			transitionName = 'view-transition-' + this.state.options.transition;
 		}
-		return React.createElement(Transition, { transitionName: transitionName, transitionEnter: true, transitionLeave: true, className: className, component: "div" }, viewContainer);
+		return React.createElement(
+			Transition,
+			{ transitionName: transitionName, transitionEnter: true, transitionLeave: true, className: className, component: 'div' },
+			viewContainer
+		);
 	}
 });
 
 exports['default'] = ViewManager;
 module.exports = exports['default'];
-
-},{"./ErrorView":37,"blacklist":77,"classnames":78,"react/addons":undefined}],41:[function(require,module,exports){
+},{"./ErrorView":35,"blacklist":78,"classnames":2,"react/addons":undefined}],39:[function(require,module,exports){
 'use strict';
 
 var animation = require('tween.js');
@@ -5199,8 +4085,7 @@ Mixins.ScrollContainerToTop = {
 		});
 	}
 };
-
-},{"react":undefined,"tween.js":81}],42:[function(require,module,exports){
+},{"react":undefined,"tween.js":79}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5230,7 +4115,6 @@ function createApp() {
 	var app = {
 		navigationBars: {},
 		viewManagers: {},
-		views: {},
 		transitionTo: function transitionTo(view, opts) {
 			var vm = '__default';
 			view = view.split(':');
@@ -5252,8 +4136,7 @@ function createApp() {
 		}
 	};
 }
-
-},{"./core/Link":38,"./core/View":39,"./core/ViewManager":40,"./core/animation":41,"./mixins":44,"./ui":76,"react":undefined,"react-container":79}],43:[function(require,module,exports){
+},{"./core/Link":36,"./core/View":37,"./core/ViewManager":38,"./core/animation":39,"./mixins":42,"./ui":77,"react":undefined,"react-container":23}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5272,8 +4155,7 @@ var Transitions = {
 
 exports['default'] = Transitions;
 module.exports = exports['default'];
-
-},{"react":undefined}],44:[function(require,module,exports){
+},{"react":undefined}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5281,8 +4163,7 @@ Object.defineProperty(exports, '__esModule', {
 });
 var Transitions = require('./Transitions');
 exports.Transitions = Transitions;
-
-},{"./Transitions":43}],45:[function(require,module,exports){
+},{"./Transitions":41}],43:[function(require,module,exports){
 'use strict';
 
 var React = require('react/addons');
@@ -5312,27 +4193,34 @@ module.exports = React.createClass({
 			'Alertbar--pulse': this.props.pulse
 		}, this.props.className);
 
-		var pulseWrap = this.props.pulse ? React.createElement('div', { className: "Alertbar__inner" }, this.props.children) : this.props.children;
-		var animatedBar = this.props.visible ? React.createElement('div', { className: className }, pulseWrap) : null;
+		var pulseWrap = this.props.pulse ? React.createElement(
+			'div',
+			{ className: 'Alertbar__inner' },
+			this.props.children
+		) : this.props.children;
+		var animatedBar = this.props.visible ? React.createElement(
+			'div',
+			{ className: className },
+			pulseWrap
+		) : null;
 
-		var component = this.props.animated ? React.createElement(Transition, { transitionName: "Alertbar", component: "div" }, animatedBar) : React.createElement('div', { className: className }, pulseWrap);
+		var component = this.props.animated ? React.createElement(
+			Transition,
+			{ transitionName: 'Alertbar', component: 'div' },
+			animatedBar
+		) : React.createElement(
+			'div',
+			{ className: className },
+			pulseWrap
+		);
 
 		return component;
 	}
 });
-
-},{"classnames":78,"react/addons":undefined}],46:[function(require,module,exports){
+},{"classnames":2,"react/addons":undefined}],44:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var React = require('react/addons');
 var Tappable = require('react-tappable');
@@ -5358,22 +4246,13 @@ module.exports = React.createClass({
 		var className = classnames('Button', 'Button--' + this.props.type, this.props.className);
 		var props = blacklist(this.props, 'type');
 
-		return React.createElement(Tappable, _extends({}, props, { className: className, component: "button" }));
+		return React.createElement(Tappable, _extends({}, props, { className: className, component: 'button' }));
 	}
 });
-
-},{"blacklist":77,"classnames":78,"react-tappable":80,"react/addons":undefined}],47:[function(require,module,exports){
+},{"blacklist":78,"classnames":2,"react-tappable":27,"react/addons":undefined}],45:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var blacklist = require('blacklist');
 var classnames = require('classnames');
@@ -5392,19 +4271,351 @@ module.exports = React.createClass({
 		return React.createElement('div', _extends({ className: className }, props));
 	}
 });
-
-},{"blacklist":77,"classnames":78,"react/addons":undefined}],48:[function(require,module,exports){
+},{"blacklist":78,"classnames":2,"react/addons":undefined}],46:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
+var React = require('react/addons');
+var Tappable = require('react-tappable');
+var classnames = require('classnames');
+
+var i18n = {
+	// TODO: use real i18n strings.
+	weekdaysMin: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+	months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+	longMonths: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+	formatYearMonth: function formatYearMonth(year, month) {
+		return year + ' - ' + (month + 1);
+	}
 };
+
+function newState(props) {
+	var date = props.date || new Date();
+	var year = date.getFullYear();
+	var month = date.getMonth();
+	var ns = {
+		mode: 'day',
+		year: year,
+		month: month,
+		day: date.getDate(),
+		displayYear: year,
+		displayMonth: month,
+		displayYearRangeStart: Math.floor(year / 10) * 10
+	};
+	return ns;
+}
+
+module.exports = React.createClass({
+	displayName: 'DatePicker',
+	propTypes: {
+		date: React.PropTypes.object,
+		mode: React.PropTypes.oneOf(['day', 'month']),
+		onChange: React.PropTypes.func
+	},
+
+	getDefaultProps: function getDefaultProps() {
+		return {
+			date: new Date()
+		};
+	},
+
+	getInitialState: function getInitialState() {
+		return newState(this.props);
+	},
+
+	componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+		this.setState(newState(nextProps));
+	},
+
+	selectDay: function selectDay(year, month, day) {
+		this.setState({
+			year: year,
+			month: month,
+			day: day
+		});
+
+		if (this.props.onChange) {
+			this.props.onChange(new Date(year, month, day));
+		}
+	},
+
+	selectMonth: function selectMonth(month) {
+		this.setState({
+			displayMonth: month,
+			mode: 'day'
+		});
+	},
+
+	selectYear: function selectYear(year) {
+		this.setState({
+			displayYear: year,
+			displayYearRangeStart: Math.floor(year / 10) * 10,
+			mode: 'month'
+		});
+	},
+
+	handlerTopBarTitleClick: function handlerTopBarTitleClick() {
+		if (this.state.mode === 'day') {
+			this.setState({ mode: 'month' });
+		} else {
+			this.setState({ mode: 'day' });
+		}
+	},
+
+	handleLeftArrowClick: function handleLeftArrowClick() {
+		switch (this.state.mode) {
+			case 'day':
+				this.goPreviousMonth();
+				break;
+
+			case 'month':
+				this.goPreviousYearRange();
+				break;
+
+			case 'year':
+				this.goPreviousYearRange();
+				break;
+		}
+	},
+
+	handleRightArrowClick: function handleRightArrowClick() {
+		switch (this.state.mode) {
+			case 'day':
+				this.goNextMonth();
+				break;
+
+			case 'month':
+				this.goNextYearRange();
+				break;
+
+			case 'year':
+				this.goNextYearRange();
+				break;
+		}
+	},
+
+	goPreviousMonth: function goPreviousMonth() {
+		if (this.state.displayMonth === 0) {
+			this.setState({
+				displayMonth: 11,
+				displayYear: this.state.displayYear - 1
+			});
+		} else {
+			this.setState({
+				displayMonth: this.state.displayMonth - 1
+			});
+		}
+	},
+
+	goNextMonth: function goNextMonth() {
+		if (this.state.displayMonth === 11) {
+			this.setState({
+				displayMonth: 0,
+				displayYear: this.state.displayYear + 1
+			});
+		} else {
+			this.setState({
+				displayMonth: this.state.displayMonth + 1
+			});
+		}
+	},
+
+	goPreviousYear: function goPreviousYear() {
+		this.setState({
+			displayYear: this.state.displayYear - 1
+		});
+	},
+
+	goNextYear: function goNextYear() {
+		this.setState({
+			displayYear: this.state.displayYear + 1
+		});
+	},
+
+	goPreviousYearRange: function goPreviousYearRange() {
+		this.setState({
+			displayYearRangeStart: this.state.displayYearRangeStart - 10
+		});
+	},
+
+	goNextYearRange: function goNextYearRange() {
+		this.setState({
+			displayYearRangeStart: this.state.displayYearRangeStart + 10
+		});
+	},
+
+	renderWeeknames: function renderWeeknames() {
+		return i18n.weekdaysMin.map(function (name, i) {
+			return React.createElement(
+				'span',
+				{ key: name + i, className: 'week-name' },
+				name
+			);
+		});
+	},
+
+	renderDays: function renderDays() {
+		var displayYear = this.state.displayYear;
+		var displayMonth = this.state.displayMonth;
+		var today = new Date();
+		var lastDayInMonth = new Date(displayYear, displayMonth + 1, 0);
+		var daysInMonth = lastDayInMonth.getDate();
+		var daysInPreviousMonth = new Date(displayYear, displayMonth, 0).getDate();
+		var startWeekDay = new Date(displayYear, displayMonth, 1).getDay();
+		var days = [];
+		var i, dm, dy;
+
+		for (i = 0; i < startWeekDay; i++) {
+			var d = daysInPreviousMonth - (startWeekDay - 1 - i);
+			dm = displayMonth - 1;
+			dy = displayYear;
+			if (dm === -1) {
+				dm = 11;
+				dy -= 1;
+			}
+			days.push(React.createElement(
+				Tappable,
+				{ key: 'p' + i, onTap: this.selectDay.bind(this, dy, dm, d), className: 'day in-previous-month' },
+				d
+			));
+		}
+
+		var inThisMonth = displayYear === today.getFullYear() && displayMonth === today.getMonth();
+		var inSelectedMonth = displayYear === this.state.year && displayMonth === this.state.month;
+		for (i = 1; i <= daysInMonth; i++) {
+			var cssClass = classnames({
+				'day': true,
+				'is-today': inThisMonth && i === today.getDate(),
+				'is-current': inSelectedMonth && i === this.state.day
+			});
+			days.push(React.createElement(
+				Tappable,
+				{ key: i, onTap: this.selectDay.bind(this, displayYear, displayMonth, i), className: cssClass },
+				i
+			));
+		}
+
+		var c = startWeekDay + daysInMonth;
+		for (i = 1; i <= 42 - c; i++) {
+			dm = displayMonth + 1;
+			dy = displayYear;
+			if (dm === 12) {
+				dm = 0;
+				dy += 1;
+			}
+			days.push(React.createElement(
+				Tappable,
+				{ key: 'n' + i, onTap: this.selectDay.bind(this, dy, dm, i), className: 'day in-next-month' },
+				i
+			));
+		}
+
+		return days;
+	},
+
+	renderMonths: function renderMonths() {
+		var _this = this;
+
+		return i18n.months.map(function (name, m) {
+			return React.createElement(
+				Tappable,
+				{ key: name + m, className: classnames('month-name', { 'is-current': m === _this.state.displayMonth }),
+					onTap: _this.selectMonth.bind(_this, m) },
+				name
+			);
+		});
+	},
+
+	renderYears: function renderYears() {
+		var years = [];
+		for (var i = this.state.displayYearRangeStart - 1; i < this.state.displayYearRangeStart + 11; i++) {
+			years.push(React.createElement(
+				Tappable,
+				{ key: i, className: classnames('year', { 'is-current': i === this.state.displayYear }),
+					onTap: this.selectYear.bind(this, i) },
+				i
+			));
+		}
+
+		return years;
+	},
+
+	render: function render() {
+		var topBarTitle = '';
+		switch (this.state.mode) {
+			case 'day':
+				topBarTitle = i18n.formatYearMonth(this.state.displayYear, this.state.displayMonth);
+				break;
+			case 'month':
+				topBarTitle = this.state.displayYearRangeStart + ' - ' + (this.state.displayYearRangeStart + 9);
+				break;
+		}
+
+		return React.createElement(
+			'div',
+			{ className: classnames('date-picker', 'mode-' + this.state.mode) },
+			React.createElement(
+				'div',
+				{ className: 'top-bar' },
+				React.createElement(Tappable, { className: 'left-arrow', onTap: this.handleLeftArrowClick }),
+				React.createElement(Tappable, { className: 'right-arrow', onTap: this.handleRightArrowClick }),
+				React.createElement(
+					Tappable,
+					{ className: 'top-bar-title', onTap: this.handlerTopBarTitleClick },
+					topBarTitle
+				)
+			),
+			this.state.mode === 'day' && [React.createElement(
+				'div',
+				{ key: 'weeknames', className: 'week-names-container' },
+				this.renderWeeknames()
+			), React.createElement(
+				'div',
+				{ key: 'days', className: 'days-container' },
+				this.renderDays()
+			)],
+			this.state.mode === 'month' && [React.createElement(
+				'div',
+				{ key: 'years', className: 'years-container' },
+				this.renderYears()
+			), React.createElement(
+				'div',
+				{ key: 'months', className: 'month-names-container' },
+				this.renderMonths()
+			)]
+		);
+	}
+});
+},{"classnames":2,"react-tappable":27,"react/addons":undefined}],47:[function(require,module,exports){
+'use strict';
+
+var blacklist = require('blacklist');
+var React = require('react/addons');
+var Popup = require('./Popup');
+var DatePicker = require('./DatePicker');
+var classnames = require('classnames');
+
+module.exports = React.createClass({
+	displayName: 'DatePickerPopup',
+
+	propTypes: {
+		className: React.PropTypes.string,
+		visible: React.PropTypes.bool
+	},
+
+	render: function render() {
+		var className = classnames('DatePicker', this.props.className);
+		var props = blacklist(this.props, 'className', 'visible');
+		return React.createElement(
+			Popup,
+			{ className: className, visible: this.props.visible },
+			React.createElement(DatePicker, props)
+		);
+	}
+});
+},{"./DatePicker":46,"./Popup":69,"blacklist":78,"classnames":2,"react/addons":undefined}],48:[function(require,module,exports){
+'use strict';
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var blacklist = require('blacklist');
 var classnames = require('classnames');
@@ -5423,19 +4634,10 @@ module.exports = React.createClass({
 		return React.createElement('div', _extends({ className: className }, props));
 	}
 });
-
-},{"blacklist":77,"classnames":78,"react/addons":undefined}],49:[function(require,module,exports){
+},{"blacklist":78,"classnames":2,"react/addons":undefined}],49:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var blacklist = require('blacklist');
 var classnames = require('classnames');
@@ -5454,19 +4656,10 @@ module.exports = React.createClass({
 		return React.createElement('div', _extends({ className: className }, props));
 	}
 });
-
-},{"blacklist":77,"classnames":78,"react/addons":undefined}],50:[function(require,module,exports){
+},{"blacklist":78,"classnames":2,"react/addons":undefined}],50:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var blacklist = require('blacklist');
 var classnames = require('classnames');
@@ -5488,19 +4681,10 @@ module.exports = React.createClass({
 		return React.createElement('div', _extends({ className: className }, props));
 	}
 });
-
-},{"blacklist":77,"classnames":78,"react/addons":undefined}],51:[function(require,module,exports){
+},{"blacklist":78,"classnames":2,"react/addons":undefined}],51:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var blacklist = require('blacklist');
 var classnames = require('classnames');
@@ -5519,19 +4703,10 @@ module.exports = React.createClass({
 		return React.createElement('div', _extends({ className: className }, props));
 	}
 });
-
-},{"blacklist":77,"classnames":78,"react/addons":undefined}],52:[function(require,module,exports){
+},{"blacklist":78,"classnames":2,"react/addons":undefined}],52:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var blacklist = require('blacklist');
 var classnames = require('classnames');
@@ -5550,19 +4725,10 @@ module.exports = React.createClass({
 		return React.createElement('div', _extends({ className: className }, props));
 	}
 });
-
-},{"blacklist":77,"classnames":78,"react/addons":undefined}],53:[function(require,module,exports){
+},{"blacklist":78,"classnames":2,"react/addons":undefined}],53:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var blacklist = require('blacklist');
 var classnames = require('classnames');
@@ -5581,19 +4747,10 @@ module.exports = React.createClass({
 		return React.createElement('div', _extends({ className: className }, props));
 	}
 });
-
-},{"blacklist":77,"classnames":78,"react/addons":undefined}],54:[function(require,module,exports){
+},{"blacklist":78,"classnames":2,"react/addons":undefined}],54:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var blacklist = require('blacklist');
 var classnames = require('classnames');
@@ -5612,23 +4769,12 @@ module.exports = React.createClass({
 		return React.createElement('div', _extends({ className: className }, props));
 	}
 });
-
-},{"blacklist":77,"classnames":78,"react/addons":undefined}],55:[function(require,module,exports){
+},{"blacklist":78,"classnames":2,"react/addons":undefined}],55:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-function _interopRequireDefault(obj) {
-	return obj && obj.__esModule ? obj : { 'default': obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _blacklist = require('blacklist');
 
@@ -5648,12 +4794,11 @@ var _ItemContent2 = _interopRequireDefault(_ItemContent);
 
 var _ItemInner = require('./ItemInner');
 
+var _ItemInner2 = _interopRequireDefault(_ItemInner);
+
 // Many input types DO NOT support setSelectionRange.
 // Email will show an error on most desktop browsers but works on
 // mobile safari + WKWebView, which is really what we care about
-
-var _ItemInner2 = _interopRequireDefault(_ItemInner);
-
 var SELECTABLE_INPUT_TYPES = {
 	'email': true,
 	'password': true,
@@ -5692,16 +4837,26 @@ module.exports = _reactAddons2['default'].createClass({
 	render: function render() {
 		var inputProps = (0, _blacklist2['default'])(this.props, 'children', 'className');
 
-		return _reactAddons2['default'].createElement(_Item2['default'], { className: this.props.className, selectable: this.props.disabled, component: "label" }, _reactAddons2['default'].createElement(_ItemInner2['default'], null, _reactAddons2['default'].createElement(_ItemContent2['default'], { component: "label" }, _reactAddons2['default'].createElement('input', _extends({ ref: "focusTarget", className: "field", type: "text" }, inputProps))), this.props.children));
+		return _reactAddons2['default'].createElement(
+			_Item2['default'],
+			{ className: this.props.className, selectable: this.props.disabled, component: 'label' },
+			_reactAddons2['default'].createElement(
+				_ItemInner2['default'],
+				null,
+				_reactAddons2['default'].createElement(
+					_ItemContent2['default'],
+					{ component: 'label' },
+					_reactAddons2['default'].createElement('input', _extends({ ref: 'focusTarget', className: 'field', type: 'text' }, inputProps))
+				),
+				this.props.children
+			)
+		);
 	}
 });
-
-},{"./Item":56,"./ItemContent":57,"./ItemInner":58,"blacklist":77,"react/addons":undefined}],56:[function(require,module,exports){
+},{"./Item":56,"./ItemContent":57,"./ItemInner":58,"blacklist":78,"react/addons":undefined}],56:[function(require,module,exports){
 'use strict';
 
-function _interopRequireDefault(obj) {
-	return obj && obj.__esModule ? obj : { 'default': obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _blacklist = require('blacklist');
 
@@ -5720,6 +4875,7 @@ module.exports = _reactAddons2['default'].createClass({
 
 	propTypes: {
 		children: _reactAddons2['default'].PropTypes.node.isRequired,
+		component: _reactAddons2['default'].PropTypes.any,
 		className: _reactAddons2['default'].PropTypes.string,
 		showDisclosureArrow: _reactAddons2['default'].PropTypes.bool
 	},
@@ -5741,19 +4897,10 @@ module.exports = _reactAddons2['default'].createClass({
 		return _reactAddons2['default'].createElement(this.props.component, props, this.props.children);
 	}
 });
-
-},{"blacklist":77,"classnames":78,"react/addons":undefined}],57:[function(require,module,exports){
+},{"blacklist":78,"classnames":2,"react/addons":undefined}],57:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var blacklist = require('blacklist');
 var classnames = require('classnames');
@@ -5772,19 +4919,10 @@ module.exports = React.createClass({
 		return React.createElement('div', _extends({ className: className }, props));
 	}
 });
-
-},{"blacklist":77,"classnames":78,"react/addons":undefined}],58:[function(require,module,exports){
+},{"blacklist":78,"classnames":2,"react/addons":undefined}],58:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var React = require('react/addons');
 
@@ -5804,8 +4942,7 @@ module.exports = React.createClass({
 		return React.createElement('div', _extends({ className: className }, this.props));
 	}
 });
-
-},{"classnames":78,"react/addons":undefined}],59:[function(require,module,exports){
+},{"classnames":2,"react/addons":undefined}],59:[function(require,module,exports){
 'use strict';
 
 var React = require('react/addons');
@@ -5831,14 +4968,27 @@ module.exports = React.createClass({
 
 		// media types
 		var icon = this.props.icon ? React.createElement('div', { className: 'Item__media__icon ' + this.props.icon }) : null;
-		var avatar = this.props.avatar || this.props.avatarInitials ? React.createElement('div', { className: "Item__media__avatar" }, this.props.avatar ? React.createElement('img', { src: this.props.avatar }) : this.props.avatarInitials) : null;
-		var thumbnail = this.props.thumbnail ? React.createElement('div', { className: "Item__media__thumbnail" }, React.createElement('img', { src: this.props.thumbnail })) : null;
+		var avatar = this.props.avatar || this.props.avatarInitials ? React.createElement(
+			'div',
+			{ className: 'Item__media__avatar' },
+			this.props.avatar ? React.createElement('img', { src: this.props.avatar }) : this.props.avatarInitials
+		) : null;
+		var thumbnail = this.props.thumbnail ? React.createElement(
+			'div',
+			{ className: 'Item__media__thumbnail' },
+			React.createElement('img', { src: this.props.thumbnail })
+		) : null;
 
-		return React.createElement('div', { className: className }, icon, avatar, thumbnail);
+		return React.createElement(
+			'div',
+			{ className: className },
+			icon,
+			avatar,
+			thumbnail
+		);
 	}
 });
-
-},{"classnames":78,"react/addons":undefined}],60:[function(require,module,exports){
+},{"classnames":2,"react/addons":undefined}],60:[function(require,module,exports){
 'use strict';
 
 var classnames = require('classnames');
@@ -5861,25 +5011,25 @@ module.exports = React.createClass({
 		var className = classnames('Item__note', 'Item__note--' + this.props.type, this.props.className);
 
 		// elements
-		var label = this.props.label ? React.createElement('div', { className: "Item__note__label" }, this.props.label) : null;
+		var label = this.props.label ? React.createElement(
+			'div',
+			{ className: 'Item__note__label' },
+			this.props.label
+		) : null;
 		var icon = this.props.icon ? React.createElement('div', { className: 'Item__note__icon ' + this.props.icon }) : null;
 
-		return React.createElement('div', { className: className }, label, icon);
+		return React.createElement(
+			'div',
+			{ className: className },
+			label,
+			icon
+		);
 	}
 });
-
-},{"classnames":78,"react/addons":undefined}],61:[function(require,module,exports){
+},{"classnames":2,"react/addons":undefined}],61:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var blacklist = require('blacklist');
 var classnames = require('classnames');
@@ -5898,19 +5048,10 @@ module.exports = React.createClass({
 		return React.createElement('div', _extends({ className: className }, props));
 	}
 });
-
-},{"blacklist":77,"classnames":78,"react/addons":undefined}],62:[function(require,module,exports){
+},{"blacklist":78,"classnames":2,"react/addons":undefined}],62:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var blacklist = require('blacklist');
 var classnames = require('classnames');
@@ -5929,23 +5070,12 @@ module.exports = React.createClass({
 		return React.createElement('div', _extends({ className: className }, props));
 	}
 });
-
-},{"blacklist":77,"classnames":78,"react/addons":undefined}],63:[function(require,module,exports){
+},{"blacklist":78,"classnames":2,"react/addons":undefined}],63:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-function _interopRequireDefault(obj) {
-	return obj && obj.__esModule ? obj : { 'default': obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _blacklist = require('blacklist');
 
@@ -5954,10 +5084,6 @@ var _blacklist2 = _interopRequireDefault(_blacklist);
 var _FieldControl = require('./FieldControl');
 
 var _FieldControl2 = _interopRequireDefault(_FieldControl);
-
-var _FieldLabel = require('./FieldLabel');
-
-var _FieldLabel2 = _interopRequireDefault(_FieldLabel);
 
 var _Item = require('./Item');
 
@@ -5973,12 +5099,11 @@ var _reactAddons2 = _interopRequireDefault(_reactAddons);
 
 var _reactTappable = require('react-tappable');
 
+var _reactTappable2 = _interopRequireDefault(_reactTappable);
+
 // Many input types DO NOT support setSelectionRange.
 // Email will show an error on most desktop browsers but works on
 // mobile safari + WKWebView, which is really what we care about
-
-var _reactTappable2 = _interopRequireDefault(_reactTappable);
-
 var SELECTABLE_INPUT_TYPES = {
 	'email': true,
 	'password': true,
@@ -6019,34 +5144,68 @@ module.exports = _reactAddons2['default'].createClass({
 	},
 
 	render: function render() {
-		var indentifiedByUserInput = this.props.id || this.props.htmlFor;
-
 		var inputProps = (0, _blacklist2['default'])(this.props, 'alignTop', 'children', 'first', 'readOnly');
-		var renderInput = this.props.readOnly ? _reactAddons2['default'].createElement('div', { className: "field u-selectable" }, this.props.value) : _reactAddons2['default'].createElement('input', _extends({ ref: "focusTarget", className: "field", type: "text" }, inputProps));
+		var renderInput = this.props.readOnly ? _reactAddons2['default'].createElement(
+			'div',
+			{ className: 'field u-selectable' },
+			this.props.value
+		) : _reactAddons2['default'].createElement('input', _extends({ ref: 'focusTarget', className: 'field', type: 'text' }, inputProps));
 
-		return _reactAddons2['default'].createElement(_Item2['default'], { alignTop: this.props.alignTop, selectable: this.props.disabled, className: this.props.className, component: "label" }, _reactAddons2['default'].createElement(_ItemInner2['default'], null, _reactAddons2['default'].createElement(_reactTappable2['default'], { onTap: this.moveCursorToEnd, className: "FieldLabel" }, this.props.label), _reactAddons2['default'].createElement(_FieldControl2['default'], null, renderInput, this.props.children)));
+		return _reactAddons2['default'].createElement(
+			_Item2['default'],
+			{ alignTop: this.props.alignTop, selectable: this.props.disabled, className: this.props.className, component: 'label' },
+			_reactAddons2['default'].createElement(
+				_ItemInner2['default'],
+				null,
+				_reactAddons2['default'].createElement(
+					_reactTappable2['default'],
+					{ onTap: this.moveCursorToEnd, className: 'FieldLabel' },
+					this.props.label
+				),
+				_reactAddons2['default'].createElement(
+					_FieldControl2['default'],
+					null,
+					renderInput,
+					this.props.children
+				)
+			)
+		);
 	}
 });
-
-},{"./FieldControl":48,"./FieldLabel":49,"./Item":56,"./ItemInner":58,"blacklist":77,"react-tappable":80,"react/addons":undefined}],64:[function(require,module,exports){
+},{"./FieldControl":48,"./Item":56,"./ItemInner":58,"blacklist":78,"react-tappable":27,"react/addons":undefined}],64:[function(require,module,exports){
 'use strict';
 
-var FieldControl = require('./FieldControl');
-var FieldLabel = require('./FieldLabel');
-var Item = require('./Item');
-var ItemInner = require('./ItemInner');
-var React = require('react/addons');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-module.exports = React.createClass({
+var _reactAddons = require('react/addons');
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _FieldControl = require('./FieldControl');
+
+var _FieldControl2 = _interopRequireDefault(_FieldControl);
+
+var _FieldLabel = require('./FieldLabel');
+
+var _FieldLabel2 = _interopRequireDefault(_FieldLabel);
+
+var _Item = require('./Item');
+
+var _Item2 = _interopRequireDefault(_Item);
+
+var _ItemInner = require('./ItemInner');
+
+var _ItemInner2 = _interopRequireDefault(_ItemInner);
+
+module.exports = _reactAddons2['default'].createClass({
 	displayName: 'LabelSelect',
 	propTypes: {
-		alignTop: React.PropTypes.bool,
-		className: React.PropTypes.string,
-		disabled: React.PropTypes.bool,
-		first: React.PropTypes.bool,
-		label: React.PropTypes.string,
-		options: React.PropTypes.array,
-		value: React.PropTypes.string
+		className: _reactAddons2['default'].PropTypes.string,
+		disabled: _reactAddons2['default'].PropTypes.bool,
+		label: _reactAddons2['default'].PropTypes.string,
+		onChange: _reactAddons2['default'].PropTypes.func.isRequired,
+		options: _reactAddons2['default'].PropTypes.array.isRequired,
+		value: _reactAddons2['default'].PropTypes.oneOfType([_reactAddons2['default'].PropTypes.number, _reactAddons2['default'].PropTypes.string])
 	},
 
 	getDefaultProps: function getDefaultProps() {
@@ -6055,40 +5214,51 @@ module.exports = React.createClass({
 		};
 	},
 
-	getInitialState: function getInitialState() {
-		return {
-			value: this.props.value
-		};
-	},
-
-	updateInputValue: function updateInputValue(event) {
-		this.setState({
-			value: event.target.value
+	renderOptions: function renderOptions() {
+		return this.props.options.map(function (op) {
+			return _reactAddons2['default'].createElement(
+				'option',
+				{ key: 'option-' + op.value, value: op.value },
+				op.label
+			);
 		});
 	},
 
 	render: function render() {
-		// Map Options
-		var options = this.props.options.map(function (op) {
-			return React.createElement('option', { key: 'option-' + op.value, value: op.value }, op.label);
-		});
 
-		return React.createElement(Item, { alignTop: this.props.alignTop, selectable: this.props.disabled, className: this.props.className, component: "label" }, React.createElement(ItemInner, null, React.createElement(FieldLabel, null, this.props.label), React.createElement(FieldControl, null, React.createElement('select', { value: this.state.value, onChange: this.updateInputValue, className: "select-field" }, options), React.createElement('div', { className: "select-field-indicator" }, React.createElement('div', { className: "select-field-indicator-arrow" })))));
+		return _reactAddons2['default'].createElement(
+			_Item2['default'],
+			{ className: this.props.className, component: 'label' },
+			_reactAddons2['default'].createElement(
+				_ItemInner2['default'],
+				null,
+				_reactAddons2['default'].createElement(
+					_FieldLabel2['default'],
+					null,
+					this.props.label
+				),
+				_reactAddons2['default'].createElement(
+					_FieldControl2['default'],
+					null,
+					_reactAddons2['default'].createElement(
+						'select',
+						{ disabled: this.props.disabled, value: this.props.value, onChange: this.props.onChange, className: 'select-field' },
+						this.renderOptions()
+					),
+					_reactAddons2['default'].createElement(
+						'div',
+						{ className: 'select-field-indicator' },
+						_reactAddons2['default'].createElement('div', { className: 'select-field-indicator-arrow' })
+					)
+				)
+			)
+		);
 	}
 });
-
 },{"./FieldControl":48,"./FieldLabel":49,"./Item":56,"./ItemInner":58,"react/addons":undefined}],65:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var blacklist = require('blacklist');
 var classnames = require('classnames');
@@ -6121,24 +5291,98 @@ module.exports = React.createClass({
 
 		var props = blacklist(this.props, 'children', 'className', 'disabled', 'first', 'label', 'readOnly');
 
-		var renderInput = this.props.readOnly ? React.createElement('div', { className: "field u-selectable" }, this.props.value) : React.createElement('textarea', _extends({}, props, { className: "field" }));
+		var renderInput = this.props.readOnly ? React.createElement(
+			'div',
+			{ className: 'field u-selectable' },
+			this.props.value
+		) : React.createElement('textarea', _extends({}, props, { className: 'field' }));
 
-		return React.createElement('div', { className: className }, React.createElement('label', { className: "item-inner" }, React.createElement('div', { className: "field-label" }, this.props.label), React.createElement('div', { className: "field-control" }, renderInput, this.props.children)));
+		return React.createElement(
+			'div',
+			{ className: className },
+			React.createElement(
+				'label',
+				{ className: 'item-inner' },
+				React.createElement(
+					'div',
+					{ className: 'field-label' },
+					this.props.label
+				),
+				React.createElement(
+					'div',
+					{ className: 'field-control' },
+					renderInput,
+					this.props.children
+				)
+			)
+		);
 	}
 });
-
-},{"blacklist":77,"classnames":78,"react/addons":undefined}],66:[function(require,module,exports){
+},{"blacklist":78,"classnames":2,"react/addons":undefined}],66:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _FieldControl = require('./FieldControl');
+
+var _FieldControl2 = _interopRequireDefault(_FieldControl);
+
+var _Item = require('./Item');
+
+var _Item2 = _interopRequireDefault(_Item);
+
+var _ItemInner = require('./ItemInner');
+
+var _ItemInner2 = _interopRequireDefault(_ItemInner);
+
+var _reactAddons = require('react/addons');
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _classnames = require('classnames');
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+module.exports = _reactAddons2['default'].createClass({
+	displayName: 'LabelValue',
+
+	propTypes: {
+		alignTop: _reactAddons2['default'].PropTypes.bool,
+		className: _reactAddons2['default'].PropTypes.string,
+		label: _reactAddons2['default'].PropTypes.string,
+		placeholder: _reactAddons2['default'].PropTypes.string,
+		value: _reactAddons2['default'].PropTypes.string
+	},
+
+	render: function render() {
+		return _reactAddons2['default'].createElement(
+			_Item2['default'],
+			{ alignTop: this.props.alignTop, className: this.props.className, component: 'label' },
+			_reactAddons2['default'].createElement(
+				_ItemInner2['default'],
+				null,
+				_reactAddons2['default'].createElement(
+					'div',
+					{ className: 'FieldLabel' },
+					this.props.label
+				),
+				_reactAddons2['default'].createElement(
+					_FieldControl2['default'],
+					null,
+					_reactAddons2['default'].createElement(
+						'div',
+						{ className: (0, _classnames2['default'])('field', this.props.value ? 'u-selectable' : 'field-placeholder') },
+						this.props.value || this.props.placeholder
+					)
+				)
+			)
+		);
+	}
+});
+},{"./FieldControl":48,"./Item":56,"./ItemInner":58,"classnames":2,"react/addons":undefined}],67:[function(require,module,exports){
+'use strict';
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var React = require('react');
 
@@ -6163,23 +5407,14 @@ module.exports = React.createClass({
 		return React.createElement('div', _extends({ className: className }, props));
 	}
 });
-
-},{"blacklist":77,"classnames":78,"react":undefined}],67:[function(require,module,exports){
+},{"blacklist":78,"classnames":2,"react":undefined}],68:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var classNames = require('classnames');
 var React = require('react/addons');
@@ -6224,7 +5459,8 @@ var NavigationBar = React.createClass({
 	},
 
 	propTypes: {
-		name: React.PropTypes.string
+		name: React.PropTypes.string,
+		className: React.PropTypes.string
 	},
 
 	getInitialState: function getInitialState() {
@@ -6277,7 +5513,12 @@ var NavigationBar = React.createClass({
 			'has-arrow': this.state.leftArrow
 		});
 
-		return React.createElement(Tappable, { onTap: this.state.leftAction, className: className, disabled: this.state.leftButtonDisabled, component: "button" }, this.renderLeftArrow(), this.renderLeftLabel());
+		return React.createElement(
+			Tappable,
+			{ onTap: this.state.leftAction, className: className, disabled: this.state.leftButtonDisabled, component: 'button' },
+			this.renderLeftArrow(),
+			this.renderLeftLabel()
+		);
 	},
 
 	renderLeftArrow: function renderLeftArrow() {
@@ -6286,9 +5527,13 @@ var NavigationBar = React.createClass({
 			transitionName = 'NavigationBarTransition-Fade';
 		}
 
-		var arrow = this.state.leftArrow ? React.createElement('span', { className: "NavigationBarLeftArrow" }) : null;
+		var arrow = this.state.leftArrow ? React.createElement('span', { className: 'NavigationBarLeftArrow' }) : null;
 
-		return React.createElement(Transition, { transitionName: transitionName }, arrow);
+		return React.createElement(
+			Transition,
+			{ transitionName: transitionName },
+			arrow
+		);
 	},
 
 	renderLeftLabel: function renderLeftLabel() {
@@ -6301,11 +5546,23 @@ var NavigationBar = React.createClass({
 			transitionName = 'NavigationBarTransition-Backwards';
 		}
 
-		return React.createElement(Transition, { transitionName: transitionName }, React.createElement('span', { key: Date.now(), className: "NavigationBarLeftLabel" }, this.state.leftLabel));
+		return React.createElement(
+			Transition,
+			{ transitionName: transitionName },
+			React.createElement(
+				'span',
+				{ key: Date.now(), className: 'NavigationBarLeftLabel' },
+				this.state.leftLabel
+			)
+		);
 	},
 
 	renderTitle: function renderTitle() {
-		var title = this.state.title ? React.createElement('span', { key: Date.now(), className: "NavigationBarTitle" }, this.state.title) : null;
+		var title = this.state.title ? React.createElement(
+			'span',
+			{ key: Date.now(), className: 'NavigationBarTitle' },
+			this.state.title
+		) : null;
 		var transitionName = 'NavigationBarTransition-Instant';
 		if (this.state.fade) {
 			transitionName = 'NavigationBarTransition-Fade';
@@ -6315,7 +5572,11 @@ var NavigationBar = React.createClass({
 			transitionName = 'NavigationBarTransition-Backwards';
 		}
 
-		return React.createElement(Transition, { transitionName: transitionName }, title);
+		return React.createElement(
+			Transition,
+			{ transitionName: transitionName },
+			title
+		);
 	},
 
 	renderRightButton: function renderRightButton() {
@@ -6323,8 +5584,17 @@ var NavigationBar = React.createClass({
 		if (this.state.fade || this.state.direction) {
 			transitionName = 'NavigationBarTransition-Fade';
 		}
-		var button = this.state.rightIcon || this.state.rightLabel ? React.createElement(Tappable, { key: Date.now(), onTap: this.state.rightAction, className: "NavigationBarRightButton", disabled: this.state.rightButtonDisabled, component: "button" }, this.renderRightLabel(), this.renderRightIcon()) : null;
-		return React.createElement(Transition, { transitionName: transitionName }, button);
+		var button = this.state.rightIcon || this.state.rightLabel ? React.createElement(
+			Tappable,
+			{ key: Date.now(), onTap: this.state.rightAction, className: 'NavigationBarRightButton', disabled: this.state.rightButtonDisabled, component: 'button' },
+			this.renderRightLabel(),
+			this.renderRightIcon()
+		) : null;
+		return React.createElement(
+			Transition,
+			{ transitionName: transitionName },
+			button
+		);
 	},
 
 	renderRightIcon: function renderRightIcon() {
@@ -6336,18 +5606,27 @@ var NavigationBar = React.createClass({
 	},
 
 	renderRightLabel: function renderRightLabel() {
-		return this.state.rightLabel ? React.createElement('span', { key: Date.now(), className: "NavigationBarRightLabel" }, this.state.rightLabel) : null;
+		return this.state.rightLabel ? React.createElement(
+			'span',
+			{ key: Date.now(), className: 'NavigationBarRightLabel' },
+			this.state.rightLabel
+		) : null;
 	},
 
 	render: function render() {
-		return React.createElement('div', { className: "NavigationBar" }, this.renderLeftButton(), this.renderTitle(), this.renderRightButton());
+		return React.createElement(
+			'div',
+			{ className: classNames('NavigationBar', this.props.className) },
+			this.renderLeftButton(),
+			this.renderTitle(),
+			this.renderRightButton()
+		);
 	}
 });
 
 exports['default'] = NavigationBar;
 module.exports = exports['default'];
-
-},{"classnames":78,"react-tappable":80,"react/addons":undefined}],68:[function(require,module,exports){
+},{"classnames":2,"react-tappable":27,"react/addons":undefined}],69:[function(require,module,exports){
 'use strict';
 
 var React = require('react/addons');
@@ -6372,7 +5651,7 @@ module.exports = React.createClass({
 
 	renderBackdrop: function renderBackdrop() {
 		if (!this.props.visible) return null;
-		return React.createElement('div', { className: "Popup-backdrop" });
+		return React.createElement('div', { className: 'Popup-backdrop' });
 	},
 
 	renderDialog: function renderDialog() {
@@ -6381,15 +5660,31 @@ module.exports = React.createClass({
 		// Set classnames
 		var dialogClassName = classnames('Popup-dialog', this.props.className);
 
-		return React.createElement('div', { className: dialogClassName }, this.props.children);
+		return React.createElement(
+			'div',
+			{ className: dialogClassName },
+			this.props.children
+		);
 	},
 
 	render: function render() {
-		return React.createElement('div', { className: "Popup" }, React.createElement(ReactCSSTransitionGroup, { transitionName: "Popup-dialog", component: "div" }, this.renderDialog()), React.createElement(ReactCSSTransitionGroup, { transitionName: "Popup-background", component: "div" }, this.renderBackdrop()));
+		return React.createElement(
+			'div',
+			{ className: 'Popup' },
+			React.createElement(
+				ReactCSSTransitionGroup,
+				{ transitionName: 'Popup-dialog', component: 'div' },
+				this.renderDialog()
+			),
+			React.createElement(
+				ReactCSSTransitionGroup,
+				{ transitionName: 'Popup-background', component: 'div' },
+				this.renderBackdrop()
+			)
+		);
 	}
 });
-
-},{"classnames":78,"react/addons":undefined}],69:[function(require,module,exports){
+},{"classnames":2,"react/addons":undefined}],70:[function(require,module,exports){
 'use strict';
 
 var React = require('react/addons');
@@ -6411,8 +5706,7 @@ module.exports = React.createClass({
 		return React.createElement('div', { className: className });
 	}
 });
-
-},{"classnames":78,"react/addons":undefined}],70:[function(require,module,exports){
+},{"classnames":2,"react/addons":undefined}],71:[function(require,module,exports){
 'use strict';
 
 var classnames = require('classnames');
@@ -6441,24 +5735,48 @@ module.exports = React.createClass({
 		var self = this;
 		var options = this.props.options.map(function (op, i) {
 			var iconClassname = classnames('item-icon primary', op.icon);
-			var checkMark = op.value === self.props.value ? React.createElement(ItemNote, { type: "primary", icon: "ion-checkmark" }) : null;
-			var icon = op.icon ? React.createElement('div', { className: "item-media" }, React.createElement('span', { className: iconClassname })) : null;
+			var checkMark = op.value === self.props.value ? React.createElement(ItemNote, { type: 'primary', icon: 'ion-checkmark' }) : null;
+			var icon = op.icon ? React.createElement(
+				'div',
+				{ className: 'item-media' },
+				React.createElement('span', { className: iconClassname })
+			) : null;
 
 			function onChange() {
 				self.onChange(op.value);
 			}
 
-			return React.createElement(Tappable, { key: 'option-' + i, onTap: onChange }, React.createElement(Item, { key: 'option-' + i, onTap: onChange }, icon, React.createElement(ItemInner, null, React.createElement(ItemTitle, null, op.label), checkMark)));
+			return React.createElement(
+				Tappable,
+				{ key: 'option-' + i, onTap: onChange },
+				React.createElement(
+					Item,
+					{ key: 'option-' + i, onTap: onChange },
+					icon,
+					React.createElement(
+						ItemInner,
+						null,
+						React.createElement(
+							ItemTitle,
+							null,
+							op.label
+						),
+						checkMark
+					)
+				)
+			);
 		});
 
-		return React.createElement('div', null, options);
+		return React.createElement(
+			'div',
+			null,
+			options
+		);
 	}
 });
-
-},{"./Item":56,"./ItemInner":58,"./ItemNote":60,"./ItemTitle":62,"classnames":78,"react":undefined,"react-tappable":80}],71:[function(require,module,exports){
+},{"./Item":56,"./ItemInner":58,"./ItemNote":60,"./ItemTitle":62,"classnames":2,"react":undefined,"react-tappable":27}],72:[function(require,module,exports){
 'use strict';
 
-var blacklist = require('blacklist');
 var classnames = require('classnames');
 var React = require('react/addons');
 var Tappable = require('react-tappable');
@@ -6467,8 +5785,10 @@ module.exports = React.createClass({
 	displayName: 'SearchField',
 	propTypes: {
 		className: React.PropTypes.string,
+		onCancel: React.PropTypes.func,
 		onChange: React.PropTypes.func,
 		onClear: React.PropTypes.func,
+		onSubmit: React.PropTypes.func,
 		placeholder: React.PropTypes.string,
 		type: React.PropTypes.oneOf(['default', 'dark']),
 		value: React.PropTypes.string
@@ -6524,14 +5844,18 @@ module.exports = React.createClass({
 
 	renderClear: function renderClear() {
 		if (!this.props.value.length) return;
-		return React.createElement(Tappable, { className: "SearchField__icon SearchField__icon--clear", onTap: this.handleClear });
+		return React.createElement(Tappable, { className: 'SearchField__icon SearchField__icon--clear', onTap: this.handleClear });
 	},
 
 	renderCancel: function renderCancel() {
 		var className = classnames('SearchField__cancel', {
 			'is-visible': this.state.isFocused || this.props.value
 		});
-		return React.createElement(Tappable, { className: className, onTap: this.handleCancel }, 'Cancel');
+		return React.createElement(
+			Tappable,
+			{ className: className, onTap: this.handleCancel },
+			'Cancel'
+		);
 	},
 
 	render: function render() {
@@ -6539,13 +5863,27 @@ module.exports = React.createClass({
 			'is-focused': this.state.isFocused,
 			'has-value': this.props.value
 		}, this.props.className);
-		var props = blacklist(this.props, 'className', 'placeholder', 'type');
 
-		return React.createElement('form', { onSubmit: this.handleSubmit, action: "javascript:;", className: className }, React.createElement('label', { className: "SearchField__field" }, React.createElement('div', { className: "SearchField__placeholder" }, React.createElement('span', { className: "SearchField__icon SearchField__icon--search" }), !this.props.value.length ? this.props.placeholder : null), React.createElement('input', { type: "search", ref: "input", value: this.props.value, onChange: this.handleChange, onFocus: this.handleFocus, onBlur: this.handleBlur, className: "SearchField__input" }), this.renderClear()), this.renderCancel());
+		return React.createElement(
+			'form',
+			{ onSubmit: this.handleSubmit, action: 'javascript:;', className: className },
+			React.createElement(
+				'label',
+				{ className: 'SearchField__field' },
+				React.createElement(
+					'div',
+					{ className: 'SearchField__placeholder' },
+					React.createElement('span', { className: 'SearchField__icon SearchField__icon--search' }),
+					!this.props.value.length ? this.props.placeholder : null
+				),
+				React.createElement('input', { type: 'search', ref: 'input', value: this.props.value, onChange: this.handleChange, onFocus: this.handleFocus, onBlur: this.handleBlur, className: 'SearchField__input' }),
+				this.renderClear()
+			),
+			this.renderCancel()
+		);
 	}
 });
-
-},{"blacklist":77,"classnames":78,"react-tappable":80,"react/addons":undefined}],72:[function(require,module,exports){
+},{"classnames":2,"react-tappable":27,"react/addons":undefined}],73:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -6593,14 +5931,21 @@ module.exports = React.createClass({
 				'is-selected': op.value === self.props.value
 			});
 
-			return React.createElement(Tappable, { key: 'option-' + op.value, onTap: onChange, className: itemClassName }, op.label);
+			return React.createElement(
+				Tappable,
+				{ key: 'option-' + op.value, onTap: onChange, className: itemClassName },
+				op.label
+			);
 		});
 
-		return React.createElement('div', { className: componentClassName }, options);
+		return React.createElement(
+			'div',
+			{ className: componentClassName },
+			options
+		);
 	}
 });
-
-},{"classnames":78,"react":undefined,"react-tappable":80}],73:[function(require,module,exports){
+},{"classnames":2,"react":undefined,"react-tappable":27}],74:[function(require,module,exports){
 'use strict';
 
 var classnames = require('classnames');
@@ -6629,26 +5974,25 @@ module.exports = React.createClass({
 			'is-on': this.props.on
 		});
 
-		return React.createElement(Tappable, { onTap: this.props.onTap, className: className, component: "label" }, React.createElement('div', { className: "Switch__track" }, React.createElement('div', { className: "Switch__handle" })));
+		return React.createElement(
+			Tappable,
+			{ onTap: this.props.onTap, className: className, component: 'label' },
+			React.createElement(
+				'div',
+				{ className: 'Switch__track' },
+				React.createElement('div', { className: 'Switch__handle' })
+			)
+		);
 	}
 });
-
-},{"classnames":78,"react":undefined,"react-tappable":80}],74:[function(require,module,exports){
+},{"classnames":2,"react":undefined,"react-tappable":27}],75:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var React = require('react');
 var Tappable = require('react-tappable');
@@ -6692,23 +6036,14 @@ var Label = React.createClass({
 	displayName: 'Label',
 
 	render: function render() {
-		return React.createElement('div', _extends({ className: "Tabs-Label" }, this.props));
+		return React.createElement('div', _extends({ className: 'Tabs-Label' }, this.props));
 	}
 });
 exports.Label = Label;
-
-},{"blacklist":77,"classnames":78,"react":undefined,"react-tappable":80}],75:[function(require,module,exports){
+},{"blacklist":78,"classnames":2,"react":undefined,"react-tappable":27}],76:[function(require,module,exports){
 'use strict';
 
-var _extends = Object.assign || function (target) {
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];for (var key in source) {
-			if (Object.prototype.hasOwnProperty.call(source, key)) {
-				target[key] = source[key];
-			}
-		}
-	}return target;
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var React = require('react/addons');
 
@@ -6729,11 +6064,23 @@ module.exports = React.createClass({
 	render: function render() {
 		var inputProps = blacklist(this.props, 'children', 'className');
 
-		return React.createElement(Item, { selectable: this.props.disabled, className: this.props.className, component: "label" }, React.createElement(ItemInner, null, React.createElement(ItemContent, { component: "label" }, React.createElement('textarea', _extends({ className: "field", rows: 3 }, inputProps))), this.props.children));
+		return React.createElement(
+			Item,
+			{ selectable: this.props.disabled, className: this.props.className, component: 'label' },
+			React.createElement(
+				ItemInner,
+				null,
+				React.createElement(
+					ItemContent,
+					{ component: 'label' },
+					React.createElement('textarea', _extends({ className: 'field', rows: 3 }, inputProps))
+				),
+				this.props.children
+			)
+		);
 	}
 });
-
-},{"./Item":56,"./ItemContent":57,"./ItemInner":58,"blacklist":77,"react/addons":undefined}],76:[function(require,module,exports){
+},{"./Item":56,"./ItemContent":57,"./ItemInner":58,"blacklist":78,"react/addons":undefined}],77:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6745,6 +6092,10 @@ var Button = require('./Button');
 exports.Button = Button;
 var ButtonGroup = require('./ButtonGroup');
 exports.ButtonGroup = ButtonGroup;
+var DatePicker = require('./DatePicker');
+exports.DatePicker = DatePicker;
+var DatePickerPopup = require('./DatePickerPopup');
+exports.DatePickerPopup = DatePickerPopup;
 var FieldControl = require('./FieldControl');
 exports.FieldControl = FieldControl;
 var FieldLabel = require('./FieldLabel');
@@ -6779,6 +6130,8 @@ var LabelSelect = require('./LabelSelect');
 exports.LabelSelect = LabelSelect;
 var LabelTextarea = require('./LabelTextarea');
 exports.LabelTextarea = LabelTextarea;
+var LabelValue = require('./LabelValue');
+exports.LabelValue = LabelValue;
 var ListHeader = require('./ListHeader');
 exports.ListHeader = ListHeader;
 var NavigationBar = require('./NavigationBar');
@@ -6799,597 +6152,13 @@ var Tabs = require('./Tabs');
 exports.Tabs = Tabs;
 var Textarea = require('./Textarea');
 
-// depends on above
 exports.Textarea = Textarea;
+// depends on above
 var Input = require('./Input');
 exports.Input = Input;
-
-},{"./Alertbar":45,"./Button":46,"./ButtonGroup":47,"./FieldControl":48,"./FieldLabel":49,"./Group":50,"./GroupBody":51,"./GroupFooter":52,"./GroupHeader":53,"./GroupInner":54,"./Input":55,"./Item":56,"./ItemContent":57,"./ItemInner":58,"./ItemMedia":59,"./ItemNote":60,"./ItemSubTitle":61,"./ItemTitle":62,"./LabelInput":63,"./LabelSelect":64,"./LabelTextarea":65,"./ListHeader":66,"./NavigationBar":67,"./Popup":68,"./PopupIcon":69,"./RadioList":70,"./SearchField":71,"./SegmentedControl":72,"./Switch":73,"./Tabs":74,"./Textarea":75}],77:[function(require,module,exports){
-arguments[4][20][0].apply(exports,arguments)
-},{"dup":20}],78:[function(require,module,exports){
-arguments[4][2][0].apply(exports,arguments)
-},{"dup":2}],79:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-	value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var blacklist = require('blacklist');
-var classnames = require('classnames');
-var React = require('react');
-
-function hasChildrenWithVerticalFill(children) {
-	var result = false;
-
-	React.Children.forEach(children, function (c) {
-		if (result) return; // early-exit
-		if (!c) return;
-		if (!c.type) return;
-
-		result = !!c.type.shouldFillVerticalSpace;
-	});
-
-	return result;
-}
-
-var Container = React.createClass({
-	displayName: 'Container',
-
-	propTypes: {
-		align: React.PropTypes.oneOf(['end', 'center', 'start']),
-		direction: React.PropTypes.oneOf(['column', 'row']),
-		justify: React.PropTypes.oneOfType([React.PropTypes.bool, React.PropTypes.oneOf(['end', 'center', 'start'])]),
-		grow: React.PropTypes.bool,
-		fill: React.PropTypes.bool
-	},
-	componentDidMount: function componentDidMount() {
-		if (this.props.scrollable && this.props.scrollable.mount) {
-			this.props.scrollable.mount(this);
-		}
-	},
-	componentWillUnmount: function componentWillUnmount() {
-		if (this.props.scrollable && this.props.scrollable.unmount) {
-			this.props.scrollable.unmount(this);
-		}
-	},
-	render: function render() {
-		var direction = this.props.direction;
-		if (!direction) {
-			if (hasChildrenWithVerticalFill(this.props.children)) {
-				direction = 'column';
-			}
-		}
-
-		var fill = this.props.fill;
-		if (direction === 'column' || this.props.scrollable) {
-			fill = true;
-		}
-
-		var align = this.props.align;
-		if (direction === 'column' && align === 'top') align = 'start';
-		if (direction === 'column' && align === 'bottom') align = 'end';
-		if (direction === 'row' && align === 'left') align = 'start';
-		if (direction === 'row' && align === 'right') align = 'end';
-
-		var className = classnames(this.props.className, {
-			'Container--fill': fill,
-			'Container--direction-column': direction === 'column',
-			'Container--direction-row': direction === 'row',
-			'Container--align-center': align === 'center',
-			'Container--align-start': align === 'start',
-			'Container--align-end': align === 'end',
-			'Container--justify-center': this.props.justify === 'center',
-			'Container--justify-start': this.props.justify === 'start',
-			'Container--justify-end': this.props.justify === 'end',
-			'Container--justified': this.props.justify === true,
-			'Container--scrollable': this.props.scrollable
-		});
-
-		var props = blacklist(this.props, 'className', 'direction', 'fill', 'justify', 'scrollable');
-
-		return React.createElement(
-			'div',
-			_extends({ className: className }, props),
-			this.props.children
-		);
-	}
-});
-
-function initScrollable() {
-	var pos;
-	var scrollable = {
-		reset: function reset() {
-			pos = { left: 0, top: 0 };
-		},
-		mount: function mount(element) {
-			var node = React.findDOMNode(element);
-			node.scrollLeft = pos.left;
-			node.scrollTop = pos.top;
-		},
-		unmount: function unmount(element) {
-			var node = React.findDOMNode(element);
-			pos.left = node.scrollLeft;
-			pos.top = node.scrollTop;
-		}
-	};
-	scrollable.reset();
-	return scrollable;
-}
-
-Container.initScrollable = initScrollable;
-
-exports['default'] = Container;
-module.exports = exports['default'];
-},{"blacklist":77,"classnames":78,"react":undefined}],80:[function(require,module,exports){
-'use strict';
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var React = require('react');
-
-function getTouchProps(touch) {
-	if (!touch) return {};
-	return {
-		pageX: touch.pageX,
-		pageY: touch.pageY,
-		clientX: touch.clientX,
-		clientY: touch.clientY
-	};
-}
-
-function isDataOrAriaProp(key) {
-	return key.indexOf('data-') === 0 || key.indexOf('aria-') === 0;
-}
-
-function getPinchProps(touches) {
-	return {
-		touches: Array.prototype.map.call(touches, function copyTouch(touch) {
-			return { identifier: touch.identifier, pageX: touch.pageX, pageY: touch.pageY };
-		}),
-		center: { x: (touches[0].pageX + touches[1].pageX) / 2, y: (touches[0].pageY + touches[1].pageY) / 2 },
-		angle: Math.atan() * (touches[1].pageY - touches[0].pageY) / (touches[1].pageX - touches[0].pageX) * 180 / Math.PI,
-		distance: Math.sqrt(Math.pow(Math.abs(touches[1].pageX - touches[0].pageX), 2) + Math.pow(Math.abs(touches[1].pageY - touches[0].pageY), 2))
-	};
-}
-
-var TOUCH_STYLES = {
-	WebkitTapHighlightColor: 'rgba(0,0,0,0)',
-	WebkitTouchCallout: 'none',
-	WebkitUserSelect: 'none',
-	KhtmlUserSelect: 'none',
-	MozUserSelect: 'none',
-	msUserSelect: 'none',
-	userSelect: 'none',
-	cursor: 'pointer'
-};
-
-/**
- * Tappable Mixin
- * ==============
- */
-
-var Mixin = {
-	propTypes: {
-		moveThreshold: React.PropTypes.number, // pixels to move before cancelling tap
-		activeDelay: React.PropTypes.number, // ms to wait before adding the `-active` class
-		pressDelay: React.PropTypes.number, // ms to wait before detecting a press
-		pressMoveThreshold: React.PropTypes.number, // pixels to move before cancelling press
-		preventDefault: React.PropTypes.bool, // whether to preventDefault on all events
-		stopPropagation: React.PropTypes.bool, // whether to stopPropagation on all events
-
-		onTap: React.PropTypes.func, // fires when a tap is detected
-		onPress: React.PropTypes.func, // fires when a press is detected
-		onTouchStart: React.PropTypes.func, // pass-through touch event
-		onTouchMove: React.PropTypes.func, // pass-through touch event
-		onTouchEnd: React.PropTypes.func, // pass-through touch event
-		onMouseDown: React.PropTypes.func, // pass-through mouse event
-		onMouseUp: React.PropTypes.func, // pass-through mouse event
-		onMouseMove: React.PropTypes.func, // pass-through mouse event
-		onMouseOut: React.PropTypes.func, // pass-through mouse event
-
-		onPinchStart: React.PropTypes.func, // fires when a pinch gesture is started
-		onPinchMove: React.PropTypes.func, // fires on every touch-move when a pinch action is active
-		onPinchEnd: React.PropTypes.func // fires when a pinch action ends
-	},
-
-	getDefaultProps: function getDefaultProps() {
-		return {
-			activeDelay: 0,
-			moveThreshold: 100,
-			pressDelay: 1000,
-			pressMoveThreshold: 5
-		};
-	},
-
-	getInitialState: function getInitialState() {
-		return {
-			isActive: false,
-			touchActive: false,
-			pinchActive: false
-		};
-	},
-
-	componentWillUnmount: function componentWillUnmount() {
-		this.cleanupScrollDetection();
-		this.cancelPressDetection();
-		this.clearActiveTimeout();
-	},
-
-	processEvent: function processEvent(event) {
-		if (this.props.preventDefault) event.preventDefault();
-		if (this.props.stopPropagation) event.stopPropagation();
-	},
-
-	onTouchStart: function onTouchStart(event) {
-		if (this.props.onTouchStart && this.props.onTouchStart(event) === false) return;
-		this.processEvent(event);
-		window._blockMouseEvents = true;
-		if (event.touches.length === 1) {
-			this._initialTouch = this._lastTouch = getTouchProps(event.touches[0]);
-			this.initScrollDetection();
-			this.initPressDetection(event, this.endTouch);
-			this._activeTimeout = setTimeout(this.makeActive, this.props.activeDelay);
-		} else if ((this.props.onPinchStart || this.props.onPinchMove || this.props.onPinchEnd) && event.touches.length === 2) {
-			this.onPinchStart(event);
-		}
-	},
-
-	makeActive: function makeActive() {
-		if (!this.isMounted()) return;
-		this.clearActiveTimeout();
-		this.setState({
-			isActive: true
-		});
-	},
-
-	clearActiveTimeout: function clearActiveTimeout() {
-		clearTimeout(this._activeTimeout);
-		this._activeTimeout = false;
-	},
-
-	onPinchStart: function onPinchStart(event) {
-		// in case the two touches didn't start exactly at the same time
-		if (this._initialTouch) {
-			this.endTouch();
-		}
-		var touches = event.touches;
-		this._initialPinch = getPinchProps(touches);
-		this._initialPinch = _extends(this._initialPinch, {
-			displacement: { x: 0, y: 0 },
-			displacementVelocity: { x: 0, y: 0 },
-			rotation: 0,
-			rotationVelocity: 0,
-			zoom: 1,
-			zoomVelocity: 0,
-			time: Date.now()
-		});
-		this._lastPinch = this._initialPinch;
-		this.props.onPinchStart && this.props.onPinchStart(this._initialPinch, event);
-	},
-
-	onPinchMove: function onPinchMove(event) {
-		if (this._initialTouch) {
-			this.endTouch();
-		}
-		var touches = event.touches;
-		if (touches.length !== 2) {
-			return this.onPinchEnd(event) // bail out before disaster
-			;
-		}
-
-		var currentPinch = touches[0].identifier === this._initialPinch.touches[0].identifier && touches[1].identifier === this._initialPinch.touches[1].identifier ? getPinchProps(touches) // the touches are in the correct order
-		: touches[1].identifier === this._initialPinch.touches[0].identifier && touches[0].identifier === this._initialPinch.touches[1].identifier ? getPinchProps(touches.reverse()) // the touches have somehow changed order
-		: getPinchProps(touches); // something is wrong, but we still have two touch-points, so we try not to fail
-
-		currentPinch.displacement = {
-			x: currentPinch.center.x - this._initialPinch.center.x,
-			y: currentPinch.center.y - this._initialPinch.center.y
-		};
-
-		currentPinch.time = Date.now();
-		var timeSinceLastPinch = currentPinch.time - this._lastPinch.time;
-
-		currentPinch.displacementVelocity = {
-			x: (currentPinch.displacement.x - this._lastPinch.displacement.x) / timeSinceLastPinch,
-			y: (currentPinch.displacement.y - this._lastPinch.displacement.y) / timeSinceLastPinch
-		};
-
-		currentPinch.rotation = currentPinch.angle - this._initialPinch.angle;
-		currentPinch.rotationVelocity = currentPinch.rotation - this._lastPinch.rotation / timeSinceLastPinch;
-
-		currentPinch.zoom = currentPinch.distance / this._initialPinch.distance;
-		currentPinch.zoomVelocity = (currentPinch.zoom - this._lastPinch.zoom) / timeSinceLastPinch;
-
-		this.props.onPinchMove && this.props.onPinchMove(currentPinch, event);
-
-		this._lastPinch = currentPinch;
-	},
-
-	onPinchEnd: function onPinchEnd(event) {
-		// TODO use helper to order touches by identifier and use actual values on touchEnd.
-		var currentPinch = _extends({}, this._lastPinch);
-		currentPinch.time = Date.now();
-
-		if (currentPinch.time - this._lastPinch.time > 16) {
-			currentPinch.displacementVelocity = 0;
-			currentPinch.rotationVelocity = 0;
-			currentPinch.zoomVelocity = 0;
-		}
-
-		this.props.onPinchEnd && this.props.onPinchEnd(currentPinch, event);
-
-		this._initialPinch = this._lastPinch = null;
-
-		// If one finger is still on screen, it should start a new touch event for swiping etc
-		// But it should never fire an onTap or onPress event.
-		// Since there is no support swipes yet, this should be disregarded for now
-		// if (event.touches.length === 1) {
-		// 	this.onTouchStart(event);
-		// }
-	},
-
-	initScrollDetection: function initScrollDetection() {
-		this._scrollPos = { top: 0, left: 0 };
-		this._scrollParents = [];
-		this._scrollParentPos = [];
-		var node = this.getDOMNode();
-		while (node) {
-			if (node.scrollHeight > node.offsetHeight || node.scrollWidth > node.offsetWidth) {
-				this._scrollParents.push(node);
-				this._scrollParentPos.push(node.scrollTop + node.scrollLeft);
-				this._scrollPos.top += node.scrollTop;
-				this._scrollPos.left += node.scrollLeft;
-			}
-			node = node.parentNode;
-		}
-	},
-
-	calculateMovement: function calculateMovement(touch) {
-		return {
-			x: Math.abs(touch.clientX - this._initialTouch.clientX),
-			y: Math.abs(touch.clientY - this._initialTouch.clientY)
-		};
-	},
-
-	detectScroll: function detectScroll() {
-		var currentScrollPos = { top: 0, left: 0 };
-		for (var i = 0; i < this._scrollParents.length; i++) {
-			currentScrollPos.top += this._scrollParents[i].scrollTop;
-			currentScrollPos.left += this._scrollParents[i].scrollLeft;
-		}
-		return !(currentScrollPos.top === this._scrollPos.top && currentScrollPos.left === this._scrollPos.left);
-	},
-
-	cleanupScrollDetection: function cleanupScrollDetection() {
-		this._scrollParents = undefined;
-		this._scrollPos = undefined;
-	},
-
-	initPressDetection: function initPressDetection(event, callback) {
-		if (!this.props.onPress) return;
-		this._pressTimeout = setTimeout((function () {
-			this.props.onPress(event);
-			callback();
-		}).bind(this), this.props.pressDelay);
-	},
-
-	cancelPressDetection: function cancelPressDetection() {
-		clearTimeout(this._pressTimeout);
-	},
-
-	onTouchMove: function onTouchMove(event) {
-		if (this._initialTouch) {
-			this.processEvent(event);
-
-			if (this.detectScroll()) return this.endTouch(event);
-
-			this.props.onTouchMove && this.props.onTouchMove(event);
-			this._lastTouch = getTouchProps(event.touches[0]);
-			var movement = this.calculateMovement(this._lastTouch);
-			if (movement.x > this.props.pressMoveThreshold || movement.y > this.props.pressMoveThreshold) {
-				this.cancelPressDetection();
-			}
-			if (movement.x > this.props.moveThreshold || movement.y > this.props.moveThreshold) {
-				if (this.state.isActive) {
-					this.setState({
-						isActive: false
-					});
-				} else if (this._activeTimeout) {
-					this.clearActiveTimeout();
-				}
-			} else {
-				if (!this.state.isActive && !this._activeTimeout) {
-					this.setState({
-						isActive: true
-					});
-				}
-			}
-		} else if (this._initialPinch && event.touches.length === 2) {
-			this.onPinchMove(event);
-			event.preventDefault();
-		}
-	},
-
-	onTouchEnd: function onTouchEnd(event) {
-		var _this = this;
-
-		if (this._initialTouch) {
-			this.processEvent(event);
-			var afterEndTouch;
-			var movement = this.calculateMovement(this._lastTouch);
-			if (movement.x <= this.props.moveThreshold && movement.y <= this.props.moveThreshold && this.props.onTap) {
-				event.preventDefault();
-				event.preventDefault = function () {};
-				// calling preventDefault twice throws an error. This will fix that.
-				event.persist();
-				afterEndTouch = function () {
-					var finalParentScrollPos = _this._scrollParents.map(function (node) {
-						return node.scrollTop + node.scrollLeft;
-					});
-					var stoppedMomentumScroll = _this._scrollParentPos.some(function (end, i) {
-						return end !== finalParentScrollPos[i];
-					});
-					if (!stoppedMomentumScroll) {
-						_this.props.onTap(event);
-					}
-				};
-			}
-			this.endTouch(event, afterEndTouch);
-		} else if (this._initialPinch && event.touches.length + event.changedTouches.length === 2) {
-			this.onPinchEnd(event);
-			event.preventDefault();
-		}
-	},
-
-	endTouch: function endTouch(event, callback) {
-		this.cancelPressDetection();
-		this.clearActiveTimeout();
-		if (event && this.props.onTouchEnd) {
-			this.props.onTouchEnd(event);
-		}
-		this._initialTouch = null;
-		this._lastTouch = null;
-		if (this.state.isActive) {
-			this.setState({
-				isActive: false
-			}, callback);
-		} else if (callback) {
-			callback();
-		}
-	},
-
-	onMouseDown: function onMouseDown(event) {
-		if (window._blockMouseEvents) {
-			window._blockMouseEvents = false;
-			return;
-		}
-		if (this.props.onMouseDown && this.props.onMouseDown(event) === false) return;
-		this.processEvent(event);
-		this.initPressDetection(event, this.endMouseEvent);
-		this._mouseDown = true;
-		this.setState({
-			isActive: true
-		});
-	},
-
-	onMouseMove: function onMouseMove(event) {
-		if (window._blockMouseEvents || !this._mouseDown) return;
-		this.processEvent(event);
-		this.props.onMouseMove && this.props.onMouseMove(event);
-	},
-
-	onMouseUp: function onMouseUp(event) {
-		if (window._blockMouseEvents || !this._mouseDown) return;
-		this.processEvent(event);
-		this.props.onMouseUp && this.props.onMouseUp(event);
-		this.props.onTap && this.props.onTap(event);
-		this.endMouseEvent();
-	},
-
-	onMouseOut: function onMouseOut(event) {
-		if (window._blockMouseEvents || !this._mouseDown) return;
-		this.processEvent(event);
-		this.props.onMouseOut && this.props.onMouseOut(event);
-		this.endMouseEvent();
-	},
-
-	endMouseEvent: function endMouseEvent() {
-		this.cancelPressDetection();
-		this._mouseDown = false;
-		this.setState({
-			isActive: false
-		});
-	},
-
-	cancelTap: function cancelTap() {
-		this.endTouch();
-		this._mouseDown = false;
-	},
-
-	touchStyles: function touchStyles() {
-		return TOUCH_STYLES;
-	},
-
-	handlers: function handlers() {
-		return {
-			onTouchStart: this.onTouchStart,
-			onTouchMove: this.onTouchMove,
-			onTouchEnd: this.onTouchEnd,
-			onMouseDown: this.onMouseDown,
-			onMouseUp: this.onMouseUp,
-			onMouseMove: this.onMouseMove,
-			onMouseOut: this.onMouseOut
-		};
-	}
-};
-
-/**
- * Tappable Component
- * ==================
- */
-
-var Component = React.createClass({
-
-	displayName: 'Tappable',
-
-	mixins: [Mixin],
-
-	propTypes: {
-		component: React.PropTypes.any, // component to create
-		className: React.PropTypes.string, // optional className
-		classBase: React.PropTypes.string, // base for generated classNames
-		style: React.PropTypes.object, // additional style properties for the component
-		disabled: React.PropTypes.bool // only applies to buttons
-	},
-
-	getDefaultProps: function getDefaultProps() {
-		return {
-			component: 'span',
-			classBase: 'Tappable'
-		};
-	},
-
-	render: function render() {
-		var props = this.props;
-		var className = props.classBase + (this.state.isActive ? '-active' : '-inactive');
-
-		if (props.className) {
-			className += ' ' + props.className;
-		}
-
-		var style = {};
-		_extends(style, this.touchStyles(), props.style);
-
-		var newComponentProps = _extends({}, props, {
-			style: style,
-			className: className,
-			disabled: props.disabled,
-			handlers: this.handlers
-		}, this.handlers());
-
-		delete newComponentProps.onTap;
-		delete newComponentProps.onPress;
-		delete newComponentProps.onPinchStart;
-		delete newComponentProps.onPinchMove;
-		delete newComponentProps.onPinchEnd;
-		delete newComponentProps.moveThreshold;
-		delete newComponentProps.pressDelay;
-		delete newComponentProps.pressMoveThreshold;
-		delete newComponentProps.preventDefault;
-		delete newComponentProps.stopPropagation;
-		delete newComponentProps.component;
-
-		return React.createElement(props.component, newComponentProps, props.children);
-	}
-});
-
-Component.Mixin = Mixin;
-Component.touchStyles = TOUCH_STYLES;
-module.exports = Component;
-},{"react":undefined}],81:[function(require,module,exports){
+},{"./Alertbar":43,"./Button":44,"./ButtonGroup":45,"./DatePicker":46,"./DatePickerPopup":47,"./FieldControl":48,"./FieldLabel":49,"./Group":50,"./GroupBody":51,"./GroupFooter":52,"./GroupHeader":53,"./GroupInner":54,"./Input":55,"./Item":56,"./ItemContent":57,"./ItemInner":58,"./ItemMedia":59,"./ItemNote":60,"./ItemSubTitle":61,"./ItemTitle":62,"./LabelInput":63,"./LabelSelect":64,"./LabelTextarea":65,"./LabelValue":66,"./ListHeader":67,"./NavigationBar":68,"./Popup":69,"./PopupIcon":70,"./RadioList":71,"./SearchField":72,"./SegmentedControl":73,"./Switch":74,"./Tabs":75,"./Textarea":76}],78:[function(require,module,exports){
+arguments[4][24][0].apply(exports,arguments)
+},{"dup":24}],79:[function(require,module,exports){
 /**
  * Tween.js - Licensed under the MIT license
  * https://github.com/sole/tween.js
@@ -8147,4 +6916,1687 @@ TWEEN.Interpolation = {
 };
 
 module.exports=TWEEN;
-},{}]},{},[26]);
+},{}],80:[function(require,module,exports){
+'use strict';
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _reactAddons = require('react/addons');
+
+var _reactAddons2 = _interopRequireDefault(_reactAddons);
+
+var _touchstonejs = require('touchstonejs');
+
+// App Config
+// ------------------------------
+
+var PeopleStore = require('./stores/people');
+var peopleStore = new PeopleStore();
+
+var App = _reactAddons2['default'].createClass({
+	displayName: 'App',
+
+	mixins: [(0, _touchstonejs.createApp)()],
+
+	childContextTypes: {
+		peopleStore: _reactAddons2['default'].PropTypes.object
+	},
+
+	getChildContext: function getChildContext() {
+		return {
+			peopleStore: peopleStore
+		};
+	},
+
+	render: function render() {
+		var appWrapperClassName = 'app-wrapper device--' + (window.device || {}).platform;
+
+		return _reactAddons2['default'].createElement(
+			'div',
+			{ className: appWrapperClassName },
+			_reactAddons2['default'].createElement(
+				'div',
+				{ className: 'device-silhouette' },
+				_reactAddons2['default'].createElement(
+					_touchstonejs.ViewManager,
+					{ name: 'app', defaultView: 'main' },
+					_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'main', component: MainViewController }),
+					_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'transitions-target-over', component: require('./views/transitions-target-over') })
+				)
+			)
+		);
+	}
+});
+
+// Main Controller
+// ------------------------------
+
+var MainViewController = _reactAddons2['default'].createClass({
+	displayName: 'MainViewController',
+
+	render: function render() {
+		return _reactAddons2['default'].createElement(
+			_touchstonejs.Container,
+			null,
+			_reactAddons2['default'].createElement(_touchstonejs.UI.NavigationBar, { name: 'main' }),
+			_reactAddons2['default'].createElement(
+				_touchstonejs.ViewManager,
+				{ name: 'main', defaultView: 'tabs' },
+				_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'tabs', component: TabViewController })
+			)
+		);
+	}
+});
+
+// Tab Controller
+// ------------------------------
+
+var lastSelectedTab = 'lists';
+var TabViewController = _reactAddons2['default'].createClass({
+	displayName: 'TabViewController',
+
+	getInitialState: function getInitialState() {
+		return {
+			selectedTab: lastSelectedTab
+		};
+	},
+
+	onViewChange: function onViewChange(nextView) {
+		lastSelectedTab = nextView;
+
+		this.setState({
+			selectedTab: nextView
+		});
+	},
+
+	selectTab: function selectTab(value) {
+		var viewProps = undefined;
+
+		this.refs.vm.transitionTo(value, {
+			transition: 'instant',
+			viewProps: viewProps
+		});
+
+		this.setState({
+			selectedTab: value
+		});
+	},
+
+	render: function render() {
+		var selectedTab = this.state.selectedTab;
+		var selectedTabSpan = selectedTab;
+
+		if (selectedTab === 'lists' || selectedTab === 'list-simple' || selectedTab === 'list-complex' || selectedTab === 'list-details') {
+			selectedTabSpan = 'lists';
+		}
+
+		if (selectedTab === 'transitions' || selectedTab === 'transitions-target') {
+			selectedTabSpan = 'transitions';
+		}
+
+		return _reactAddons2['default'].createElement(
+			_touchstonejs.Container,
+			null,
+			_reactAddons2['default'].createElement(
+				_touchstonejs.ViewManager,
+				{ ref: 'vm', name: 'tabs', defaultView: selectedTab, onViewChange: this.onViewChange },
+				_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'lists', component: require('./views/lists') }),
+				_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'list-simple', component: require('./views/list-simple') }),
+				_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'list-complex', component: require('./views/list-complex') }),
+				_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'list-details', component: require('./views/list-details') }),
+				_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'form', component: require('./views/form') }),
+				_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'controls', component: require('./views/controls') }),
+				_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'transitions', component: require('./views/transitions') }),
+				_reactAddons2['default'].createElement(_touchstonejs.View, { name: 'transitions-target', component: require('./views/transitions-target') })
+			),
+			_reactAddons2['default'].createElement(
+				_touchstonejs.UI.Tabs.Navigator,
+				null,
+				_reactAddons2['default'].createElement(
+					_touchstonejs.UI.Tabs.Tab,
+					{ onTap: this.selectTab.bind(this, 'lists'), selected: selectedTabSpan === 'lists' },
+					_reactAddons2['default'].createElement('span', { className: 'Tabs-Icon Tabs-Icon--lists' }),
+					_reactAddons2['default'].createElement(
+						_touchstonejs.UI.Tabs.Label,
+						null,
+						'Lists'
+					)
+				),
+				_reactAddons2['default'].createElement(
+					_touchstonejs.UI.Tabs.Tab,
+					{ onTap: this.selectTab.bind(this, 'form'), selected: selectedTabSpan === 'form' },
+					_reactAddons2['default'].createElement('span', { className: 'Tabs-Icon Tabs-Icon--forms' }),
+					_reactAddons2['default'].createElement(
+						_touchstonejs.UI.Tabs.Label,
+						null,
+						'Forms'
+					)
+				),
+				_reactAddons2['default'].createElement(
+					_touchstonejs.UI.Tabs.Tab,
+					{ onTap: this.selectTab.bind(this, 'controls'), selected: selectedTabSpan === 'controls' },
+					_reactAddons2['default'].createElement('span', { className: 'Tabs-Icon Tabs-Icon--controls' }),
+					_reactAddons2['default'].createElement(
+						_touchstonejs.UI.Tabs.Label,
+						null,
+						'Controls'
+					)
+				),
+				_reactAddons2['default'].createElement(
+					_touchstonejs.UI.Tabs.Tab,
+					{ onTap: this.selectTab.bind(this, 'transitions'), selected: selectedTabSpan === 'transitions' },
+					_reactAddons2['default'].createElement('span', { className: 'Tabs-Icon Tabs-Icon--transitions' }),
+					_reactAddons2['default'].createElement(
+						_touchstonejs.UI.Tabs.Label,
+						null,
+						'Transitions'
+					)
+				)
+			)
+		);
+	}
+});
+
+function startApp() {
+	if (window.StatusBar) {
+		window.StatusBar.styleDefault();
+	}
+
+	_reactAddons2['default'].render(_reactAddons2['default'].createElement(App, null), document.getElementById('app'));
+}
+
+if (!window.cordova) {
+	startApp();
+} else {
+	document.addEventListener('deviceready', startApp, false);
+}
+
+},{"./stores/people":81,"./views/controls":82,"./views/form":83,"./views/list-complex":84,"./views/list-details":85,"./views/list-simple":86,"./views/lists":87,"./views/transitions":90,"./views/transitions-target":89,"./views/transitions-target-over":88,"react/addons":undefined,"touchstonejs":40}],81:[function(require,module,exports){
+'use strict';
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var EventEmitter = require('events').EventEmitter;
+
+var async = require('async');
+var httpify = require('httpify');
+
+var apiUrl = window.location.protocol === 'https:' ? 'https://randomuser.me/api?nat=au&results=16' : 'http://api.randomuser.me/?nat=au&results=16';
+
+function PeopleStore() {
+	EventEmitter.call(this);
+
+	// initialize internal cache
+	var storage = this.cache = {
+		people: []
+	};
+	var self = this;
+
+	// Dispatchers
+	this.starQueue = async.queue(function (data, callback) {
+		var id = data.id;
+		var starred = data.starred;
+
+		// update internal data
+		self.cache.people.filter(function (person) {
+			return person.id === id;
+		}).forEach(function (person) {
+			return person.isStarred = starred;
+		});
+
+		// emit events
+		self.emit('people-updated', storage.people);
+
+		callback();
+	}, 1);
+
+	this.refreshQueue = async.queue(function (_, callback) {
+		// update
+		httpify({
+			method: 'GET',
+			url: apiUrl
+		}, function (err, res) {
+			if (err) return callback(err);
+
+			storage.people = res.body.results.map(function (p) {
+				return p.user;
+			});
+
+			// post process new data
+			storage.people.forEach(function (person, i) {
+				person.id = i;
+				person.name.first = person.name.first[0].toUpperCase() + person.name.first.slice(1);
+				person.name.last = person.name.last[0].toUpperCase() + person.name.last.slice(1);
+				person.name.initials = person.name.first[0] + person.name.last[0];
+				person.name.full = person.name.first + ' ' + person.name.last;
+				person.category = Math.random() > 0.5 ? 'A' : 'B';
+				person.github = person.name.first.toLowerCase() + person.name.last.toLowerCase();
+				person.picture = person.picture.medium;
+				person.twitter = '@' + person.name.first.toLowerCase() + Math.random().toString(32).slice(2, 5);
+			});
+
+			// emit events
+			self.emit('people-updated', storage.people);
+			self.emit('refresh');
+
+			callback(null, storage.people);
+		});
+	}, 1);
+
+	// refresh immediately
+	this.refresh();
+}
+
+_extends(PeopleStore.prototype, EventEmitter.prototype);
+
+// Intents
+PeopleStore.prototype.refresh = function (callback) {
+	this.refreshQueue.push(null, callback);
+};
+
+PeopleStore.prototype.star = function (_ref, starred, callback) {
+	var id = _ref.id;
+
+	this.starQueue.push({ id: id, starred: starred }, callback);
+};
+
+// Getters
+PeopleStore.prototype.getPeople = function () {
+	return this.cache.people;
+};
+
+module.exports = PeopleStore;
+
+},{"async":1,"events":33,"httpify":4}],82:[function(require,module,exports){
+'use strict';
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _reactContainer = require('react-container');
+
+var _reactContainer2 = _interopRequireDefault(_reactContainer);
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactTappable = require('react-tappable');
+
+var _reactTappable2 = _interopRequireDefault(_reactTappable);
+
+var _reactTimers = require('react-timers');
+
+var _reactTimers2 = _interopRequireDefault(_reactTimers);
+
+var _touchstonejs = require('touchstonejs');
+
+module.exports = _react2['default'].createClass({
+	displayName: 'exports',
+
+	mixins: [_reactTimers2['default']],
+	statics: {
+		navigationBar: 'main',
+		getNavigation: function getNavigation() {
+			return {
+				title: 'Controls'
+			};
+		}
+	},
+
+	getInitialState: function getInitialState() {
+		return {
+			alertbar: {
+				visible: false,
+				type: '',
+				text: ''
+			},
+			popup: {
+				visible: false
+			}
+		};
+	},
+
+	showLoadingPopup: function showLoadingPopup() {
+		var _this = this;
+
+		this.setState({
+			popup: {
+				visible: true,
+				loading: true,
+				header: 'Loading',
+				iconName: 'ion-load-c',
+				iconType: 'default'
+			}
+		});
+
+		this.setTimeout(function () {
+			_this.setState({
+				popup: {
+					visible: true,
+					loading: false,
+					header: 'Done!',
+					iconName: 'ion-ios-checkmark',
+					iconType: 'success'
+				}
+			});
+		}, 2000);
+
+		this.setTimeout(function () {
+			_this.setState({
+				popup: {
+					visible: false
+				}
+			});
+		}, 3000);
+	},
+
+	showAlertbar: function showAlertbar(type, text) {
+		var _this2 = this;
+
+		this.setState({
+			alertbar: {
+				visible: true,
+				type: type,
+				text: text
+			}
+		});
+
+		this.setTimeout(function () {
+			_this2.setState({
+				alertbar: {
+					visible: false
+				}
+			});
+		}, 2000);
+	},
+
+	handleModeChange: function handleModeChange(newMode) {
+		var selectedItem = newMode;
+
+		if (this.state.selectedMode === newMode) {
+			selectedItem = null;
+		}
+
+		this.setState({
+			selectedMode: selectedItem
+		});
+	},
+
+	render: function render() {
+		var alertbar = this.state.alertbar;
+
+		return _react2['default'].createElement(
+			_reactContainer2['default'],
+			{ scrollable: true },
+			_react2['default'].createElement(
+				_touchstonejs.UI.Alertbar,
+				{ type: alertbar.type || 'default', visible: alertbar.visible, animated: true },
+				alertbar.text || ''
+			),
+			_react2['default'].createElement(
+				_touchstonejs.UI.Group,
+				{ hasTopGutter: true },
+				_react2['default'].createElement(
+					_touchstonejs.UI.GroupHeader,
+					null,
+					'Segmented Control'
+				),
+				_react2['default'].createElement(_touchstonejs.UI.SegmentedControl, { value: this.state.selectedMode, onChange: this.handleModeChange, hasGutter: true, options: [{ label: 'One', value: 'one' }, { label: 'Two', value: 'two' }, { label: 'Three', value: 'three' }, { label: 'Four', value: 'four' }] })
+			),
+			_react2['default'].createElement(
+				_touchstonejs.UI.Group,
+				null,
+				_react2['default'].createElement(
+					_touchstonejs.UI.GroupHeader,
+					null,
+					'Alert Bar'
+				),
+				_react2['default'].createElement(
+					_touchstonejs.UI.ButtonGroup,
+					null,
+					_react2['default'].createElement(
+						_touchstonejs.UI.Button,
+						{ type: 'primary', onTap: this.showAlertbar.bind(this, 'danger', 'No Internet Connection'), disabled: this.state.alertbar.visible },
+						'Danger'
+					),
+					_react2['default'].createElement(
+						_touchstonejs.UI.Button,
+						{ type: 'primary', onTap: this.showAlertbar.bind(this, 'warning', 'Connecting...'), disabled: this.state.alertbar.visible },
+						'Warning'
+					),
+					_react2['default'].createElement(
+						_touchstonejs.UI.Button,
+						{ type: 'primary', onTap: this.showAlertbar.bind(this, 'success', 'Connected'), disabled: this.state.alertbar.visible },
+						'Success'
+					)
+				)
+			),
+			_react2['default'].createElement(
+				_touchstonejs.UI.Group,
+				null,
+				_react2['default'].createElement(
+					_touchstonejs.UI.GroupHeader,
+					null,
+					'Popup'
+				),
+				_react2['default'].createElement(
+					_touchstonejs.UI.Button,
+					{ type: 'primary', onTap: this.showLoadingPopup, disabled: this.state.popup.visible },
+					'Show Popup'
+				)
+			),
+			_react2['default'].createElement(
+				_touchstonejs.UI.Group,
+				null,
+				_react2['default'].createElement(
+					_touchstonejs.UI.GroupHeader,
+					null,
+					'Application State'
+				),
+				_react2['default'].createElement(
+					_touchstonejs.UI.GroupBody,
+					null,
+					_react2['default'].createElement(
+						_touchstonejs.Link,
+						{ to: 'tabs:non-existent', transition: 'show-from-right' },
+						_react2['default'].createElement(
+							_touchstonejs.UI.Item,
+							{ showDisclosureArrow: true },
+							_react2['default'].createElement(
+								_touchstonejs.UI.ItemInner,
+								null,
+								'Invalid View'
+							)
+						)
+					)
+				)
+			),
+			_react2['default'].createElement(
+				_touchstonejs.UI.Popup,
+				{ visible: this.state.popup.visible },
+				_react2['default'].createElement(_touchstonejs.UI.PopupIcon, { name: this.state.popup.iconName, type: this.state.popup.iconType, spinning: this.state.popup.loading }),
+				_react2['default'].createElement(
+					'div',
+					null,
+					_react2['default'].createElement(
+						'strong',
+						null,
+						this.state.popup.header
+					)
+				)
+			)
+		);
+	}
+});
+
+},{"react":undefined,"react-container":23,"react-tappable":27,"react-timers":31,"touchstonejs":40}],83:[function(require,module,exports){
+'use strict';
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _reactContainer = require('react-container');
+
+var _reactContainer2 = _interopRequireDefault(_reactContainer);
+
+var _cordovaDialogs = require('cordova-dialogs');
+
+var _cordovaDialogs2 = _interopRequireDefault(_cordovaDialogs);
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactTappable = require('react-tappable');
+
+var _reactTappable2 = _interopRequireDefault(_reactTappable);
+
+var _touchstonejs = require('touchstonejs');
+
+var scrollable = _reactContainer2['default'].initScrollable();
+
+// html5 input types for testing
+// omitted: button, checkbox, radio, image, hidden, reset, submit
+var HTML5_INPUT_TYPES = ['color', 'date', 'datetime', 'datetime-local', 'email', 'file', 'month', 'number', 'password', 'range', 'search', 'tel', 'text', 'time', 'url', 'week'];
+var FLAVOURS = [{ label: 'Vanilla', value: 'vanilla' }, { label: 'Chocolate', value: 'chocolate' }, { label: 'Caramel', value: 'caramel' }, { label: 'Strawberry', value: 'strawberry' }];
+
+module.exports = _react2['default'].createClass({
+	displayName: 'exports',
+
+	statics: {
+		navigationBar: 'main',
+		getNavigation: function getNavigation() {
+			return {
+				title: 'Forms'
+			};
+		}
+	},
+
+	getInitialState: function getInitialState() {
+		return {
+			flavourLabelSelect: 'chocolate',
+			flavourRadioList: 'chocolate',
+			switchValue: true
+		};
+	},
+
+	handleRadioListChange: function handleRadioListChange(key, newValue) {
+		console.log('handleFlavourChange:', key, newValue);
+		var newState = {};
+		newState[key] = newValue;
+
+		this.setState(newState);
+	},
+
+	handleLabelSelectChange: function handleLabelSelectChange(key, event) {
+		console.log('handleFlavourChange:', key, event.target.value);
+		var newState = {};
+		newState[key] = event.target.value;
+
+		this.setState(newState);
+	},
+
+	handleSwitch: function handleSwitch(key, event) {
+		var newState = {};
+		newState[key] = !this.state[key];
+
+		this.setState(newState);
+	},
+
+	alert: function alert(message) {
+		_cordovaDialogs2['default'].alert(message, function () {}, null);
+	},
+
+	// used for testing
+	renderInputTypes: function renderInputTypes() {
+		return HTML5_INPUT_TYPES.map(function (type) {
+			return _react2['default'].createElement(_touchstonejs.UI.LabelInput, { key: type, type: type, label: type, placeholder: type });
+		});
+	},
+
+	showDatePicker: function showDatePicker() {
+		this.setState({ datePicker: true });
+	},
+
+	handleDatePickerChange: function handleDatePickerChange(d) {
+		this.setState({ datePicker: false, date: d });
+	},
+
+	formatDate: function formatDate(date) {
+		if (date) {
+			return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+		}
+	},
+
+	render: function render() {
+
+		return _react2['default'].createElement(
+			_reactContainer2['default'],
+			{ fill: true },
+			_react2['default'].createElement(
+				_reactContainer2['default'],
+				{ scrollable: scrollable },
+				_react2['default'].createElement(
+					_touchstonejs.UI.Group,
+					null,
+					_react2['default'].createElement(
+						_touchstonejs.UI.GroupHeader,
+						null,
+						'Checkbox'
+					),
+					_react2['default'].createElement(
+						_touchstonejs.UI.GroupBody,
+						null,
+						_react2['default'].createElement(
+							_touchstonejs.UI.Item,
+							null,
+							_react2['default'].createElement(
+								_touchstonejs.UI.ItemInner,
+								null,
+								_react2['default'].createElement(
+									_touchstonejs.UI.FieldLabel,
+									null,
+									'Switch'
+								),
+								_react2['default'].createElement(_touchstonejs.UI.Switch, { onTap: this.handleSwitch.bind(this, 'switchValue'), on: this.state.switchValue })
+							)
+						),
+						_react2['default'].createElement(
+							_touchstonejs.UI.Item,
+							null,
+							_react2['default'].createElement(
+								_touchstonejs.UI.ItemInner,
+								null,
+								_react2['default'].createElement(
+									_touchstonejs.UI.FieldLabel,
+									null,
+									'Disabled'
+								),
+								_react2['default'].createElement(_touchstonejs.UI.Switch, { disabled: true })
+							)
+						)
+					)
+				),
+				_react2['default'].createElement(
+					_touchstonejs.UI.Group,
+					null,
+					_react2['default'].createElement(
+						_touchstonejs.UI.GroupHeader,
+						null,
+						'Radio'
+					),
+					_react2['default'].createElement(
+						_touchstonejs.UI.GroupBody,
+						null,
+						_react2['default'].createElement(_touchstonejs.UI.RadioList, { value: this.state.flavourRadioList, onChange: this.handleRadioListChange.bind(this, 'flavourRadioList'), options: FLAVOURS })
+					)
+				),
+				_react2['default'].createElement(
+					_touchstonejs.UI.Group,
+					null,
+					_react2['default'].createElement(
+						_touchstonejs.UI.GroupHeader,
+						null,
+						'Inputs'
+					),
+					_react2['default'].createElement(
+						_touchstonejs.UI.GroupBody,
+						null,
+						_react2['default'].createElement(_touchstonejs.UI.Input, { placeholder: 'Default' }),
+						_react2['default'].createElement(_touchstonejs.UI.Input, { defaultValue: 'With Value', placeholder: 'Placeholder' }),
+						_react2['default'].createElement(_touchstonejs.UI.Textarea, { defaultValue: 'Longtext is good for bios etc.', placeholder: 'Longtext' })
+					)
+				),
+				_react2['default'].createElement(
+					_touchstonejs.UI.Group,
+					null,
+					_react2['default'].createElement(
+						_touchstonejs.UI.GroupHeader,
+						null,
+						'Labelled Inputs'
+					),
+					_react2['default'].createElement(
+						_touchstonejs.UI.GroupBody,
+						null,
+						_react2['default'].createElement(_touchstonejs.UI.LabelInput, { type: 'email', label: 'Email', placeholder: 'your.name@example.com' }),
+						_react2['default'].createElement(
+							_reactTappable2['default'],
+							{ component: 'label', onTap: this.showDatePicker },
+							_react2['default'].createElement(_touchstonejs.UI.LabelValue, { label: 'Date', value: this.formatDate(this.state.date), placeholder: 'Select a date' })
+						),
+						_react2['default'].createElement(_touchstonejs.UI.LabelInput, { type: 'url', label: 'URL', placeholder: 'http://www.yourwebsite.com' }),
+						_react2['default'].createElement(_touchstonejs.UI.LabelInput, { noedit: true, label: 'No Edit', defaultValue: 'Un-editable, scrollable, selectable content' }),
+						_react2['default'].createElement(_touchstonejs.UI.LabelSelect, { label: 'Flavour', value: this.state.flavourLabelSelect, onChange: this.handleLabelSelectChange.bind(this, 'flavourLabelSelect'), options: FLAVOURS })
+					)
+				),
+				_react2['default'].createElement(
+					_touchstonejs.UI.Button,
+					{ type: 'primary', onTap: this.alert.bind(this, 'You clicked the Primary Button') },
+					'Primary Button'
+				),
+				_react2['default'].createElement(
+					_touchstonejs.UI.Button,
+					{ onTap: this.alert.bind(this, 'You clicked the Default Button') },
+					'Default Button'
+				),
+				_react2['default'].createElement(
+					_touchstonejs.UI.Button,
+					{ type: 'danger', onTap: this.alert.bind(this, 'You clicked the Danger Button') },
+					'Danger Button'
+				),
+				_react2['default'].createElement(
+					_touchstonejs.UI.Button,
+					{ type: 'danger', onTap: this.alert.bind(this, 'You clicked the Danger Button'), disabled: true },
+					'Disabled Button'
+				)
+			),
+			_react2['default'].createElement(_touchstonejs.UI.DatePickerPopup, { visible: this.state.datePicker, date: this.state.date, onChange: this.handleDatePickerChange })
+		);
+	}
+});
+/*<UI.Group>
+<UI.GroupHeader>Input Type Experiment</UI.GroupHeader>
+<UI.GroupBody>
+	{this.renderInputTypes()}
+</UI.GroupBody>
+</UI.Group>*/
+
+},{"cordova-dialogs":3,"react":undefined,"react-container":23,"react-tappable":27,"touchstonejs":40}],84:[function(require,module,exports){
+'use strict';
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _reactContainer = require('react-container');
+
+var _reactContainer2 = _interopRequireDefault(_reactContainer);
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactSentry = require('react-sentry');
+
+var _reactSentry2 = _interopRequireDefault(_reactSentry);
+
+var _reactTappable = require('react-tappable');
+
+var _reactTappable2 = _interopRequireDefault(_reactTappable);
+
+var _touchstonejs = require('touchstonejs');
+
+var scrollable = _reactContainer2['default'].initScrollable();
+
+var ComplexLinkItem = _react2['default'].createClass({
+	displayName: 'ComplexLinkItem',
+
+	contextTypes: { peopleStore: _react2['default'].PropTypes.object.isRequired },
+
+	toggleStar: function toggleStar() {
+		var person = this.props.person;
+
+		this.context.peopleStore.star(person, !person.isStarred);
+	},
+
+	render: function render() {
+		var person = this.props.person;
+
+		return _react2['default'].createElement(
+			_touchstonejs.Link,
+			{ to: 'tabs:list-details', transition: 'show-from-right', viewProps: { person: person, prevView: 'list-complex' } },
+			_react2['default'].createElement(
+				_touchstonejs.UI.Item,
+				null,
+				_react2['default'].createElement(_touchstonejs.UI.ItemMedia, { avatar: person.picture, avatarInitials: person.initials }),
+				_react2['default'].createElement(
+					_touchstonejs.UI.ItemInner,
+					null,
+					_react2['default'].createElement(
+						_touchstonejs.UI.ItemContent,
+						null,
+						_react2['default'].createElement(
+							_touchstonejs.UI.ItemTitle,
+							null,
+							person.name.full
+						),
+						_react2['default'].createElement(
+							_touchstonejs.UI.ItemSubTitle,
+							null,
+							person.bio
+						)
+					),
+					_react2['default'].createElement(
+						_reactTappable2['default'],
+						{ onTap: this.toggleStar, stopPropagation: true },
+						_react2['default'].createElement(_touchstonejs.UI.ItemNote, { icon: person.isStarred ? 'ion-ios-star' : 'ion-ios-star-outline', type: person.isStarred ? 'warning' : 'default', className: 'ion-lg' })
+					)
+				)
+			)
+		);
+	}
+});
+
+// FIXME: this bit is global and hacky, expect it to change
+var EventEmitter = require('events').EventEmitter;
+var emitter = new EventEmitter();
+
+function getNavigation(props, app, filterStarred) {
+	return {
+		leftLabel: 'Lists',
+		leftArrow: true,
+		leftAction: function leftAction() {
+			app.transitionTo('tabs:lists', { transition: 'reveal-from-right' });
+		},
+		rightLabel: filterStarred ? 'All' : 'Starred',
+		rightAction: emitter.emit.bind(emitter, 'navigationBarRightAction'),
+		title: 'Complex'
+	};
+}
+
+module.exports = _react2['default'].createClass({
+	displayName: 'exports',
+
+	contextTypes: {
+		app: _react2['default'].PropTypes.object,
+		peopleStore: _react2['default'].PropTypes.object.isRequired
+	},
+	mixins: [_reactSentry2['default']],
+
+	statics: {
+		navigationBar: 'main',
+		getNavigation: getNavigation
+	},
+
+	getInitialState: function getInitialState() {
+		return {
+			filterStarred: false,
+			people: this.context.peopleStore.getPeople()
+		};
+	},
+
+	componentDidMount: function componentDidMount() {
+		var _this = this;
+
+		this.watch(this.context.peopleStore, 'people-updated', function (people) {
+			_this.setState({ people: people });
+		});
+
+		this.watch(emitter, 'navigationBarRightAction', this.toggleStarred);
+	},
+
+	toggleStarred: function toggleStarred() {
+		var filterStarred = !this.state.filterStarred;
+		this.setState({ filterStarred: filterStarred });
+		this.context.app.navigationBars.main.update(getNavigation({}, this.context.app, filterStarred));
+	},
+
+	handleModeChange: function handleModeChange(newMode) {
+		var selectedMode = newMode;
+
+		if (this.state.selectedMode === newMode) {
+			selectedMode = null;
+		}
+
+		this.setState({ selectedMode: selectedMode });
+	},
+
+	render: function render() {
+		var _state = this.state;
+		var people = _state.people;
+		var filterStarred = _state.filterStarred;
+		var selectedMode = _state.selectedMode;
+
+		if (filterStarred) {
+			people = people.filter(function (person) {
+				return person.isStarred;
+			});
+		}
+
+		if (selectedMode === 'A' || selectedMode === 'B') {
+			people = people.filter(function (person) {
+				return person.category === selectedMode;
+			});
+		}
+
+		function sortByName(a, b) {
+			return a.name.full.localeCompare(b.name.full);
+		}
+
+		var sortedPeople = people.sort(sortByName);
+		var results = undefined;
+
+		if (sortedPeople.length) {
+			var aPeople = sortedPeople.filter(function (person) {
+				return person.category === 'A';
+			}).map(function (person, i) {
+				return _react2['default'].createElement(ComplexLinkItem, { key: 'persona' + i, person: person });
+			});
+
+			var bPeople = sortedPeople.filter(function (person) {
+				return person.category === 'B';
+			}).map(function (person, i) {
+				return _react2['default'].createElement(ComplexLinkItem, { key: 'personb' + i, person: person });
+			});
+
+			results = _react2['default'].createElement(
+				_touchstonejs.UI.GroupBody,
+				null,
+				aPeople.length > 0 ? _react2['default'].createElement(
+					_touchstonejs.UI.ListHeader,
+					{ sticky: true },
+					'Category A'
+				) : '',
+				aPeople,
+				bPeople.length > 0 ? _react2['default'].createElement(
+					_touchstonejs.UI.ListHeader,
+					{ sticky: true },
+					'Category B'
+				) : '',
+				bPeople
+			);
+		} else {
+			results = _react2['default'].createElement(
+				_reactContainer2['default'],
+				{ direction: 'column', align: 'center', justify: 'center', className: 'no-results' },
+				_react2['default'].createElement('div', { className: 'no-results__icon ion-ios-star' }),
+				_react2['default'].createElement(
+					'div',
+					{ className: 'no-results__text' },
+					'Go star some people!'
+				)
+			);
+		}
+
+		return _react2['default'].createElement(
+			_reactContainer2['default'],
+			{ scrollable: scrollable },
+			_react2['default'].createElement(_touchstonejs.UI.SegmentedControl, { value: this.state.selectedMode, onChange: this.handleModeChange, hasGutter: true, equalWidthSegments: true, options: [{ label: 'A', value: 'A' }, { label: 'B', value: 'B' }] }),
+			results
+		);
+	}
+});
+
+},{"events":33,"react":undefined,"react-container":23,"react-sentry":25,"react-tappable":27,"touchstonejs":40}],85:[function(require,module,exports){
+'use strict';
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _reactContainer = require('react-container');
+
+var _reactContainer2 = _interopRequireDefault(_reactContainer);
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+module.exports = _react2['default'].createClass({
+	displayName: 'exports',
+
+	statics: {
+		navigationBar: 'main',
+		getNavigation: function getNavigation(props, app) {
+			var leftLabel = props.prevView === 'list-simple' ? 'Simple' : 'Complex';
+			return {
+				leftArrow: true,
+				leftLabel: leftLabel,
+				leftAction: function leftAction() {
+					app.transitionTo('tabs:' + props.prevView, { transition: 'reveal-from-right' });
+				},
+				title: 'Person'
+			};
+		}
+	},
+	getDefaultProps: function getDefaultProps() {
+		return {
+			prevView: 'home'
+		};
+	},
+	render: function render() {
+		var person = this.props.person;
+
+		return _react2['default'].createElement(
+			_reactContainer2['default'],
+			{ direction: 'column' },
+			_react2['default'].createElement(
+				_reactContainer2['default'],
+				{ fill: true, scrollable: true, ref: 'scrollContainer', className: 'PersonDetails' },
+				_react2['default'].createElement('img', { src: person.picture, className: 'PersonDetails__avatar' }),
+				_react2['default'].createElement(
+					'div',
+					{ className: 'PersonDetails__heading' },
+					person.name.full
+				),
+				_react2['default'].createElement(
+					'div',
+					{ className: 'PersonDetails__text text-block' },
+					person.bio
+				),
+				(person.twitter || person.github) && _react2['default'].createElement(
+					'div',
+					{ className: 'PersonDetails__profiles' },
+					person.twitter && _react2['default'].createElement(
+						'div',
+						{ className: 'PersonDetails__profile' },
+						_react2['default'].createElement('span', { className: 'PersonDetails__profile__icon ion-social-twitter' }),
+						person.twitter
+					),
+					person.github && _react2['default'].createElement(
+						'div',
+						{ className: 'PersonDetails__profile' },
+						_react2['default'].createElement('span', { className: 'PersonDetails__profile__icon ion-social-github' }),
+						person.github
+					)
+				)
+			)
+		);
+	}
+});
+
+},{"react":undefined,"react-container":23}],86:[function(require,module,exports){
+'use strict';
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _reactContainer = require('react-container');
+
+var _reactContainer2 = _interopRequireDefault(_reactContainer);
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactSentry = require('react-sentry');
+
+var _reactSentry2 = _interopRequireDefault(_reactSentry);
+
+var _reactTappable = require('react-tappable');
+
+var _reactTappable2 = _interopRequireDefault(_reactTappable);
+
+var _touchstonejs = require('touchstonejs');
+
+var scrollable = _reactContainer2['default'].initScrollable({ left: 0, top: 44 });
+
+var SimpleLinkItem = _react2['default'].createClass({
+	displayName: 'SimpleLinkItem',
+
+	propTypes: {
+		person: _react2['default'].PropTypes.object.isRequired
+	},
+
+	render: function render() {
+		return _react2['default'].createElement(
+			_touchstonejs.Link,
+			{ to: 'tabs:list-details', transition: 'show-from-right', viewProps: { person: this.props.person, prevView: 'list-simple' } },
+			_react2['default'].createElement(
+				_touchstonejs.UI.Item,
+				{ showDisclosureArrow: true },
+				_react2['default'].createElement(
+					_touchstonejs.UI.ItemInner,
+					null,
+					_react2['default'].createElement(
+						_touchstonejs.UI.ItemTitle,
+						null,
+						this.props.person.name.full
+					)
+				)
+			)
+		);
+	}
+});
+
+module.exports = _react2['default'].createClass({
+	displayName: 'exports',
+
+	mixins: [_reactSentry2['default']],
+	contextTypes: { peopleStore: _react2['default'].PropTypes.object.isRequired },
+
+	statics: {
+		navigationBar: 'main',
+		getNavigation: function getNavigation(props, app) {
+			return {
+				leftArrow: true,
+				leftLabel: 'Lists',
+				leftAction: function leftAction() {
+					app.transitionTo('tabs:lists', { transition: 'reveal-from-right' });
+				},
+				title: 'Simple'
+			};
+		}
+	},
+
+	componentDidMount: function componentDidMount() {
+		var _this = this;
+
+		this.watch(this.context.peopleStore, 'people-updated', function (people) {
+			_this.setState({ people: people });
+		});
+	},
+
+	getInitialState: function getInitialState() {
+		return {
+			searchString: '',
+			people: this.context.peopleStore.getPeople()
+		};
+	},
+
+	clearSearch: function clearSearch() {
+		this.setState({ searchString: '' });
+	},
+
+	updateSearch: function updateSearch(str) {
+		this.setState({ searchString: str });
+	},
+
+	submitSearch: function submitSearch(str) {
+		console.log(str);
+	},
+
+	render: function render() {
+		var _state = this.state;
+		var people = _state.people;
+		var searchString = _state.searchString;
+
+		var searchRegex = new RegExp(searchString);
+
+		function searchFilter(person) {
+			return searchRegex.test(person.name.full.toLowerCase());
+		};
+		function sortByName(a, b) {
+			return a.name.full.localeCompare(b.name.full);
+		};
+
+		var filteredPeople = people.filter(searchFilter).sort(sortByName);
+
+		var results = undefined;
+
+		if (searchString && !filteredPeople.length) {
+			results = _react2['default'].createElement(
+				_reactContainer2['default'],
+				{ direction: 'column', align: 'center', justify: 'center', className: 'no-results' },
+				_react2['default'].createElement('div', { className: 'no-results__icon ion-ios-search-strong' }),
+				_react2['default'].createElement(
+					'div',
+					{ className: 'no-results__text' },
+					'No results for "' + searchString + '"'
+				)
+			);
+		} else {
+			results = _react2['default'].createElement(
+				_touchstonejs.UI.GroupBody,
+				null,
+				filteredPeople.map(function (person, i) {
+					return _react2['default'].createElement(SimpleLinkItem, { key: 'person' + i, person: person });
+				})
+			);
+		}
+
+		return _react2['default'].createElement(
+			_reactContainer2['default'],
+			{ ref: 'scrollContainer', scrollable: scrollable },
+			_react2['default'].createElement(_touchstonejs.UI.SearchField, { type: 'dark', value: this.state.searchString, onSubmit: this.submitSearch, onChange: this.updateSearch, onCancel: this.clearSearch, onClear: this.clearSearch, placeholder: 'Search...' }),
+			results
+		);
+	}
+});
+
+},{"react":undefined,"react-container":23,"react-sentry":25,"react-tappable":27,"touchstonejs":40}],87:[function(require,module,exports){
+'use strict';
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _reactContainer = require('react-container');
+
+var _reactContainer2 = _interopRequireDefault(_reactContainer);
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _touchstonejs = require('touchstonejs');
+
+module.exports = _react2['default'].createClass({
+	displayName: 'exports',
+
+	statics: {
+		navigationBar: 'main',
+		getNavigation: function getNavigation() {
+			return {
+				title: 'Lists'
+			};
+		}
+	},
+
+	render: function render() {
+		return _react2['default'].createElement(
+			_reactContainer2['default'],
+			{ scrollable: true },
+			_react2['default'].createElement(
+				_touchstonejs.UI.Group,
+				null,
+				_react2['default'].createElement(
+					_touchstonejs.UI.GroupHeader,
+					null,
+					'Lists'
+				),
+				_react2['default'].createElement(
+					_touchstonejs.UI.GroupBody,
+					null,
+					_react2['default'].createElement(
+						_touchstonejs.Link,
+						{ to: 'tabs:list-simple', transition: 'show-from-right' },
+						_react2['default'].createElement(
+							_touchstonejs.UI.Item,
+							{ showDisclosureArrow: true },
+							_react2['default'].createElement(
+								_touchstonejs.UI.ItemInner,
+								null,
+								'Simple List'
+							)
+						)
+					),
+					_react2['default'].createElement(
+						_touchstonejs.Link,
+						{ to: 'tabs:list-complex', transition: 'show-from-right' },
+						_react2['default'].createElement(
+							_touchstonejs.UI.Item,
+							{ showDisclosureArrow: true },
+							_react2['default'].createElement(
+								_touchstonejs.UI.ItemInner,
+								null,
+								'Complex List'
+							)
+						)
+					)
+				)
+			),
+			_react2['default'].createElement(
+				_touchstonejs.UI.Group,
+				null,
+				_react2['default'].createElement(
+					_touchstonejs.UI.GroupHeader,
+					null,
+					'GroupHeader'
+				),
+				_react2['default'].createElement(
+					_touchstonejs.UI.GroupBody,
+					null,
+					_react2['default'].createElement(
+						_touchstonejs.UI.GroupInner,
+						null,
+						_react2['default'].createElement(
+							'p',
+							null,
+							'Use groups to contain content or lists. Where appropriate a Group should be accompanied by a GroupHeading and optionally a GroupFooter.'
+						),
+						'GroupBody will apply the background for content inside groups.'
+					)
+				),
+				_react2['default'].createElement(
+					_touchstonejs.UI.GroupFooter,
+					null,
+					'GroupFooter: useful for a detailed explaination to express the intentions of the Group. Try to be concise - remember that users are likely to read the text in your UI many times.'
+				)
+			)
+		);
+	}
+});
+
+},{"react":undefined,"react-container":23,"touchstonejs":40}],88:[function(require,module,exports){
+'use strict';
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _reactContainer = require('react-container');
+
+var _reactContainer2 = _interopRequireDefault(_reactContainer);
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactTimers = require('react-timers');
+
+var _reactTimers2 = _interopRequireDefault(_reactTimers);
+
+var _touchstonejs = require('touchstonejs');
+
+module.exports = _react2['default'].createClass({
+	displayName: 'exports',
+
+	mixins: [_touchstonejs.Mixins.Transitions, _reactTimers2['default']],
+	componentDidMount: function componentDidMount() {
+		var self = this;
+		this.setTimeout(function () {
+			self.transitionTo('app:main', { transition: 'fade' });
+		}, 1000);
+	},
+	render: function render() {
+		return _react2['default'].createElement(
+			_reactContainer2['default'],
+			{ direction: 'column' },
+			_react2['default'].createElement(_touchstonejs.UI.NavigationBar, { name: 'over', title: this.props.navbarTitle }),
+			_react2['default'].createElement(
+				_reactContainer2['default'],
+				{ direction: 'column', align: 'center', justify: 'center', className: 'no-results' },
+				_react2['default'].createElement('div', { className: 'no-results__icon ion-ios-photos' }),
+				_react2['default'].createElement(
+					'div',
+					{ className: 'no-results__text' },
+					'Hold on a sec...'
+				)
+			)
+		);
+	}
+});
+
+},{"react":undefined,"react-container":23,"react-timers":31,"touchstonejs":40}],89:[function(require,module,exports){
+'use strict';
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _reactContainer = require('react-container');
+
+var _reactContainer2 = _interopRequireDefault(_reactContainer);
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactTimers = require('react-timers');
+
+var _reactTimers2 = _interopRequireDefault(_reactTimers);
+
+var _touchstonejs = require('touchstonejs');
+
+module.exports = _react2['default'].createClass({
+	displayName: 'exports',
+
+	mixins: [_touchstonejs.Mixins.Transitions, _reactTimers2['default']],
+	statics: {
+		navigationBar: 'main',
+		getNavigation: function getNavigation(props) {
+			return {
+				title: props.navbarTitle
+			};
+		}
+	},
+	componentDidMount: function componentDidMount() {
+		var self = this;
+
+		this.setTimeout(function () {
+			self.transitionTo('tabs:transitions', { transition: 'fade' });
+		}, 1000);
+	},
+	render: function render() {
+		return _react2['default'].createElement(
+			_reactContainer2['default'],
+			{ direction: 'column', align: 'center', justify: 'center', className: 'no-results' },
+			_react2['default'].createElement('div', { className: 'no-results__icon ion-ios-photos' }),
+			_react2['default'].createElement(
+				'div',
+				{ className: 'no-results__text' },
+				'Hold on a sec...'
+			)
+		);
+	}
+});
+
+},{"react":undefined,"react-container":23,"react-timers":31,"touchstonejs":40}],90:[function(require,module,exports){
+'use strict';
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _reactContainer = require('react-container');
+
+var _reactContainer2 = _interopRequireDefault(_reactContainer);
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _touchstonejs = require('touchstonejs');
+
+var scrollable = _reactContainer2['default'].initScrollable();
+
+module.exports = _react2['default'].createClass({
+	displayName: 'exports',
+
+	statics: {
+		navigationBar: 'main',
+		getNavigation: function getNavigation() {
+			return {
+				title: 'Transitions'
+			};
+		}
+	},
+
+	render: function render() {
+		return _react2['default'].createElement(
+			_reactContainer2['default'],
+			{ scrollable: scrollable },
+			_react2['default'].createElement(
+				_touchstonejs.UI.Group,
+				null,
+				_react2['default'].createElement(
+					_touchstonejs.UI.GroupHeader,
+					null,
+					'Default'
+				),
+				_react2['default'].createElement(
+					_touchstonejs.UI.GroupBody,
+					null,
+					_react2['default'].createElement(
+						_touchstonejs.Link,
+						{ to: 'tabs:transitions-target', viewProps: { navbarTitle: 'Instant' } },
+						_react2['default'].createElement(
+							_touchstonejs.UI.Item,
+							{ showDisclosureArrow: true },
+							_react2['default'].createElement(
+								_touchstonejs.UI.ItemInner,
+								null,
+								'Instant'
+							)
+						)
+					)
+				)
+			),
+			_react2['default'].createElement(
+				_touchstonejs.UI.Group,
+				null,
+				_react2['default'].createElement(
+					_touchstonejs.UI.GroupHeader,
+					null,
+					'Fade'
+				),
+				_react2['default'].createElement(
+					_touchstonejs.UI.GroupBody,
+					null,
+					_react2['default'].createElement(
+						_touchstonejs.Link,
+						{ to: 'tabs:transitions-target', transition: 'fade', viewProps: { navbarTitle: 'Fade' } },
+						_react2['default'].createElement(
+							_touchstonejs.UI.Item,
+							{ showDisclosureArrow: true },
+							_react2['default'].createElement(
+								_touchstonejs.UI.ItemInner,
+								null,
+								'Fade'
+							)
+						)
+					),
+					_react2['default'].createElement(
+						_touchstonejs.Link,
+						{ to: 'tabs:transitions-target', transition: 'fade-expand', viewProps: { navbarTitle: 'Fade Expand' } },
+						_react2['default'].createElement(
+							_touchstonejs.UI.Item,
+							{ showDisclosureArrow: true },
+							_react2['default'].createElement(
+								_touchstonejs.UI.ItemInner,
+								null,
+								_react2['default'].createElement(
+									'span',
+									null,
+									'Fade Expand ',
+									_react2['default'].createElement(
+										'span',
+										{ className: 'text-muted' },
+										'(non-standard)'
+									)
+								)
+							)
+						)
+					),
+					_react2['default'].createElement(
+						_touchstonejs.Link,
+						{ to: 'tabs:transitions-target', transition: 'fade-contract', viewProps: { navbarTitle: 'Fade Contract' } },
+						_react2['default'].createElement(
+							_touchstonejs.UI.Item,
+							{ showDisclosureArrow: true },
+							_react2['default'].createElement(
+								_touchstonejs.UI.ItemInner,
+								null,
+								_react2['default'].createElement(
+									'span',
+									null,
+									'Fade Contract ',
+									_react2['default'].createElement(
+										'span',
+										{ className: 'text-muted' },
+										'(non-standard)'
+									)
+								)
+							)
+						)
+					)
+				)
+			),
+			_react2['default'].createElement(
+				_touchstonejs.UI.Group,
+				null,
+				_react2['default'].createElement(
+					_touchstonejs.UI.GroupHeader,
+					null,
+					'Show'
+				),
+				_react2['default'].createElement(
+					_touchstonejs.UI.GroupBody,
+					null,
+					_react2['default'].createElement(
+						_touchstonejs.Link,
+						{ to: 'tabs:transitions-target', transition: 'show-from-left', viewProps: { navbarTitle: 'Show from Left' } },
+						_react2['default'].createElement(
+							_touchstonejs.UI.Item,
+							{ showDisclosureArrow: true },
+							_react2['default'].createElement(
+								_touchstonejs.UI.ItemInner,
+								null,
+								_react2['default'].createElement(
+									'span',
+									null,
+									'Show from Left ',
+									_react2['default'].createElement(
+										'span',
+										{ className: 'text-muted' },
+										'(non-standard)'
+									)
+								)
+							)
+						)
+					),
+					_react2['default'].createElement(
+						_touchstonejs.Link,
+						{ to: 'tabs:transitions-target', transition: 'show-from-right', viewProps: { navbarTitle: 'Show from Right' } },
+						_react2['default'].createElement(
+							_touchstonejs.UI.Item,
+							{ showDisclosureArrow: true },
+							_react2['default'].createElement(
+								_touchstonejs.UI.ItemInner,
+								null,
+								'Show from Right'
+							)
+						)
+					),
+					_react2['default'].createElement(
+						_touchstonejs.Link,
+						{ to: 'app:transitions-target-over', transition: 'show-from-top', viewProps: { navbarTitle: 'Show from Top' } },
+						_react2['default'].createElement(
+							_touchstonejs.UI.Item,
+							{ showDisclosureArrow: true },
+							_react2['default'].createElement(
+								_touchstonejs.UI.ItemInner,
+								null,
+								_react2['default'].createElement(
+									'span',
+									null,
+									'Show from Top ',
+									_react2['default'].createElement(
+										'span',
+										{ className: 'text-muted' },
+										'(non-standard)'
+									)
+								)
+							)
+						)
+					),
+					_react2['default'].createElement(
+						_touchstonejs.Link,
+						{ to: 'app:transitions-target-over', transition: 'show-from-bottom', viewProps: { navbarTitle: 'Show from Bottom' } },
+						_react2['default'].createElement(
+							_touchstonejs.UI.Item,
+							{ showDisclosureArrow: true },
+							_react2['default'].createElement(
+								_touchstonejs.UI.ItemInner,
+								null,
+								'Show from Bottom'
+							)
+						)
+					)
+				)
+			),
+			_react2['default'].createElement(
+				_touchstonejs.UI.Group,
+				null,
+				_react2['default'].createElement(
+					_touchstonejs.UI.GroupHeader,
+					null,
+					'Reveal'
+				),
+				_react2['default'].createElement(
+					_touchstonejs.UI.GroupBody,
+					null,
+					_react2['default'].createElement(
+						_touchstonejs.Link,
+						{ to: 'tabs:transitions-target', transition: 'reveal-from-left', viewProps: { navbarTitle: 'Reveal from Left' } },
+						_react2['default'].createElement(
+							_touchstonejs.UI.Item,
+							{ showDisclosureArrow: true },
+							_react2['default'].createElement(
+								_touchstonejs.UI.ItemInner,
+								null,
+								_react2['default'].createElement(
+									'span',
+									null,
+									'Reveal from Left ',
+									_react2['default'].createElement(
+										'span',
+										{ className: 'text-muted' },
+										'(non-standard)'
+									)
+								)
+							)
+						)
+					),
+					_react2['default'].createElement(
+						_touchstonejs.Link,
+						{ to: 'tabs:transitions-target', transition: 'reveal-from-right', viewProps: { navbarTitle: 'Reveal from Right' } },
+						_react2['default'].createElement(
+							_touchstonejs.UI.Item,
+							{ showDisclosureArrow: true },
+							_react2['default'].createElement(
+								_touchstonejs.UI.ItemInner,
+								null,
+								'Reveal from Right'
+							)
+						)
+					),
+					_react2['default'].createElement(
+						_touchstonejs.Link,
+						{ to: 'app:transitions-target-over', transition: 'reveal-from-top', viewProps: { navbarTitle: 'Reveal from Top' } },
+						_react2['default'].createElement(
+							_touchstonejs.UI.Item,
+							{ showDisclosureArrow: true },
+							_react2['default'].createElement(
+								_touchstonejs.UI.ItemInner,
+								null,
+								_react2['default'].createElement(
+									'span',
+									null,
+									'Reveal from Top ',
+									_react2['default'].createElement(
+										'span',
+										{ className: 'text-muted' },
+										'(non-standard)'
+									)
+								)
+							)
+						)
+					),
+					_react2['default'].createElement(
+						_touchstonejs.Link,
+						{ to: 'app:transitions-target-over', transition: 'reveal-from-bottom', viewProps: { navbarTitle: 'Reveal from Bottom' } },
+						_react2['default'].createElement(
+							_touchstonejs.UI.Item,
+							{ showDisclosureArrow: true },
+							_react2['default'].createElement(
+								_touchstonejs.UI.ItemInner,
+								null,
+								'Reveal from Bottom'
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+});
+
+},{"react":undefined,"react-container":23,"touchstonejs":40}]},{},[80]);

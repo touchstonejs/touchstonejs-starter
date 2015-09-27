@@ -3400,6 +3400,209 @@ MIT License: https://github.com/driftyco/ionicons
 .ButtonGroup > .Button::after {
   display: none;
 }
+.DatePicker.Popup-dialog {
+  margin: 0;
+  width: 90%;
+  max-width: 320px;
+  min-width: 280px;
+  height: 340px;
+  padding: 0;
+  border-radius: 0px;
+  background-color: #fff;
+}
+.date-picker {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  background-color: #fff;
+  text-align: center;
+  min-width: 280px;
+}
+.date-picker .top-bar {
+  color: #007aff;
+  font-size: 16px;
+  padding-top: 0;
+  position: relative;
+  height: 44px;
+}
+.date-picker .top-bar .top-bar-title {
+  display: inline-block;
+  cursor: default;
+  padding: 0px 15px;
+  line-height: 44px;
+}
+.date-picker .top-bar .top-bar-title.Tappable-active {
+  background-color: #eeeeee;
+}
+.date-picker .top-bar .left-arrow,
+.date-picker .top-bar .right-arrow {
+  position: absolute;
+  cursor: pointer;
+  top: 0px;
+  width: 44px;
+  line-height: 44px;
+}
+.date-picker .top-bar .left-arrow.Tappable-active,
+.date-picker .top-bar .right-arrow.Tappable-active {
+  background-color: #eeeeee;
+}
+.date-picker .top-bar .left-arrow {
+  left: 0;
+}
+.date-picker .top-bar .left-arrow::after {
+  display: inline-block;
+  font-family: "Ionicons";
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  text-rendering: auto;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #ccc;
+  content: "\f124";
+  font-size: 16px;
+  color: #007aff;
+}
+.date-picker .top-bar .right-arrow {
+  right: 0;
+}
+.date-picker .top-bar .right-arrow::after {
+  display: inline-block;
+  font-family: "Ionicons";
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  text-rendering: auto;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #ccc;
+  content: "\f125";
+  font-size: 16px;
+  color: #007aff;
+}
+.date-picker .week-names-container {
+  padding: 0px 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.date-picker .week-names-container .week-name {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 8px 0;
+  cursor: default;
+  width: 36px;
+  margin-bottom: 5px;
+  margin-left: calc(16.67% - 272px / 6 + 2px);
+}
+.date-picker .week-names-container .week-name:nth-child(7n + 1),
+.date-picker .week-names-container .week-name:nth-child(7n + 7) {
+  color: #666666;
+}
+.date-picker .week-names-container .week-name:nth-child(7n + 1) {
+  margin-left: 0px;
+}
+.date-picker .days-container {
+  padding: 0 10px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.date-picker .days-container .day {
+  font-size: 12px;
+  display: inline-block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  cursor: default;
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  line-height: 36px;
+  margin-bottom: 5px;
+  margin-left: calc(16.67% - 272px / 6 + 2px);
+}
+.date-picker .days-container .day:nth-child(7n + 1),
+.date-picker .days-container .day:nth-child(7n + 7) {
+  color: #666666;
+}
+.date-picker .days-container .day:nth-child(7n + 1) {
+  margin-left: 0px;
+}
+.date-picker .days-container .day.in-previous-month,
+.date-picker .days-container .day.in-next-month {
+  color: #ccc;
+}
+.date-picker .days-container .day.is-today {
+  color: red;
+}
+.date-picker .days-container .day.is-current {
+  color: #fff;
+  background-color: #007aff;
+}
+.date-picker .days-container .day.Tappable-active {
+  background-color: #eeeeee;
+}
+.date-picker .month-names-container {
+  padding: 20px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.date-picker .month-names-container .month-name {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  display: inline-block;
+  width: 25%;
+  font-size: 12px;
+  margin-top: 5px;
+  padding: 8px 0;
+  cursor: default;
+}
+.date-picker .month-names-container .month-name.is-current {
+  color: #fff;
+  background-color: #007aff;
+}
+.date-picker .month-names-container .month-name.Tappable-active {
+  background-color: #eeeeee;
+}
+.date-picker .years-container {
+  padding: 20px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.date-picker .years-container .year {
+  display: inline-block;
+  width: 25%;
+  font-size: 12px;
+  margin-top: 5px;
+  padding: 8px 0;
+  cursor: default;
+}
+.date-picker .years-container .year:first-child,
+.date-picker .years-container .year:last-child {
+  color: #999999;
+}
+.date-picker .years-container .year.is-current {
+  color: #fff;
+  background-color: #007aff;
+}
+.date-picker .years-container .year.Tappable-active {
+  background-color: #eeeeee;
+}
 .Group {
   margin-bottom: 34px;
 }
@@ -3525,7 +3728,7 @@ MIT License: https://github.com/driftyco/ionicons
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #cccccc;
+  color: #ccc;
   content: "\f125";
   font-size: 16px;
   -webkit-align-items: center;
@@ -3882,7 +4085,7 @@ MIT License: https://github.com/driftyco/ionicons
 }
 .NavigationBarLeftButton[disabled],
 .NavigationBarRightButton[disabled] {
-  color: #cccccc;
+  color: #ccc;
 }
 .NavigationBarLeftButton.Tappable-active,
 .NavigationBarRightButton.Tappable-active {
@@ -4097,25 +4300,22 @@ MIT License: https://github.com/driftyco/ionicons
   background-color: rgba(255, 255, 255, 0.95);
   border-radius: 16px;
   left: 50%;
-  margin: -60px 0 0 -60px;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
   padding: 15px;
   position: absolute;
   text-align: center;
-  top: 50%;
   width: 120px;
   z-index: 1050;
 }
-.Popup-dialog.default {
-  -webkit-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  -o-transform: translateY(-50%);
-  transform: translateY(-50%);
-  margin-left: -135px;
-  left: 50%;
-  top: 50%;
-  width: 270px;
-}
 .Popup-dialog-enter {
+  visibility: hidden;
+}
+.Popup-dialog-enter-active {
+  visibility: visible;
   -webkit-animation-name: popupDialogEnter;
   animation-name: popupDialogEnter;
   -webkit-animation-duration: 280ms;
@@ -4183,41 +4383,41 @@ MIT License: https://github.com/driftyco/ionicons
 @-webkit-keyframes popupDialogEnter {
   from {
     opacity: 0;
-    -webkit-transform: scale(0.8);
+    -webkit-transform: translate(-50%, -50%) scale(0.8);
   }
   to {
     opacity: 1;
-    -webkit-transform: scale(1);
+    -webkit-transform: translate(-50%, -50%) scale(1);
   }
 }
 @keyframes popupDialogEnter {
   from {
     opacity: 0;
-    transform: scale(0.8);
+    transform: translate(-50%, -50%) scale(0.8);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translate(-50%, -50%) scale(1);
   }
 }
 @-webkit-keyframes popupDialogLeave {
   from {
     opacity: 1;
-    -webkit-transform: scale(1);
+    -webkit-transform: translate(-50%, -50%) scale(1);
   }
   to {
     opacity: 0;
-    -webkit-transform: scale(0.8);
+    -webkit-transform: translate(-50%, -50%) scale(0.8);
   }
 }
 @keyframes popupDialogLeave {
   from {
     opacity: 1;
-    transform: scale(1);
+    transform: translate(-50%, -50%) scale(1);
   }
   to {
     opacity: 0;
-    transform: scale(0.8);
+    transform: translate(-50%, -50%) scale(0.8);
   }
 }
 @-webkit-keyframes popupBackdropEnter {
@@ -4497,7 +4697,7 @@ MIT License: https://github.com/driftyco/ionicons
   -webkit-transition: all 0.3s ease-in-out;
   -o-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
-  background-color: #ffffff;
+  background-color: #fff;
   border-radius: 20px;
   border: solid 2px #e6e6e6;
   box-sizing: border-box;
@@ -5004,6 +5204,9 @@ input::-webkit-input-placeholder {
   overflow-x: auto;
   white-space: nowrap;
 }
+.field.field-placeholder {
+  color: #c7c7cd;
+}
 label.item-content {
   position: relative;
 }
@@ -5079,6 +5282,9 @@ label.item-content::after {
 .select-field.one-line {
   overflow-x: auto;
   white-space: nowrap;
+}
+.select-field.field-placeholder {
+  color: #c7c7cd;
 }
 .select-field:-moz-focusring {
   color: transparent;

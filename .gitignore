@@ -1,0 +1,34 @@
+# Build
+www
+
+# Common
+.DS_Store
+build
+
+# Node.js
+node_modules
+
+# Xcode
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.pbxuser
+*.hmap
+*.ipa
+*.xcuserstate
+*.xccheckout
+*.moved-aside
+*.perspectivev3
+xcuserdata
+DerivedData
+
+# Android
+build.xml
+local.properties
+gradlew
+gradlew.bat
+gradle
+ant-build
+ant-gen
+gen
+out

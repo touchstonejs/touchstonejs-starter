@@ -11,16 +11,16 @@
     "url": "https://github.com/touchstonejs/touchstonejs-starter.git"
   },
   "dependencies": {
-    "async": "^1.3.0",
-    "classnames": "^2.1.2",
+    "async": "^1.4.2",
+    "classnames": "^2.1.3",
     "cordova-dialogs": "^1.0.2",
     "httpify": "^2.0.0",
     "react": "^0.13.3",
-    "react-container": "^0.2.2",
+    "react-container": "^0.2.4",
     "react-sentry": "^1.0.2",
     "react-tappable": "^0.6.0",
     "react-timers": "^5.0.0",
-    "touchstonejs": "^0.5.0"
+    "touchstonejs": "^0.6.0"
   },
   "devDependencies": {
     "gulp": "^3.9.0",

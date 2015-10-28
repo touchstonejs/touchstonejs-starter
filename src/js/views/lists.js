@@ -42,7 +42,7 @@ module.exports = React.createClass({
 							GroupBody will apply the background for content inside groups.
 						</UI.GroupInner>
 					</UI.GroupBody>
-					<UI.GroupFooter>GroupFooter: useful for a detailed explaination to express the intentions of the Group. Try to be concise - remember that users are likely to read the text in your UI many times.</UI.GroupFooter>
+					<UI.GroupFooter>GroupFooter: useful for a detailed explanation to express the intentions of the Group. Try to be concise - remember that users are likely to read the text in your UI many times.</UI.GroupFooter>
 				</UI.Group>
 			</Container>
 		);

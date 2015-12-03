@@ -1,6 +1,6 @@
 {
   "name": "touchstonejs-starter",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Touchstone Starter",
   "main": "src/js/app.js",
   "author": "Jed Watson",

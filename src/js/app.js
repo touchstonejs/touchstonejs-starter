@@ -26,6 +26,13 @@ var App = React.createClass({
 		};
 	},
 
+	componentDidMount () {
+		// Hide the splash screen when the app is mounted
+		if (navigator.splashscreen) {
+			navigator.splashscreen.hide();
+		}
+	},
+
 	render () {
 		let appWrapperClassName = 'app-wrapper device--' + (window.device || {}).platform
 
@@ -141,7 +148,6 @@ function startApp () {
 	if (window.StatusBar) {
 		window.StatusBar.styleDefault();
 	}
-
 	React.render(<App />, document.getElementById('app'));
 }
 

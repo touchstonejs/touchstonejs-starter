@@ -32,8 +32,6 @@
     "build": "gulp clean && gulp build",
     "build:production": "gulp clean && NODE_ENV=production gulp build",
     "lint": "happiness",
-    "prepare": "gulp clean && gulp prepare",
-    "prepare:production": "gulp clean && NODE_ENV=production gulp prepare",
     "test": "npm run lint",
     "start": "gulp clean && gulp dev",
     "watch": "gulp clean && gulp watch"

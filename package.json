@@ -21,7 +21,7 @@
     "react-sentry": "^1.0.2",
     "react-tappable": "^0.7.1",
     "react-timers": "^5.0.0",
-    "touchstonejs": "^0.6.0"
+    "touchstonejs": "^0.7.0"
   },
   "devDependencies": {
     "gulp": "^3.9.0",

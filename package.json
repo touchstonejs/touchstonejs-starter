@@ -16,6 +16,7 @@
     "cordova-dialogs": "^1.0.2",
     "httpify": "^3.0.0",
     "react": "^0.14.3",
+    "react-addons-css-transition-group": "^0.14.3",
     "react-container": "^0.3.0",
     "react-dom": "^0.14.3",
     "react-sentry": "^1.0.2",

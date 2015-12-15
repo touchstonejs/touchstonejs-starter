@@ -25,7 +25,7 @@ var ComplexLinkItem = React.createClass({
 					<UI.ItemInner>
 						<UI.ItemContent>
 							<UI.ItemTitle>{person.name.full}</UI.ItemTitle>
-							<UI.ItemSubTitle>{person.bio}</UI.ItemSubTitle>
+							<UI.ItemSubTitle>{person.email || ''}</UI.ItemSubTitle>
 						</UI.ItemContent>
 						<Tappable onTap={this.toggleStar} stopPropagation>
 							<UI.ItemNote icon={person.isStarred ? 'ion-ios-star' : 'ion-ios-star-outline'} type={person.isStarred ? 'warning' : 'default'} className="ion-lg" />

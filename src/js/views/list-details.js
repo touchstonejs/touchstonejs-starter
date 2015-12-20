@@ -27,7 +27,7 @@ module.exports = React.createClass({
 				<Container fill scrollable ref="scrollContainer" className="PersonDetails">
 					<img src={person.picture} className="PersonDetails__avatar" />
 					<div className="PersonDetails__heading">{person.name.full}</div>
-					<div className="PersonDetails__text text-block">{person.bio}</div>
+					<div className="PersonDetails__text text-block">{person.email || ''}</div>
 					{(person.twitter || person.github) && <div className="PersonDetails__profiles">
 						{person.twitter && <div className="PersonDetails__profile">
 							<span className="PersonDetails__profile__icon ion-social-twitter" />

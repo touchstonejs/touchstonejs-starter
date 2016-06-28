@@ -37,8 +37,8 @@ function PeopleStore () {
 		}, function (err, res) {
 			if (err) return callback(err);
 
-			storage.people = res.body.results.map(p => p.user);
-			
+			storage.people = res.body.results;
+
 			// post process new data
 			storage.people.forEach((person, i) => {
 				person.id = i;
